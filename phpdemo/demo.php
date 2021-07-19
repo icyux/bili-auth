@@ -140,6 +140,7 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 				else{
 					var name = info['name'];
 					var bio = info['sign'];
+					var time = ts2dateTime(Number(c.children[4].innerText));
 				}
 			}
 			c.children[1].href = `https://space.bilibili.com/${uid}`
