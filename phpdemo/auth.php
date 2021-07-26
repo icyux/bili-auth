@@ -16,7 +16,7 @@
 			<input onclick='create();' type="submit" name="test" value='开始验证'>
 		</div>
 		<div id='step-1' hidden>
-			<div>发送私信"<div style='color:blue' id='msg'></div>"至哔哩哔哩用户（机器人）<a href="https://message.bilibili.com/#whisper/mid1521021206" target='_blank'>@BotFather</a>，等待5-15秒您应该能收到私信回复，然后点击"下一步"</div>
+			<div>发送私信"<div style='color:blue' id='msg'></div>"至哔哩哔哩用户（机器人）<a href="https://message.bilibili.com/#whisper/mid1521021206" target='_blank'>@BotFather</a>，发送后默数5秒（数慢点，别急了），然后点击"下一步"</div>
 			<input onclick='verify();' type="submit" name="next" value="下一步">
 		</div>
 		<div id='step-2' hidden>
@@ -60,8 +60,10 @@
 					return false;
 				}
 				nextStep();
-				userName = JSON.parse(xhr.responseText)['nickname'];
-				let welcomeMsg = `验证完成，以"${userName}"的身份登录。`;
+				let data = JSON.parse(xhr.responseText);
+				let userName = data['nickname'];
+				let uid = data['uid'];
+				let welcomeMsg = `验证完成，以"${userName}"(uid:${uid})的身份登录。点击浏览器的"后退"键即可回到主页面。`;
 				resultToast.innerText = welcomeMsg;
 			}
 
