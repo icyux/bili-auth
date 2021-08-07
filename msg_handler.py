@@ -58,5 +58,8 @@ def sendText(uid, content):
 
 def mainLoop():
     while True:
-        checkMsg()
+        try:
+            checkMsg()
+        except requests.exceptions.ConnectionError as e:
+            print(e)
         time.sleep(4 + random() * 2)
