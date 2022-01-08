@@ -5,6 +5,7 @@ import re
 from random import random
 import bili_utils
 import auth_handler
+import requests
 
 sendCD = 1
 
@@ -34,7 +35,7 @@ def cmdHandler(uid, action, arg):
     if action == 'auth':
         if auth_handler.checkVerify(arg, **userInfo):
             info = auth_handler.getVerifyInfo(arg)
-            reply = '验证完成。 主体: {} 。如果此次验证不是由您发起, 请回复"revoke({})"以撤销此次验证。此消息为自动发出, 请勿发送闲聊信息。'
+            reply = '验证完成。 请求来源: {} 。如果此次验证不是由您发起, 请回复"revoke({})"以撤销此次验证。此消息为自动发出, 请勿发送闲聊信息。'
             reply = reply.format(info['subject'], arg)
         else:
             reply = '未找到此验证信息, 可能是此验证信息已过期。'
@@ -49,7 +50,7 @@ def cmdHandler(uid, action, arg):
 
 
 def sendText(uid, content):
-    print('[send]', uid, content)
+    print(f'[send > {uid}]', content)
     sleepTime = lastSendTs + sendCD - time.time()
     if sleepTime > 0:
         time.sleep(sleepTime)

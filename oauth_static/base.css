@@ -1,0 +1,100 @@
+body {
+	margin: 0;
+	background-color: #eee
+}
+
+header {
+	width: 100vw;
+	background-color: #6ae;
+	box-shadow: 0 0 0.5em;
+}
+
+header span {
+	display: inline-block;
+	font-size: 1.5em;
+	color: #fff;
+	margin: 0.5em 1em;
+}
+
+main {
+	width: 80vw;
+	min-height: 50vh;
+	margin: 3em auto 5em;
+	padding: 3em;
+	background-color: #fff;
+	border-radius: 1em;
+	box-shadow: 0 0 1em #aaa;
+}
+
+footer {
+	position: absolute;
+	left: 0;
+	right: 0;
+	padding: 0.3em;
+}
+
+footer div {
+	padding: 0.5em;
+}
+
+.app-info {
+	border: dashed 2px #888;
+	border-radius: 1em;
+	padding: 1em;
+	width: max-content;
+	max-width: 100%;
+}
+
+.app-info div {
+	margin: 1em;
+}
+
+.info-value,
+#challenge-msg {
+	padding: 0.2em;
+	background-color: #eef;
+	border-radius: 0.1em;
+}
+
+.next-step {
+	background-color: #6ae;
+	padding: 0.5em 1em;
+	border: solid 1px #59d;
+	border-radius: 0.3em;
+	color: #fff;
+}
+
+.next-step:hover {
+	background-color: #7bf;
+}
+
+.next-step:active {
+	background-color: #59d;
+}
+
+.next-step:disabled {
+	background-color: #ccc;
+}
+
+#avatar {
+	width: 4em;
+	height: 4em;
+}
+
+.user-info {
+	padding: 1em;
+	border-radius: 0.5em;
+	border: solid 1px #999;
+}
+
+.name-bio-container {
+	display: inline-block;
+}
+
+#user-name {
+	font-weight: bold;
+}
+
+#bio {
+	color: #333;
+}
