@@ -5,14 +5,14 @@ import time
 import re
 import json
 
-selfUid = '000000' # put your uid here
-selfDevId = '' # put your dev_id here
+selfUid = '000000'  # put your uid here
+selfDevId = ''  # put your dev_id here
 ua = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
 
 with open('cookie') as f:
     cookie = f.read()
 try:
-    csrf = re.compile('bili_jct=(.*?); ').search(cookie).group(1)
+    csrf = re.search(r'bili_jct=(.*?); ', cookie).group(1)
 except AttributeError:
     exit('Invalid cookie. Check if the key "bili_jct" included for CSRF verify.')
 authedHeader = {

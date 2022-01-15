@@ -29,7 +29,7 @@ def createVerify(cid, subject):
             'subject': subject,
             'isAuthed': False,
         },
-        expire = 360
+        expire=360,
     )
     return code
 
@@ -56,7 +56,7 @@ def getVerifyInfo(code):
 
 def createToken(code):
     data = pool.get(code)
-    if data == None or data.get('tkn'):
+    if data is None or data.get('tkn'):
         return None 
     token = secrets.token_urlsafe(24)
     data['code'] = code

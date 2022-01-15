@@ -25,7 +25,7 @@ def oauthPage():
 @app.route('/oauth/application/<cid>')
 def getApp(cid):
     info = queryApp(cid)
-    if info == None:
+    if info is None:
         return '', 404
     else:
         return info, 200
@@ -50,7 +50,7 @@ def queryApp(cid):
 @app.route('/oauth/verify/<code>', methods=('GET',))
 def queryVerifyInfo(code):
     result = auth_handler.getVerifyInfo(code)
-    if result == None:
+    if result is None:
         return '', 404
     elif result['isAuthed'] == False:
         return result, 202
@@ -61,7 +61,7 @@ def queryVerifyInfo(code):
 def createVerify():
     cid = request.args.get('client_id')
     appInfo = queryApp(cid)
-    if appInfo == None:
+    if appInfo is None:
         return '', 404
     code = auth_handler.createVerify(appInfo['cid'], appInfo['name'])
     print(repr(code))
@@ -96,7 +96,7 @@ def createAccessToken():
         expectSec = queryApp(cid).get('sec')
         if expectSec == csec and csec != '':
             tkn = auth_handler.createToken(code)
-            if tkn != None:
+            if tkn is not None:
                 return {
                     'token': tkn,
                     **info,
@@ -140,5 +140,5 @@ msgThread = threading.Thread(target=lambda: msg_handler.mainLoop())
 msgThread.daemon = True
 msgThread.start()
 
-#app.debug = True
+app.debug = False
 app.run(host='localhost', port=8081)
