@@ -1,0 +1,4 @@
+- [ ] php demo: 适配 OAuth2.0
+- [ ] php demo: css 与 js 单独成文件
+- [ ] php demo: 增加基本样式
+- [ ] OAuth center: 增加用户验证令牌，不必每次鉴权都发送消息
