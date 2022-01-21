@@ -11,8 +11,8 @@ async function getApplication(cid) {
 	if (req.status != 200)
 		return null;
 
-	let resp = await req.json()
-	return resp
+	let resp = await req.json();
+	return resp;
 }
 
 async function generateRequest() {
@@ -58,11 +58,17 @@ async function init() {
 
 	let appInfo = await getApplication(arg['client_id']);
 	if (appInfo === null) {
-		document.getElementById('pending').innerText = '此应用不存在，请咨询应用管理者。'
+		document.getElementById('pending').innerText = '此应用不存在，请咨询应用管理者。';
+		return;
 	}
 
-	cid = appInfo['cid']
 	redirect = arg['redirect_uri'];
+	if (redirect === undefined) {
+		document.getElementById('pending').innerText = '回调 URL 未指定，请咨询应用管理者';
+		return;
+	}
+
+	cid = appInfo['cid'];
 
 	document.getElementById('app-id').innerText = cid;
 	document.getElementById('app-name').innerText = appInfo['name'];
