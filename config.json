@@ -1,0 +1,17 @@
+{
+	"bili": {
+		// user id
+		"uid": 0,
+		// cookie value
+		"cookie": "",
+		// device id (UUID), randomly generated if not specified
+		"dev_id": "",
+		"user_agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+	},
+
+	"oauth_service": {
+		"host": "localhost",
+		"port": 8080
+	},
+
+}
