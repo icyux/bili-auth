@@ -5,23 +5,31 @@ import time
 import re
 import json
 
-selfUid = '000000'  # put your uid here
-selfDevId = ''  # put your dev_id here
-ua = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+selfUid = ''
+selfDevId = ''
+ua = ''
+csrf = ''
+authedHeader = None
+unauthedHeader = None
 
-with open('cookie') as f:
-    cookie = f.read()
-try:
-    csrf = re.search(r'bili_jct=(.*?); ', cookie).group(1)
-except AttributeError:
-    exit('Invalid cookie. Check if the key "bili_jct" included for CSRF verify.')
-authedHeader = {
-    'Cookie': cookie,
-    'User-Agent': ua,
-    'Origin': 'https://message.bilibili.com/',
-    'Referer': 'https://message.bilibili.com/',
-}
-unauthedHeader = {'User-Agent': ua}
+def init(*, uid, cookie, dev_id, user_agent):
+    global selfUid, selfDevId, csrf, ua, authedHeader, unauthedHeader
+    selfUid = uid
+    selfDevId = dev_id
+    ua = user_agent
+
+    try:
+        csrf = re.search(r'bili_jct=(.*?); ', cookie).group(1)
+    except AttributeError:
+        errInfo = 'Invalid cookie. Check if the key "bili_jct" included for CSRF verify.'
+        raise ValueError(errInfo)
+    authedHeader = {
+        'Cookie': cookie,
+        'User-Agent': ua,
+        'Origin': 'https://message.bilibili.com',
+        'Referer': 'https://message.bilibili.com/',
+    }
+    unauthedHeader = {'User-Agent': ua}
 
 
 def getNewMsg(beginMts: int, *, recvType: tuple = (1,)):

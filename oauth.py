@@ -12,6 +12,8 @@ app = Flask(__name__,
     static_folder='oauth_static',
     static_url_path='/static',
 )
+app.debug = False
+
 db = sqlite3.connect('oauth_application.db3', check_same_thread=False)
 
 @app.route('/')
@@ -134,11 +136,3 @@ def avatarProxy():
         )
     return '', 404
 
-
-auth_handler.initPool()
-msgThread = threading.Thread(target=lambda: msg_handler.mainLoop())
-msgThread.daemon = True
-msgThread.start()
-
-app.debug = False
-app.run(host='localhost', port=8081)
