@@ -1,122 +1,48 @@
-<?php
-session_start();
-require_once 'bili_verify.php';
-const DB_PATH = 'comments.db';
-
-class CustomDB extends SQLite3{
-	function __construct(){
-		$this->open(DB_PATH);
-	}
-}
-
-$db = new CustomDB();
-assert($db);
-
-function filter($input){
-	return str_replace('\'','\'\'',$input);
-}
-
-if($_SERVER['REQUEST_METHOD']==='POST'){
-	if(!isset($_SESSION['data'])){
-		http_response_code(403);
-		die('you need to auth first. ');
-	}
-	switch ($_GET['action']) {
-		case 'create':
-			$context = filter($_POST['context']);
-			if(isset($context) && strlen($context)<5000 && strlen($context)>5){
-				$uid = $_SESSION['data']['uid'];
-				$ts = time();
-				$result = $db->exec("INSERT INTO comment (sender,context,ts) VALUES ({$uid},'{$context}',{$ts})");
-				if($result){
-					http_response_code(200);
-				}
-				else{
-					http_response_code(500);
-				}
-			}
-			else{
-				http_response_code(400);
-				die('out of range.');
-			}
-			break;
-
-		case 'delete':
-			$uid = $_SESSION['data']['uid'];
-			$pid = intval($_GET['pid']);
-			if($pid==0){
-				http_response_code(400);
-			}
-			else{
-				$result = $db->query("SELECT 1 FROM comment WHERE pid={$pid} and sender={$uid}");
-				if(!($result->fetchArray())){
-					http_response_code(403);
-					die('此评论不存在，或者您无权操作。');
-				}
-				$result = $db->exec("DELETE FROM comment WHERE pid={$pid}");
-				if($result){
-					http_response_code(200);
-				}
-				else{
-					http_response_code(500);
-				}
-			}
-			break;
-		default:
-			http_response_code(400);
-			break;
-	}
-	die;
-}
-?>
-
 <!DOCTYPE html>
 <head>
 	<meta charset="UTF-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 	<title>bili登录 demo</title>
+	<script src='./main.js' defer></script>
 </head>
 <html>
-	<?php if(isset($_SESSION['data'])): ?>
+	<div id='login-pending'>
+		<h5>正在加载...</h5>
+	</div>
+	<div id='not-login' hidden>
+		<h5>未登录。点击<a href='auth.php'>验证您的哔哩哔哩账号</a>。</h5>
+	</div>
+	<div id='user-info' hidden>
 		<h5>您当前登录身份：</h5>
-		<!-- 若有神人能解决B站头像和用户信息api跨域访问问题，不胜感激。用服务器作代理太耗带宽 -->
-		<!-- 为什么不能跨域！！！你*的B...站。含泪注释 <img referrer="no-referrer" src="<?php echo $_SESSION['data']['avatar']; ?> "> -->
-		<h5><?php echo $_SESSION['data']['nickname'].' (uid:'.strval($_SESSION['data']['uid']).')'; ?></h5>
-		<p>个性签名: <?php echo $_SESSION['data']['bio']; ?></p>
-	<?php else: ?>
-		<h6>未登录。点击<a href='auth.php'>验证您的哔哩哔哩账号</a>。</h6>
-	<?php endif; ?>
-	<?php
-		if(isset($_GET['page'])){
-			$page = intval($_GET['page']);
-			$index = $page*10;
-		}
-		else{
-			$page = 0;
-			$index = 0;
-		}
-		assert($index>=0);
-		$result = $db->query("SELECT pid,sender,context,ts FROM comment ORDER BY pid DESC LIMIT {$index},10");
-	?>
+		<img class='avatar' id='self-avatar' referrer="no-referrer">
+		<span id='self-name'></span>
+		<p id='self-bio'></p>
+	</div>
 	<textarea onfocus='onTextareaFocus();' id='edit-comment' rows="3" cols="20">发一条友善的评论吧！</textarea>
 	<input onclick='submitComment();' type='submit'>
 	<p>Tip: 提交之后可以删除，随便写点什么吧。</p>
+
 	<hr/>
-	<?php while($c = $result->fetchArray(SQLITE3_ASSOC)): ?>
+
+	<template id='cmt-template'>
 		<div class='comment'>
-			<div id='uid' hidden><?php echo $c['sender']; ?></div>
-			<!-- <img href=""> -->
-			<a target='_blank'><h4 style='color:blue' id='nickname'></h4></a>
-			<p id='bio' style='color:gray'></p>
-			<p id='context'><?php echo $c['context']; ?></p>
-			<p id='time'><?php echo $c['ts']; ?></p>
-			<input type='submit' value='删除' onclick='if(confirm("确定删除？该评论将会丢失（很长时间！）")) deleteComment(<?php echo $c['pid']; ?>);'>
+			<img id='avatar' class='avatar'>
+			<a id='nickname-link' class='nickname' target='_blank'><h4 id='nickname'></h4></a>
+			<p id='bio'></p>
+			<p id='context'></p>
+			<p id='time'></p>
+			<!--
+			<input type='submit' value='删除' onclick='if(confirm("确定删除？该评论将会丢失（很长时间！）")) deleteComment(<?php echo $c['pid']; ?>);'>-->
 		</div>
-		<hr/>
-	<?php endwhile; ?>
+	</template>
+	<div id='comment-container'></div>
+
+	<!--
 	<a href='?page=<?php echo $page-1; ?>'>上一页</a>
 	<div>当前第<?php echo $page; ?>页（起始页为0，每页10条）</div>
 	<a href='?page=<?php echo $page+1; ?>'>下一页</a>
+	-->
+	<!--
 	<script type="text/javascript">
 		var selfUid = <?php echo isset($_SESSION['data']['uid'])?$_SESSION['data']['uid']:'null'; ?>;
 		var isFirstFocus = true;
@@ -151,7 +77,7 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 		}
 
 		function onTextareaFocus(){
-			if(isFirstFocus){
+			if (isFirstFocus) {
 				document.querySelector("#edit-comment").innerText = '';
 				isFirstFocus = false;
 			}
@@ -159,7 +85,7 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 
 		function submitComment(){
 			let comment = document.querySelector("#edit-comment").value;
-			if(isFirstFocus||comment.length<5){
+			if (isFirstFocus || comment.length < 5){
 				alert('内容太少了');
 				return false;
 			}
@@ -168,7 +94,7 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 			xhr.send('context='+encodeURIComponent(comment));
 			if(xhr.status===200){
 				alert('发送成功。');
-				location.reload();
+				window.location.reload();
 			}
 			else{
 				alert('发送失败，等下再试试。也有可能字数太多。');
@@ -197,4 +123,5 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 			return Y+M+D+h+m+s;
 	}
 	</script>
+-->
 </html>
