@@ -102,7 +102,7 @@ def createAccessToken():
                 return {
                     'token': tkn,
                     **info,
-                }
+                }, 200
             else:
                 return '', 500
         else:
@@ -132,7 +132,9 @@ def avatarProxy():
     print(url)
     if req.status_code == 200:
         return req.content, 200, (
+            ('Cache-Control', 'max-age=1800'),
             ('Content-Type', req.headers['Content-Type']),
+            ('Access-Control-Allow-Origin', '*'),
+            ('Vary', 'Origin'),
         )
     return '', 404
-
