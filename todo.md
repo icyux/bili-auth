@@ -2,3 +2,4 @@
 - [ ] php demo: css 与 js 单独成文件
 - [ ] php demo: 增加基本样式
 - [ ] OAuth center: 增加用户验证令牌，不必每次鉴权都发送消息
+- [ ] oauth.py: 限制头像大小，过大拒绝代理
