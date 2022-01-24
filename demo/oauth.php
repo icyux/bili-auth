@@ -2,12 +2,18 @@
 session_start();
 
 const check_max_age = 600;
-const redirect = '../';
+const redirect = './';
 const api_url = 'https://bili-auth.icyu.me:41259/oauth/access_token';
 const client_id = '1a1b4514';
 const client_secret = 'qgfwgwt4g';
 
-$code = $_GET['code'];
+if (isset($_GET['code']))
+	$code = $_GET['code'];
+else {
+	http_response_code(400);
+	echo 'empty code param';
+	die;
+}
 
 $curl = curl_init();
 curl_setopt_array($curl, [

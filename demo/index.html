@@ -3,125 +3,46 @@
 	<meta charset="UTF-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 	<title>bili登录 demo</title>
+	<link rel="stylesheet" href="./style.css">
 	<script src='./main.js' defer></script>
 </head>
 <html>
-	<div id='login-pending'>
-		<h5>正在加载...</h5>
+	<div class='head-container'>
+		<div id='login-pending'>
+			<h5>正在加载...</h5>
+		</div>
+		<div id='not-login' hidden>
+			<h5>未登录。点击<a id='oauth-service'>验证您的哔哩哔哩账号</a>。</h5>
+		</div>
+		<div id='user-info' hidden>
+			<p>您当前登录身份：</p>
+			<img class='avatar' id='self-avatar' referrer="no-referrer">
+			<span id='self-name'></span>
+			<div class='bio' id='self-bio'></div>
+		</div>
+		<textarea id='edit-comment' placeholder='发一条友善的评论吧！'></textarea>
+		<button id='submit-comment' onclick='submitComment();' disabled>登录后即可提交</button>
+		<p id='comment-tip'>Tip: 提交之后可以删除，随便写点什么吧。</p>
 	</div>
-	<div id='not-login' hidden>
-		<h5>未登录。点击<a href='auth.php'>验证您的哔哩哔哩账号</a>。</h5>
-	</div>
-	<div id='user-info' hidden>
-		<h5>您当前登录身份：</h5>
-		<img class='avatar' id='self-avatar' referrer="no-referrer">
-		<span id='self-name'></span>
-		<p id='self-bio'></p>
-	</div>
-	<textarea onfocus='onTextareaFocus();' id='edit-comment' rows="3" cols="20">发一条友善的评论吧！</textarea>
-	<input onclick='submitComment();' type='submit'>
-	<p>Tip: 提交之后可以删除，随便写点什么吧。</p>
 
 	<hr/>
 
 	<template id='cmt-template'>
 		<div class='comment'>
 			<img id='avatar' class='avatar'>
-			<a id='nickname-link' class='nickname' target='_blank'><h4 id='nickname'></h4></a>
-			<p id='bio'></p>
+			<a id='nickname-link' class='nickname' target='_blank'><strong id='nickname'></strong></a>
+			<span class='bio' id='bio'></span>
 			<p id='context'></p>
 			<p id='time'></p>
-			<!--
-			<input type='submit' value='删除' onclick='if(confirm("确定删除？该评论将会丢失（很长时间！）")) deleteComment(<?php echo $c['pid']; ?>);'>-->
+			<button id='del' hidden>删除</button>
 		</div>
 	</template>
 	<div id='comment-container'></div>
 
-	<!--
-	<a href='?page=<?php echo $page-1; ?>'>上一页</a>
-	<div>当前第<?php echo $page; ?>页（起始页为0，每页10条）</div>
-	<a href='?page=<?php echo $page+1; ?>'>下一页</a>
-	-->
-	<!--
-	<script type="text/javascript">
-		var selfUid = <?php echo isset($_SESSION['data']['uid'])?$_SESSION['data']['uid']:'null'; ?>;
-		var isFirstFocus = true;
-		var comments = document.getElementsByClassName('comment');	
-		var xhr = new XMLHttpRequest();
-		for(var index = 0; index<comments.length; index++){
-			let c = comments[index];
-			console.log(c);
-			let uid = Number(c.children[0].innerText);
-			xhr.open('get',`userinfo.php?uid=${uid}`,false);
-			xhr.send();
-			if(xhr.status!==200){
-				var name = '用户信息加载失败';
-			}
-			else{
-				let info = JSON.parse(xhr.responseText)['data'];
-				if(!info){
-					var name = '用户信息加载失败';
-					var time = ts2dateTime(Number(c.children[4].innerText));
-				}
-				else{
-					var name = info['name'];
-					var bio = info['sign'];
-					var time = ts2dateTime(Number(c.children[4].innerText));
-				}
-			}
-			c.children[1].href = `https://space.bilibili.com/${uid}`
-			c.children[1].children[0].innerText = name;
-			c.children[2].innerText = bio;
-			c.children[4].innerText = time;
-			c.children[5].hidden = (selfUid!==uid);
-		}
+	<div class='pagecount-display-container'>
+		<div>当前第<span id='page-count'>...</span>页（起始页为0，每页10条）</div>
+		<button onclick='incPage(-1)'>上一页</button>
+		<button onclick='incPage(1)'>下一页</button>
+	</div>
 
-		function onTextareaFocus(){
-			if (isFirstFocus) {
-				document.querySelector("#edit-comment").innerText = '';
-				isFirstFocus = false;
-			}
-		}
-
-		function submitComment(){
-			let comment = document.querySelector("#edit-comment").value;
-			if (isFirstFocus || comment.length < 5){
-				alert('内容太少了');
-				return false;
-			}
-			xhr.open('post','demo.php?action=create',false);
-			xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-			xhr.send('context='+encodeURIComponent(comment));
-			if(xhr.status===200){
-				alert('发送成功。');
-				window.location.reload();
-			}
-			else{
-				alert('发送失败，等下再试试。也有可能字数太多。');
-			}
-		}
-
-		function deleteComment(pid){
-			xhr.open('post',`demo.php?action=delete&pid=${pid}`,false);
-			xhr.send();
-			if(xhr.status===200){
-				alert('删除成功，刷新后消失。')
-			}
-			else{
-				alert('删除失败，控制台可见响应错误信息。')
-			}
-		}
-
-		function ts2dateTime(ts){
-			var date = new Date(ts*1000);
-			var Y = date.getFullYear() + '/';
-			var M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '/';
-			var D = (date.getDate() < 10 ? '0'+date.getDate() : date.getDate()) + ' ';
-			var h = date.getHours() + ':';
-			var m = (date.getMinutes() < 10 ? '0'+date.getMinutes() : date.getMinutes())+ ':';
-			var s = (date.getSeconds() < 10 ? '0'+date.getSeconds() : date.getSeconds());
-			return Y+M+D+h+m+s;
-	}
-	</script>
--->
 </html>

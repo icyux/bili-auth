@@ -1,0 +1,62 @@
+body {
+	margin: 0;
+}
+
+.head-container {
+	position: relative;
+	margin: 1em auto;
+}
+
+textarea {
+	margin: 1em;
+	height: 10em;
+}
+
+#comment-tip {
+	display: inline-block;
+	font-size: 0.6em;
+}
+
+#user-info {
+	padding: 1em 2em;
+	border: dashed 1px #ccc;
+}
+
+#comment-container {
+	margin: 0 8em;
+}
+
+.comment {
+	position: relative;
+	border: solid 2px #666;
+	border-radius: 1em;
+	margin: 0.5em auto;
+	padding: 1em;
+}
+
+.comment .nickname {
+	display: inline-block;
+}
+
+.bio {
+	display: inline-block;
+	margin-left: 1em;
+	color: #444;
+	font-style: italic;
+}
+
+.avatar {
+	width: 1.4em;
+	height: 1.4em;
+}
+
+.pagecount-display-container {
+	margin: 2em auto;
+}
+
+.head-container,
+textarea,
+.comment,
+.pagecount-display-container {
+	width: 30em;
+}
