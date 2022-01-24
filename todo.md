@@ -1,5 +1,6 @@
-- [ ] php demo: 适配 OAuth2.0
-- [ ] php demo: css 与 js 单独成文件
-- [ ] php demo: 增加基本样式
+- [x] php demo: 适配 OAuth2.0
+- [x] php demo: css 与 js 单独成文件
+- [x] php demo: 增加基本样式
 - [ ] OAuth center: 增加用户验证令牌，不必每次鉴权都发送消息
 - [ ] oauth.py: 限制头像大小，过大拒绝代理
+- [ ] demo: login_status.php 返回字段限制，不要返回保密内容（如token）
