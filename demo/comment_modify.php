@@ -52,7 +52,6 @@ else if ($method === 'DELETE' && isset($_GET['pid'])) {
 			http_response_code(200);
 			die;
 		}
-
 	}
 }
 

@@ -4,7 +4,15 @@ session_start();
 if (isset($_SESSION['user'])) {
 	http_response_code(200);
 	header('Content-Type: application/json');
-	echo json_encode($_SESSION['user']);
+	$raw = $_SESSION['user'];
+	$info = [
+		'uid' => $raw['uid'],
+		'nickname' => $raw['nickname'],
+		'bio' => $raw['bio'],
+		'avatar' => $raw['avatar'],
+
+	];
+	echo json_encode($info);
 }
 else {
 	http_response_code(403);
