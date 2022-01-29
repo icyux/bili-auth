@@ -30,7 +30,11 @@ def getApp(cid):
     if info is None:
         return '', 404
     else:
-        return info, 200
+        return {
+            'cid': info['cid'],
+            'name': info['name'],
+            'url': info['url']
+        }, 200
 
 def queryApp(cid):
     cur = db.cursor()

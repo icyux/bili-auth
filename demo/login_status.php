@@ -10,7 +10,6 @@ if (isset($_SESSION['user'])) {
 		'nickname' => $raw['nickname'],
 		'bio' => $raw['bio'],
 		'avatar' => $raw['avatar'],
-
 	];
 	echo json_encode($info);
 }
