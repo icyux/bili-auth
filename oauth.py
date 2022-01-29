@@ -4,9 +4,10 @@ from flask import Flask, render_template, request
 import sqlite3
 import re
 import requests
+import threading
 import auth_handler
 import msg_handler
-import threading
+import bili_utils
 
 app = Flask(__name__,
     static_folder='oauth_static',
@@ -142,3 +143,20 @@ def avatarProxy():
             ('Vary', 'Origin'),
         )
     return '', 404
+
+@app.route('/proxy/user')
+def userInfoProxy():
+    try:
+        uid = int(request.args['uid'])
+    except (IndexError, ValueError):
+        return '', 400
+
+    info = bili_utils.getUserInfo(uid)
+    if info is None:
+        return '', 404
+    return info, 200, (
+        ('Cache-Control', 'max-age=1800'),
+        ('Content-Type', req.headers['Content-Type']),
+        ('Access-Control-Allow-Origin', '*'),
+        ('Vary', 'Origin'),
+    )

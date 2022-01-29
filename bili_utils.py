@@ -140,9 +140,12 @@ def getUserInfo(uid: int):
         headers=unauthedHeader
     )
     resp = r.json()
-    return {
-        'uid': resp['data']['mid'],
-        'nickname': resp['data']['name'],
-        'avatar': resp['data']['face'].replace('http://', 'https://'),
-        'bio': resp['data']['sign'],
-    }
+    try:
+        return {
+            'uid': resp['data']['mid'],
+            'nickname': resp['data']['name'],
+            'avatar': resp['data']['face'].replace('http://', 'https://'),
+            'bio': resp['data']['sign'],
+        }
+    except IndexError:
+        return None
