@@ -156,7 +156,6 @@ def userInfoProxy():
         return '', 404
     return info, 200, (
         ('Cache-Control', 'max-age=1800'),
-        ('Content-Type', req.headers['Content-Type']),
         ('Access-Control-Allow-Origin', '*'),
         ('Vary', 'Origin'),
     )
