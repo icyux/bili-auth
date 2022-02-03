@@ -8,6 +8,7 @@ import msg_handler
 import bili_utils
 import secrets
 import hmac
+import time
 
 app = Flask(__name__,
     static_folder='oauth_static',
@@ -82,7 +83,7 @@ def createVerify():
         try:
             uid, expire, digest = userToken.split('.')
             if int(expire) > time.time() and secrets.compare_digest(calcToken(uid, expire), digest):
-                auth_handler.checkVerify(code)
+                auth_handler.checkVerify(code, uid)
                 return code, 200
         except:
             return 'illegal token', 400

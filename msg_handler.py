@@ -2,11 +2,9 @@ import time
 import re
 from random import random
 import bili_utils
-
-tasks = queue.Queue()  # initialization tasks queue
+import queue; tasks = queue.Queue()  # initialization tasks queue
 import auth_handler
 import requests
-import queue
 
 sendCD = 1
 

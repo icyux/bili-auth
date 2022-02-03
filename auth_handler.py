@@ -2,6 +2,7 @@ import time
 import secrets
 import kv_storage
 import bili_utils
+from msg_handler import tasks
 
 CODE_MAX_AGE = 360
 TOKEN_LENGTH = 24
@@ -32,7 +33,7 @@ def createVerify(cid, subject):
         expire=CODE_MAX_AGE,
     )
 
-    msg_handler.tasks.put(time.time()+CODE_MAX_AGE)
+    tasks.put(time.time()+CODE_MAX_AGE)
     return code
 
 
