@@ -1,5 +1,3 @@
-#!/bin/python3
-
 import time
 import secrets
 import kv_storage

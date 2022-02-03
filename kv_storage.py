@@ -1,5 +1,3 @@
-#!/bin/python3
-
 import time
 import threading
 import random
