@@ -37,7 +37,7 @@ def createVerify(cid, subject):
     return code
 
 
-def checkVerify(code):
+def checkVerify(code, uid):
     if not pool.get(code):
         return False
     detail = pool.get(code)

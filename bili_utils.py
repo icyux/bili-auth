@@ -105,7 +105,7 @@ def sendMsg(recver: int, content: str, *, msgType: int = 1):
     if msgType == 1:
         content = content.replace('"', '\\"')
         content = '{{"content":"{}"}}'.format(content)
-        print(content)
+
     r = requests.post(
         'https://api.vc.bilibili.com/web_im/v1/web_im/send_msg',
         headers=authedHeader,

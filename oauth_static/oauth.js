@@ -22,23 +22,14 @@ async function generateRequest() {
 
 	let result = await req.text();
 	if (req.status == 201) {
-		return {
-			code: result,
-			auth: 'required',
-		};
+		return [result, 'required'];
 	}
 
 	if (req.status == 200) {
-		return {
-			code: result,
-			auth: 'direct',
-		}
+		return [result, 'direct'];
 	}
 
-	return {
-		code: null,
-		auth: 'err',
-	};
+	return [null, 'err'];
 }
 
 async function checkRequestState() {
@@ -104,9 +95,9 @@ function setButtonDisable(state) {
 async function startVerify() {
 	setButtonDisable(true);
 	let authState;
-	code, authState = await generateRequest();
+	[code, authState] = await generateRequest();
 	if (authState === 'direct') {
-		nextStep(); nextStep();
+		nextStep();
 		checkVerify();
 	}
 	else if (code) {

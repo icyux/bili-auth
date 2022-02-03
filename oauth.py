@@ -66,9 +66,12 @@ def queryVerifyInfo(code):
         return result, 202
     else:
         maxAge = 86400
-        signedToken = calcToken(result['uid'], time.time()+maxAge)
+        uid = result['uid']
+        expire = int(time.time()) + maxAge
+        sign = calcToken(result['uid'], expire)
+        finalToken = f'{uid}.{expire}.{sign}'
         return result, 200, (
-            ('Set-Cookie', f'cachedToken={signedToken}; Max-Age={maxAge}'),
+            ('Set-Cookie', f'cachedToken={finalToken}; Max-Age={maxAge}'),
         )
 
 @app.route('/oauth/verify', methods=('POST',))
