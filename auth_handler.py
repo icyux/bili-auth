@@ -4,6 +4,7 @@ import time
 import secrets
 import kv_storage
 
+CODE_MAX_AGE = 360
 TOKEN_LENGTH = 24
 
 chars = '1234567890qwertyuiopasdfghjklzxcvbnm'
@@ -29,8 +30,10 @@ def createVerify(cid, subject):
             'subject': subject,
             'isAuthed': False,
         },
-        expire=360,
+        expire=CODE_MAX_AGE,
     )
+
+    msg_handler.tasks.put(time.time()+CODE_MAX_AGE)
     return code
 
 

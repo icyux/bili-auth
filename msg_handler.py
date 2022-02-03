@@ -4,8 +4,11 @@ import time
 import re
 from random import random
 import bili_utils
+
+tasks = queue.Queue()  # initialization tasks queue
 import auth_handler
 import requests
+import queue
 
 sendCD = 1
 
@@ -57,7 +60,14 @@ def sendText(uid, content):
 
 
 def mainLoop():
+    maxExpire = 0
     while True:
+
+        while maxExpire < time.time():
+            curExpire = tasks.get()
+            if curExpire > maxExpire:
+                maxExpire = curExpire
+
         try:
             checkMsg()
         except Exception as e:

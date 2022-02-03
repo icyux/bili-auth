@@ -71,7 +71,6 @@ def createVerify():
     if appInfo is None:
         return '', 404
     code = auth_handler.createVerify(appInfo['cid'], appInfo['name'])
-    print(repr(code))
     return code, 201
 
 
