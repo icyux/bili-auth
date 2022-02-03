@@ -20,11 +20,25 @@ async function generateRequest() {
 		method: 'POST',
 	});
 
+	let result = await req.text();
 	if (req.status == 201) {
-		let result = await req.text();
-		return result;
+		return {
+			code: result,
+			auth: 'required',
+		};
 	}
-	return null;
+
+	if (req.status == 200) {
+		return {
+			code: result,
+			auth: 'direct',
+		}
+	}
+
+	return {
+		code: null,
+		auth: 'err',
+	};
 }
 
 async function checkRequestState() {
@@ -89,8 +103,13 @@ function setButtonDisable(state) {
 
 async function startVerify() {
 	setButtonDisable(true);
-	code = await generateRequest();
-	if (code) {
+	let authState;
+	code, authState = await generateRequest();
+	if (authState === 'direct') {
+		nextStep(); nextStep();
+		checkVerify();
+	}
+	else if (code) {
 		document.getElementById('challenge-msg').innerText = `auth(${code})`;
 		nextStep();
 	}

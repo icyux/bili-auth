@@ -1,6 +1,7 @@
 import time
 import secrets
 import kv_storage
+import bili_utils
 
 CODE_MAX_AGE = 360
 TOKEN_LENGTH = 24
@@ -35,17 +36,18 @@ def createVerify(cid, subject):
     return code
 
 
-def checkVerify(code, *, uid, nickname=None, avatar=None, bio=None):
+def checkVerify(code):
     if not pool.get(code):
         return False
     detail = pool.get(code)
+    info = bili_utils.getUserInfo(uid)
     detail['isAuthed'] = True
     pool.set(code, {
             **detail,
-            'uid': uid,
-            'nickname': nickname,
-            'avatar': avatar,
-            'bio': bio,
+            'uid': info['uid'],
+            'nickname': info['nickname'],
+            'avatar': info['avatar'],
+            'bio': info['bio'],
         },
         expire=86400
     )

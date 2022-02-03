@@ -32,9 +32,8 @@ def checkMsg():
 
 
 def cmdHandler(uid, action, arg):
-    userInfo = bili_utils.getUserInfo(uid)
     if action == 'auth':
-        if auth_handler.checkVerify(arg, **userInfo):
+        if auth_handler.checkVerify(arg):
             info = auth_handler.getVerifyInfo(arg)
             reply = '验证完成。 请求来源: {} 。如果您认为此次验证有误, 请回复"revoke({})"以撤销此次验证。此消息是对您消息的自动回复。'
             reply = reply.format(info['subject'], arg)

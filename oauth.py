@@ -6,6 +6,8 @@ import threading
 import auth_handler
 import msg_handler
 import bili_utils
+import secrets
+import hmac
 
 app = Flask(__name__,
     static_folder='oauth_static',
@@ -14,6 +16,8 @@ app = Flask(__name__,
 app.debug = False
 
 db = sqlite3.connect('oauth_application.db3', check_same_thread=False)
+
+hmacKey = secrets.token_bytes(64)
 
 @app.route('/')
 def mainPage():
@@ -60,7 +64,11 @@ def queryVerifyInfo(code):
     elif result['isAuthed'] == False:
         return result, 202
     else:
-        return result, 200
+        maxAge = 86400
+        signedToken = calcToken(result['uid'], time.time()+maxAge)
+        return result, 200, (
+            ('Set-Cookie', f'cachedToken={signedToken}; Max-Age={maxAge}'),
+        )
 
 @app.route('/oauth/verify', methods=('POST',))
 def createVerify():
@@ -69,6 +77,16 @@ def createVerify():
     if appInfo is None:
         return '', 404
     code = auth_handler.createVerify(appInfo['cid'], appInfo['name'])
+    userToken = request.cookies.get('cachedToken')
+    if userToken:
+        try:
+            uid, expire, digest = userToken.split('.')
+            if int(expire) > time.time() and secrets.compare_digest(calcToken(uid, expire), digest):
+                auth_handler.checkVerify(code)
+                return code, 200
+        except:
+            return 'illegal token', 400
+
     return code, 201
 
 
@@ -156,3 +174,8 @@ def userInfoProxy():
         ('Access-Control-Allow-Origin', '*'),
         ('Vary', 'Origin'),
     )
+
+
+def calcToken(uid, expire):
+    h = hmac.new(hmacKey, f'{uid}.{expire}'.encode(), 'sha1')
+    return h.hexdigest()
