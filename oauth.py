@@ -9,6 +9,7 @@ import bili_utils
 import secrets
 import hmac
 import time
+import bili_utils
 
 app = Flask(__name__,
     static_folder='oauth_static',
@@ -26,7 +27,7 @@ def mainPage():
 
 @app.route('/oauth/authorize')
 def oauthPage():
-    return render_template('verify.html')
+    return render_template('verify.html', **{'botUid': bili_utils.selfUid})
 
 @app.route('/oauth/application/<cid>')
 def getApp(cid):
