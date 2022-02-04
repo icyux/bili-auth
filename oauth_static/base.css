@@ -98,3 +98,9 @@ footer div {
 #bio {
 	color: #333;
 }
+
+@media screen and (max-width: 600px) {
+	main {
+		width: auto;
+	}
+}
