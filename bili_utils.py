@@ -4,15 +4,17 @@ import re
 import json
 
 selfUid = ''
+selfName = ''
 selfDevId = ''
 ua = ''
 csrf = ''
 authedHeader = None
 unauthedHeader = None
 
-def init(*, uid, cookie, dev_id, user_agent):
-    global selfUid, selfDevId, csrf, ua, authedHeader, unauthedHeader
+def init(*, uid, cookie, nickname, dev_id, user_agent):
+    global selfUid, selfName, selfDevId, csrf, ua, authedHeader, unauthedHeader
     selfUid = uid
+    selfName = nickname
     selfDevId = dev_id
     ua = user_agent
 

@@ -27,7 +27,10 @@ def mainPage():
 
 @app.route('/oauth/authorize')
 def oauthPage():
-    return render_template('verify.html', **{'botUid': bili_utils.selfUid})
+    return render_template('verify.html', **{
+        'botUid': bili_utils.selfUid,
+        'botName': bili_utils.selfName,
+    })
 
 @app.route('/oauth/application/<cid>')
 def getApp(cid):

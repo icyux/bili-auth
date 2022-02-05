@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}通过您的哔哩哔哩帐号登录第三方应用 | bili-auth{% endblock %}
+{% block title %}第四方应用鉴权 | bili-auth{% endblock %}
 {% block main %}
 <script src="/static/oauth.js"></script>
 <div id='step-0'>
@@ -9,12 +9,15 @@
 	<h3>一个应用正在请求您的帐号信息</h3>
 	<div class='app-info'>
 		<div>名称：<span class='info-value' id='app-name'></span></div>
-		<div>ClientID：<span class='info-value' id='app-id'></span></div>
+		<div>Client ID：<span class='info-value' id='app-id'></span></div>
 		<div>URL：<span class='info-value' id='app-url'></span></div>
 	</div>
 
 	<p>该应用申请验证您的哔哩哔哩帐号。</p>
-	<p>我们只会验证您对帐号的所有权，以及访问您帐号的公开信息（如昵称、头像、uid）。我们不会也无法查看您的私有信息。</p>
+	<p>
+		我们只会验证您对帐号的所有权，以及访问您帐号的公开信息（UID、昵称、头像、个性签名）。
+		我们不会要求您提供，也无法查看您的私有信息（如手机号、密码、邮箱、与其他用户的私信等）。
+	</p>
 	<p>接下来，您只需要一个能收发私信的哔哩哔哩帐号，以及少于一分钟的时间完成验证。</p>
 	<button class='next-step' onclick="startVerify();">开始验证</button>
 </div>
@@ -23,11 +26,15 @@
 	<p>
 		将上面的这段文本，通过私信发送给机器人帐号
 		<a id='target-bot' target='_blank' href='https://message.bilibili.com/#/whisper/mid{{ botUid }}'>
-			@BotFather
+			@{{ botName }}
 		</a>
 		。
 	</p>
-	<p>确认发送完毕后，点击"下一步"。</p>
+	<p>
+		网页端用户，点击此链接将在新标签中打开私信页面；
+		客户端用户请在 App 中搜索用户 "{{ botName }}"，发起私聊。
+	</p>
+	<p>确认发送完毕后，请点击"下一步"。</p>
 	<button class='next-step' onclick="checkVerify();">下一步</button>
 </div>
 <div id='step-3' hidden>
@@ -39,6 +46,6 @@
 			<div id='bio'></div>
 		</div>
 	</div>
-	<p>点击"完成"后，将您重定向到应用指定的回调地址，结束验证流程。</p>
+	<p>点击"完成"后，您将会被重定向到应用指定的回调地址，结束验证流程。</p>
 	<button class='next-step' onclick="redirectCallback();">完成</button>
 {% endblock %}
