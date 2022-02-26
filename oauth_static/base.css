@@ -79,6 +79,8 @@ footer div {
 #avatar {
 	width: 4em;
 	height: 4em;
+	margin: 0 1em;
+	border-radius: 10px;
 }
 
 .user-info {
@@ -129,12 +131,16 @@ footer div {
 	}
 
 	.info-value,
-    #challenge-msg {
-    	background-color: #222;
-    	color: #aaf;
-    }
+	#challenge-msg {
+		background-color: #222;
+		color: #aaf;
+	}
+	
+	#bio {
+		color: #aaa;
+	}
 
-    footer {
-    	color: #ccc;
-    }
+	footer {
+		color: #ccc;
+	}
 }
