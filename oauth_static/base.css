@@ -101,6 +101,9 @@ footer div {
 
 @media screen and (max-width: 600px) {
 	main {
+		margin-left: 0.6em;
+		margin-right: 0.6em;
+		padding: 1.5em;
 		width: auto;
 	}
 }
