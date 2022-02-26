@@ -107,3 +107,34 @@ footer div {
 		width: auto;
 	}
 }
+
+@media (prefers-color-scheme: dark) {
+	body {
+		background-color: #000;
+	}
+
+	header {
+		background-color: #357;
+		box-shadow: none;
+	}
+
+	header span {
+		color: #eee;
+	}
+
+	main {
+		background-color: #111;
+		color: #eee;
+		box-shadow: none;
+	}
+
+	.info-value,
+    #challenge-msg {
+    	background-color: #222;
+    	color: #aaf;
+    }
+
+    footer {
+    	color: #ccc;
+    }
+}
