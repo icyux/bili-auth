@@ -105,7 +105,7 @@ def getNewMsg(beginMts: int, *, recvType: tuple = (1,)):
 
 def sendMsg(recver: int, content: str, *, msgType: int = 1):
     if msgType == 1:
-        content = content.replace('"', '\\"')
+        content = content.replace('"', '\\"').replace('\n', '\\n')
         content = '{{"content":"{}"}}'.format(content)
 
     r = requests.post(
