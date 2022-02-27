@@ -139,4 +139,14 @@ function redirectCallback() {
 	window.location.href = redirect + `code=${code}`;
 }
 
+async function copyVerifyCode() {
+	try {
+		await navigator.clipboard.writeText(document.getElementById('challenge-msg').innerText);
+		alert('已复制内容到剪贴板。现在您可以在私信页面直接粘贴。');
+	}
+	catch (e) {
+		alert('复制失败，您的浏览器不支持 Clipboard API 或拒绝执行。请手动操作。');
+	}
+}
+
 init();

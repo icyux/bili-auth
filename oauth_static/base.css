@@ -135,6 +135,12 @@ footer div {
 		background-color: #222;
 		color: #aaf;
 	}
+
+	#copy {
+		background-color: #333;
+		color: #ccc;
+		border: none;
+	}
 	
 	#bio {
 		color: #aaa;
