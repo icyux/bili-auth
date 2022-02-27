@@ -126,7 +126,7 @@ footer div {
 
 	main {
 		background-color: #111;
-		color: #eee;
+		color: #ddd;
 		box-shadow: none;
 	}
 
@@ -148,5 +148,9 @@ footer div {
 
 	footer {
 		color: #ccc;
+	}
+
+	a {
+		color: #66f;
 	}
 }
