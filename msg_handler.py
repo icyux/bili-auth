@@ -33,7 +33,7 @@ def cmdHandler(uid, action, arg):
     if action == 'auth':
         if auth_handler.checkVerify(arg, uid):
             info = auth_handler.getVerifyInfo(arg)
-            reply = '验证完成。 请求来源: {} 。如果您认为此次验证有误, 请回复"revoke({})"以撤销此次验证。此消息是对您消息的自动回复。'
+            reply = r'【 bili-auth 】 验证完成。\n请求来源: "{}" 。\n如果此次请求为意外发出, 请回复"revoke({})"以撤销此次验证。\n此消息是自动回复。'
             reply = reply.format(info['subject'], arg)
         else:
             reply = '未找到此验证信息, 可能是此验证信息已过期。请尝试重新验证。'
