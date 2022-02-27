@@ -101,7 +101,7 @@ async function startVerify() {
 		checkVerify();
 	}
 	else if (code) {
-		document.getElementById('challenge-msg').innerText = `auth(${code})`;
+		document.getElementById('challenge-msg').innerText = `/auth ${code}`;
 		nextStep();
 	}
 	else
