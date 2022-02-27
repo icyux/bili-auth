@@ -8,7 +8,7 @@ import requests
 
 sendCD = 1
 
-patt = re.compile(r'^\s*?/\s*?(\S+?)\s*?(\S+?)?\s*?$', re.IGNORECASE)
+patt = re.compile(r'^\s*?/\s*?(\S+?)(?:\s+?(\S+?)?\s*?$|\s*$)', re.IGNORECASE)
 ackMts = int(time.time() * 1000)
 lastSendTs = 0
 
@@ -29,15 +29,15 @@ def checkMsg():
         result = patt.search(content)
         if result:
             action = result.group(1).lower()
-            arg = result.group(2).lower()
-            if action in ('auth', 'revoke'):
+            arg = result.group(2)
+            if action in ('auth', 'revoke', 'about'):
                 cmdHandler(uid, action, arg)
         ackMts = max(ts * 1000, ackMts)
 
 
 def cmdHandler(uid, action, arg):
     if action == 'auth':
-        if auth_handler.checkVerify(arg, uid):
+        if auth_handler.checkVerify(arg.lower(), uid):
             info = auth_handler.getVerifyInfo(arg)
             reply = r'【 bili-auth 】 验证完成。\n请求来源: "{}" 。\n如果此次请求为意外发出, 请回复"/revoke {}"以撤销此次验证。\n此消息是自动回复。您可发送"/about"了解本项目。'
             reply = reply.format(info['subject'], arg)
@@ -45,7 +45,7 @@ def cmdHandler(uid, action, arg):
             reply = '未找到此验证信息, 可能是此验证信息已过期。请尝试重新验证。'
         sendText(uid, reply)
     elif action == 'revoke':
-        if auth_handler.revokeVerify(arg, uid):
+        if auth_handler.revokeVerify(arg.lower(), uid):
             reply = '撤销成功。验证id: {}。'
             reply = reply.format(arg)
         else:
