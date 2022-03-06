@@ -9,8 +9,7 @@ CREATE TABLE "app" (
 );
 
 CREATE TABLE "verify" (
-	"vid"		INTEGER NOT NULL UNIQUE,
-	"clgCode"	TEXT NOT NULL UNIQUE,
+	"vid"		TEXT NOT NULL UNIQUE,
 	"create"	INTEGER NOT NULL,
 	"expire"	INTEGER NOT NULL,
 	"uid"		INTEGER,
@@ -19,7 +18,7 @@ CREATE TABLE "verify" (
 
 CREATE TABLE "session" (
 	"sid"		INTEGER NOT NULL UNIQUE,
-	"vid"		INTEGER NOT NULL,
+	"vid"		TEXT NOT NULL,
 	"uid"		INTEGER NOT NULL,
 	"cid"		INTEGER NOT NULL,
 	"create"	INTEGER NOT NULL,
