@@ -2,6 +2,7 @@
 
 var cid;
 var redirect;
+var vid;
 var code;
 var step = 0;
 const finalStep = 3;
@@ -16,30 +17,27 @@ async function getApplication(cid) {
 }
 
 async function generateRequest() {
-	let req = await fetch(`/oauth/verify?client_id=${cid}`, {
+	let req = await fetch('/verify', {
 		method: 'POST',
 	});
 
-	let result = await req.text();
+	vid = await req.text();
 	if (req.status == 201) {
-		return [result, 'required'];
+		return vid;
 	}
 
-	if (req.status == 200) {
-		return [result, 'direct'];
-	}
-
-	return [null, 'err'];
+	return null;
 }
 
 async function checkRequestState() {
-	let req = await fetch(`/oauth/verify/${code}`);
+	let req = await fetch(`/verify/${vid}`);
 	if (req.status == 202)
 		return {status: 'waiting'};
 	if (req.status == 404)
 		return {status: 'timeout'};
 	if (req.status == 200) {
 		let result = await req.json();
+		localStorage['verifyToken'] = result['token']
 		return {
 			status: 'succ',
 			info: result,
@@ -69,7 +67,7 @@ async function init() {
 
 	redirect = arg['redirect_uri'];
 	if (redirect === undefined) {
-		document.getElementById('pending').innerText = '回调 URL 未指定，请咨询应用管理者';
+		document.getElementById('pending').innerText = '重定向 URL 未指定，请咨询应用管理者';
 		return;
 	}
 
@@ -94,40 +92,58 @@ function setButtonDisable(state) {
 
 async function startVerify() {
 	setButtonDisable(true);
-	let authState;
-	[code, authState] = await generateRequest();
-	if (authState === 'direct') {
-		nextStep();
-		checkVerify();
-	}
-	else if (code) {
-		document.getElementById('challenge-msg').innerText = `/auth ${code}`;
+	const vid = await generateRequest();
+
+	if (vid) {
+		document.getElementById('challenge-msg').innerText = `/auth ${vid}`;
 		nextStep();
 	}
 	else
-		alert('获取验证错误。');
+		alert('获取验证错误。请稍侯再试。');
 
 	setButtonDisable(false);
 }
 
 async function checkVerify() {
 	setButtonDisable(true);
-	let result = await checkRequestState(code);
+	let result = await checkRequestState(vid);
 	if (result.status !== 'succ') {
 		alert('暂未获取到验证用户信息，请稍后再试');
 		setButtonDisable(false);
 		return;
 	}
 
-	let info = result.info;
-	let avatarURL = info['avatar'];
+	let uid = result.info['uid'];
+	let resp = await fetch(`/proxy/user?uid=${uid}`);
+	let userInfo = await resp.json();
+	let avatarURL = userInfo['avatar'];
 	if (/\.jpg$/.test(avatarURL))
 		avatarURL += '@60w_60h_1c_1s.webp';
 	document.getElementById('avatar').src = `/proxy/avatar?url=${encodeURIComponent(avatarURL)}`;
-	document.getElementById('user-name').innerText = info['nickname'];
-	document.getElementById('bio').innerText = info['bio'];
+	document.getElementById('user-name').innerText = userInfo['nickname'];
+	document.getElementById('bio').innerText = userInfo['bio'];
 	nextStep();
 	setButtonDisable(false);
+}
+
+async function createSession() {
+	const resp = await fetch(`/oauth/session?client_id=${cid}`, {
+		method: 'post',
+		headers: {
+			'Authorization': `Bearer ${localStorage['verifyToken']}`,
+		},
+	});
+	if (resp.status === 403) {
+		alert('授权超时，请重试。');
+		return;
+	}
+	const result = await resp.json();
+	return result['accessCode'];
+}
+
+async function authorizeApp() {
+	code = await createSession();
+	redirectCallback();
 }
 
 function redirectCallback() {
@@ -145,7 +161,7 @@ async function copyVerifyCode() {
 		alert('已复制内容到剪贴板。现在您可以在私信页面直接粘贴。');
 	}
 	catch (e) {
-		alert('复制失败，您的浏览器不支持 Clipboard API 或拒绝执行。请手动操作。');
+		alert('复制失败，您的浏览器不支持 Clipboard API 或拒绝剪贴板访问。请手动复制消息。');
 	}
 }
 

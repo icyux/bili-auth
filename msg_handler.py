@@ -3,8 +3,8 @@ import re
 from random import random
 import bili_utils
 import queue; tasks = queue.Queue()  # initialization tasks queue
-import auth_handler
 import requests
+import verify_request as vr
 
 sendCD = 1
 
@@ -37,19 +37,20 @@ def checkMsg():
 
 def cmdHandler(uid, action, arg):
     if action == 'auth':
-        if auth_handler.checkVerify(arg.lower(), uid):
-            info = auth_handler.getVerifyInfo(arg)
-            reply = r'【 bili-auth 】 验证完成。\n请求来源: "{}" 。\n如果此次请求为意外发出, 请回复"/revoke {}"以撤销此次验证。\n此消息是自动回复。您可发送"/about"了解本项目。'
-            reply = reply.format(info['subject'], arg)
+        vid = arg.lower()
+        if vr.checkVerify(vid=vid, uid=uid):
+            info = vr.getVerifyInfo(vid)
+            reply = r'【 bili-auth 】 验证完成。\n如果此次请求为意外发出, 请回复"/revoke {}"以撤销此次验证。\n此消息是自动回复。您可发送"/about"了解本项目。'
+            reply = reply.format(vid)
         else:
-            reply = '未找到此验证信息, 可能是此验证信息已过期。请尝试重新验证。'
+            reply = '【 bili-auth 】 未找到此验证请求, 可能是此验证信息已过期。请尝试重新发起验证。'
         sendText(uid, reply)
     elif action == 'revoke':
-        if auth_handler.revokeVerify(arg.lower(), uid):
-            reply = '撤销成功。验证id: {}。'
+        if vr.revokeVerify(vid=vid, uid=uid):
+            reply = '【 bili-auth 】 撤销成功。\nvid: {}\n对应的应用授权已立即被全部撤销，但生效时间取决于第四方应用的实现。'
             reply = reply.format(arg)
         else:
-            reply = '未找到此id对应的与您相关的可撤销验证信息。'
+            reply = '【 bili-auth 】 未找到此 vid 对应的验证信息。'
         sendText(uid, reply)
     elif action == 'about':
         sendText(uid, aboutText)

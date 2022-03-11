@@ -5,8 +5,10 @@ import threading
 import oauth
 import bili_utils
 import config_reader
-import auth_handler
 import msg_handler
+import verify_request as vr
+import session
+import sqlite3
 
 
 # read config
@@ -20,8 +22,12 @@ if biliCfg['dev_id'] == '':
 # fill config into bili_utils
 bili_utils.init(**biliCfg)
 
+# connect database
+db = sqlite3.connect('oauth_application.db3', check_same_thread=False)
+vr.setDB(db)
+session.setDB(db)
+
 # run message listener
-auth_handler.initPool()
 msgThread = threading.Thread(target=msg_handler.mainLoop)
 msgThread.daemon = True
 msgThread.start()

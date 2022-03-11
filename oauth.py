@@ -3,13 +3,14 @@ import sqlite3
 import re
 import requests
 import threading
-import auth_handler
 import msg_handler
 import bili_utils
 import secrets
 import hmac
 import time
 import bili_utils
+import session
+import verify_request as vr
 
 app = Flask(__name__,
     static_folder='oauth_static',
@@ -20,6 +21,7 @@ app.debug = False
 db = sqlite3.connect('oauth_application.db3', check_same_thread=False)
 
 hmacKey = secrets.token_bytes(64)
+tokenMaxAge = 86400
 
 @app.route('/')
 def mainPage():
@@ -61,46 +63,30 @@ def queryApp(cid):
     finally:
         cur.close()
 
-@app.route('/oauth/verify/<code>', methods=('GET',))
-def queryVerifyInfo(code):
-    result = auth_handler.getVerifyInfo(code)
+@app.route('/verify/<vid>', methods=('GET',))
+def queryVerifyInfo(vid):
+    result = vr.getVerifyInfo(vid)
     if result is None:
         return '', 404
     elif result['isAuthed'] == False:
         return result, 202
     else:
-        maxAge = 86400
-        uid = result['uid']
-        expire = int(time.time()) + maxAge
-        sign = calcToken(result['uid'], expire)
-        finalToken = f'{uid}.{expire}.{sign}'
-        return result, 200, (
-            ('Set-Cookie', f'cachedToken={finalToken}; Max-Age={maxAge}'),
-        )
+        vid = result['vid']
+        expire = result['expire']
+        sign = calcToken(vid, expire)
+        finalToken = f'{vid}.{expire}.{sign}'
+        result['token'] = finalToken
+        return result, 200
 
-@app.route('/oauth/verify', methods=('POST',))
+@app.route('/verify', methods=('POST',))
 def createVerify():
-    cid = request.args.get('client_id')
-    appInfo = queryApp(cid)
-    if appInfo is None:
-        return '', 404
-    code = auth_handler.createVerify(appInfo['cid'], appInfo['name'])
-    userToken = request.cookies.get('cachedToken')
-    if userToken:
-        try:
-            uid, expire, digest = userToken.split('.')
-            if int(expire) > time.time() and secrets.compare_digest(calcToken(uid, expire), digest):
-                auth_handler.checkVerify(code, uid)
-                return code, 200
-        except:
-            return 'illegal token', 400
-
+    code = vr.createVerify()
     return code, 201
 
 
-@app.route('/oauth/verify/<code>', methods=('DELETE',))
-def delVerify(code):
-    uid = request.args.get('uid')
+@app.route('/verify/<vid>', methods=('DELETE',))
+def delVerify(vid):
+    return 'deleting verify is currently unavailable', 503
     if not uid:
         return '', 400
     try:
@@ -112,6 +98,32 @@ def delVerify(code):
     except ValueError:
         return '', 400
 
+
+@app.route('/oauth/session', methods=('POST', ))
+def createSession():
+    try:
+        cid = request.args['client_id']
+        userToken = request.headers['Authorization'][7:]
+        currentTs = int(time.time())
+        vid, expire, sign = userToken.split('.')
+        if int(expire) < currentTs:
+            return 'Expired token', 403
+        if not secrets.compare_digest(calcToken(vid, expire), sign):
+            return 'Invalid sign', 403
+
+        sid, accCode = session.createSession(
+            vid=vid,
+            cid=cid,
+        )
+        return {
+            'sessionId': sid,
+            'accessCode': accCode,
+        }, 200
+
+    except (IndexError, ValueError):
+        return '', 400
+
+
 @app.route('/oauth/access_token', methods=('POST', ))
 def createAccessToken():
     try:
@@ -121,35 +133,39 @@ def createAccessToken():
     except IndexError:
         return '', 400
 
-    info = auth_handler.getVerifyInfo(code)
-    if info is not None and info['isAuthed'] and info['cid'] == cid:
-        expectSec = queryApp(cid).get('sec')
-        if expectSec == csec and csec != '':
-            tkn = auth_handler.createToken(code)
-            if tkn is not None:
-                return {
-                    'token': tkn,
-                    **info,
-                }, 200
-            else:
-                return '', 500
-        else:
-            return '', 403
-    else:
-        return '', 403
+    expectSec = queryApp(cid).get('sec')
+    if csec != '' and secrets.compare_digest(expectSec, csec):
+        tkn = session.generateAccessToken(
+            cid=cid,
+            accCode=code,
+        )
+        if tkn is None:
+            return 'Token has been already existed', 403
+
+        sessionInfo = session.getSessionInfo('accCode', code)
+        userInfo = bili_utils.getUserInfo(sessionInfo['uid'])
+        return {
+            'token': tkn,
+            'user': userInfo,
+        }
+
 
 @app.route('/user')
 def queryByToken():
     try:
-        tkn = re.match(r'^Bearer (.+)$', request.headers['Authorization'])
+        tkn = re.match(r'^Bearer (.+)$', request.headers['Authorization']).group(1)
     except IndexError:
         return '', 400
 
-    info = auth_handler.tokenQuery(tkn)
+    sessionInfo = session.getSessionInfo('token', tkn)
 
-    if info:
-        return info, 200
-    return '', 404
+    if sessionInfo:
+        uid = sessionInfo['uid']
+        userInfo = bili_utils.getUserInfo(uid)
+        return userInfo, 200
+    else:
+        return 'Session not found matched this token', 404
+
 
 @app.route('/proxy/avatar')
 def avatarProxy():
