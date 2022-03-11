@@ -17,7 +17,7 @@ async function getApplication(cid) {
 }
 
 async function generateRequest() {
-	let req = await fetch('/verify', {
+	let req = await fetch('/api/verify', {
 		method: 'POST',
 	});
 
@@ -30,7 +30,7 @@ async function generateRequest() {
 }
 
 async function checkRequestState() {
-	let req = await fetch(`/verify/${vid}`);
+	let req = await fetch(`/api/verify/${vid}`);
 	if (req.status == 202)
 		return {status: 'waiting'};
 	if (req.status == 404)

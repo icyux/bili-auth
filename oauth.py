@@ -63,7 +63,7 @@ def queryApp(cid):
     finally:
         cur.close()
 
-@app.route('/verify/<vid>', methods=('GET',))
+@app.route('/api/verify/<vid>', methods=('GET',))
 def queryVerifyInfo(vid):
     result = vr.getVerifyInfo(vid)
     if result is None:
@@ -78,13 +78,13 @@ def queryVerifyInfo(vid):
         result['token'] = finalToken
         return result, 200
 
-@app.route('/verify', methods=('POST',))
+@app.route('/api/verify', methods=('POST',))
 def createVerify():
     code = vr.createVerify()
     return code, 201
 
 
-@app.route('/verify/<vid>', methods=('DELETE',))
+@app.route('/api/verify/<vid>', methods=('DELETE',))
 def delVerify(vid):
     return 'deleting verify is currently unavailable', 503
     if not uid:
