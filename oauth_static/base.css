@@ -112,7 +112,7 @@ footer div {
 
 @media (prefers-color-scheme: dark) {
 	body {
-		background-color: #000;
+		background-color: #111;
 	}
 
 	header {
@@ -125,7 +125,7 @@ footer div {
 	}
 
 	main {
-		background-color: #111;
+		background-color: #222;
 		color: #ddd;
 		box-shadow: none;
 	}
