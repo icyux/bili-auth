@@ -65,6 +65,13 @@ def sendText(uid, content):
     bili_utils.sendMsg(uid, content)
 
 
+def periodicWakeup():
+    while True:
+        expire = int(time.time()) + 1
+        tasks.put(expire)
+        time.sleep(5*60)
+
+
 def mainLoop():
     maxExpire = 0
     while True:

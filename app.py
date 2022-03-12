@@ -33,5 +33,10 @@ msgThread = threading.Thread(target=msg_handler.mainLoop)
 msgThread.daemon = True
 msgThread.start()
 
+# enable periodic wakeup
+wakerThread = threading.Thread(target=msg_handler.periodicWakeup)
+wakerThread.daemon = True
+wakerThread.start()
+
 # run oauth http service
 oauth.app.run(**cfg['oauth_service'])
