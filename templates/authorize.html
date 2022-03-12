@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}授权第四方应用 | bili-auth{% endblock %}
+{% block main %}
+<script src='/static/authorize.js' defer></script>
+<div id='step-0'>
+	<h3 id='pending'>正在获取应用信息，请稍侯...</h3>
+</div>
+<div id='step-1' hidden>
+	<h3>您的用户信息</h3>
+	<div class='user-info'>
+		<img id='avatar' src=''>
+		<div class='name-bio-container'>
+			<div id='user-name'></div>
+			<div id='bio'></div>
+		</div>
+	</div>
+	<h3>一个应用正在请求您的帐号信息</h3>
+	<div class='app-info'>
+		<div>名称：<span class='info-value' id='app-name'></span></div>
+		<div>Client ID：<span class='info-value' id='app-id'></span></div>
+		<div>URL：<span class='info-value' id='app-url'></span></div>
+	</div>
+
+	<p>该应用申请验证您的哔哩哔哩帐号。</p>
+	<p>点击"确认授权"后，您将会被重定向到应用指定的回调地址，结束授权流程。</p>
+	<button class='next-step' onclick="authorizeApp()">确认授权</button>
+</div>
+{% endblock %}
