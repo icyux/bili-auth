@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 import sqlite3
 import re
 import requests
@@ -124,6 +124,21 @@ def authRequired(handler):
     # rename wrapper name to prevent duplicated handler name
     wrapper.__name__ = handler.__name__
     return wrapper
+
+
+@app.route('/api/session')
+@authRequired
+def querySession(*, uid, vid):
+    cid = request.args.get('client_id')
+    origSessions = session.getSessionsByUid(uid, cid)
+    finalSessions = []
+    fieldList = ('sid', 'vid', 'cid', 'create', 'accCode')
+    for origSess in origSessions:
+        sess = {}
+        for field in fieldList:
+            sess[field] = origSess[field]
+        finalSessions.append(sess)
+    return jsonify(finalSessions)
 
 
 @app.route('/api/session', methods=('POST', ))
