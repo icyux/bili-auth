@@ -116,7 +116,7 @@ def authRequired(handler):
             args['uid'] = uid
             args['vid'] = vid
 
-            handler(*kw, **args)
+            return handler(*kw, **args)
 
         except (IndexError, ValueError):
             return '', 400
