@@ -40,11 +40,13 @@ def getApp(cid):
     if info is None:
         return '', 404
     else:
-        return {
-            'cid': info['cid'],
-            'name': info['name'],
-            'url': info['url']
-        }, 200
+        rtn = {}
+        fieldList = ('cid', 'name', 'url', 'desc', 'icon')
+        for field in fieldList:
+            rtn[field] = info[field]
+
+        return rtn, 200
+
 
 def queryApp(cid):
     cur = db.cursor()
