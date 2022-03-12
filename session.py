@@ -40,7 +40,7 @@ def generateAccessToken(*, cid, accCode):
 	token = secrets.token_urlsafe(tokenLen)
 	cur = db.cursor()
 	cur.execute(
-		'UPDATE session SET token=? WHERE cid=? AND accCode=? and token IS NULL',
+		'UPDATE session SET token=? WHERE cid=? AND accCode=?',
 		(token, cid, accCode),
 	)
 	affected = cur.rowcount
