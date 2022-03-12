@@ -18,10 +18,16 @@ app = Flask(__name__,
 )
 app.debug = False
 
-db = sqlite3.connect('oauth_application.db3', check_same_thread=False)
+db = None
 
 hmacKey = secrets.token_bytes(64)
 tokenMaxAge = 86400
+
+
+def setDB(mainDB):
+    global db
+    db = mainDB
+
 
 @app.route('/')
 def mainPage():

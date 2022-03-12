@@ -26,6 +26,7 @@ bili_utils.init(**biliCfg)
 db = sqlite3.connect('oauth_application.db3', check_same_thread=False)
 vr.setDB(db)
 session.setDB(db)
+oauth.setDB(db)
 
 # run message listener
 msgThread = threading.Thread(target=msg_handler.mainLoop)
