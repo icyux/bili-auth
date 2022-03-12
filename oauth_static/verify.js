@@ -1,20 +1,9 @@
 'use strict';
 
-var cid;
 var redirect;
 var vid;
-var code;
 var step = 0;
-const finalStep = 3;
-
-async function getApplication(cid) {
-	let req = await fetch(`/oauth/application/${cid}`);
-	if (req.status != 200)
-		return null;
-
-	let resp = await req.json();
-	return resp;
-}
+const finalStep = 2;
 
 async function generateRequest() {
 	let req = await fetch('/api/verify', {
@@ -59,24 +48,7 @@ async function init() {
 		// pass
 	}
 
-	let appInfo = await getApplication(arg['client_id']);
-	if (appInfo === null) {
-		document.getElementById('pending').innerText = '此应用不存在，请咨询应用管理者。';
-		return;
-	}
-
-	redirect = arg['redirect_uri'];
-	if (redirect === undefined) {
-		document.getElementById('pending').innerText = '重定向 URL 未指定，请咨询应用管理者';
-		return;
-	}
-
-	cid = appInfo['cid'];
-
-	document.getElementById('app-id').innerText = cid;
-	document.getElementById('app-name').innerText = appInfo['name'];
-	document.getElementById('app-url').innerText = appInfo['url'];
-	nextStep();
+	redirect = arg['redirect'];
 }
 
 function nextStep() {
@@ -126,33 +98,9 @@ async function checkVerify() {
 	setButtonDisable(false);
 }
 
-async function createSession() {
-	const resp = await fetch(`/oauth/session?client_id=${cid}`, {
-		method: 'post',
-		headers: {
-			'Authorization': `Bearer ${localStorage['verifyToken']}`,
-		},
-	});
-	if (resp.status === 403) {
-		alert('授权超时，请重试。');
-		return;
-	}
-	const result = await resp.json();
-	return result['accessCode'];
-}
-
-async function authorizeApp() {
-	code = await createSession();
-	redirectCallback();
-}
-
-function redirectCallback() {
-	if (/=/.test(redirect))
-		redirect += '&';
-	if (!/\?/.test(redirect))
-		redirect += '?';
-
-	window.location.href = redirect + `code=${code}`;
+function redirect2origin() {
+	if (redirect === undefined) redirect = '/';
+	window.location.href = redirect;
 }
 
 async function copyVerifyCode() {
