@@ -57,15 +57,15 @@ def getApp(cid):
 
 def queryApp(cid):
     cur = db.cursor()
-    cur.execute('SELECT name, url, sec FROM app WHERE cid = ?', (cid, ))
+    cur.execute(
+        'SELECT * FROM app WHERE cid=?',
+        (cid, ),
+    )
     try:
-        result = cur.fetchall()[0]
-        return {
-            'cid': cid,
-            'name': result[0],
-            'url': result[1],
-            'sec': result[2],
-        }
+        cols = [desc[0] for desc in cur.description]
+        row = cur.fetchone()
+        result = {cols[i]:row[i] for i in range(len(cols))}
+        return result
 
     except IndexError:
         return None
