@@ -99,29 +99,45 @@ def delVerify(vid):
         return '', 400
 
 
-@app.route('/oauth/session', methods=('POST', ))
-def createSession():
-    try:
-        cid = request.args['client_id']
-        userToken = request.headers['Authorization'][7:]
-        currentTs = int(time.time())
-        uid, vid, expire, sign = userToken.split('.')
-        if int(expire) < currentTs:
-            return 'Expired token', 403
-        if not secrets.compare_digest(calcToken(uid, vid, expire), sign):
-            return 'Invalid sign', 403
+def authRequired(handler):
+    def wrapper(*kw, **args):
+        try:
+            userToken = request.headers['Authorization'][7:]
+            currentTs = int(time.time())
+            uid, vid, expire, sign = userToken.split('.')
+            if int(expire) < currentTs:
+                return 'Expired token', 403
+            if not secrets.compare_digest(calcToken(uid, vid, expire), sign):
+                return 'Invalid sign', 403
 
-        sid, accCode = session.createSession(
-            vid=vid,
-            cid=cid,
-        )
-        return {
-            'sessionId': sid,
-            'accessCode': accCode,
-        }, 200
+            if type(args) != dict:
+                args = {}
 
-    except (IndexError, ValueError):
-        return '', 400
+            args['uid'] = uid
+            args['vid'] = vid
+
+            handler(*kw, **args)
+
+        except (IndexError, ValueError):
+            return '', 400
+
+    # rename wrapper name to prevent duplicated handler name
+    wrapper.__name__ = handler.__name__
+    return wrapper
+
+
+@app.route('/api/session', methods=('POST', ))
+@authRequired
+def createSession(*, uid, vid):
+    cid = request.args['client_id']
+    sid, accCode = session.createSession(
+        vid=vid,
+        cid=cid,
+    )
+    return {
+        'sessionId': sid,
+        'accessCode': accCode,
+    }, 200
 
 
 @app.route('/oauth/access_token', methods=('POST', ))
