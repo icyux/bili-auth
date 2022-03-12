@@ -1,0 +1,79 @@
+.info-value,
+#challenge-msg {
+	padding: 0.2em;
+	background-color: #eef;
+	border-radius: 0.1em;
+}
+
+.next-step {
+	background-color: #6ae;
+	padding: 0.5em 1em;
+	border: solid 1px #59d;
+	border-radius: 0.3em;
+	color: #fff;
+}
+
+.next-step:hover {
+	background-color: #7bf;
+}
+
+.next-step:active {
+	background-color: #59d;
+}
+
+.next-step:disabled {
+	background-color: #ccc;
+}
+
+#avatar {
+	width: 4em;
+	height: 4em;
+	margin: 0 1em;
+	border-radius: 10px;
+}
+
+.user-info {
+	margin: 1em 0;
+	padding: 1em;
+	border-radius: 0.5em;
+	border: solid 1px #999;
+}
+
+.name-bio-container {
+	display: inline-block;
+}
+
+#user-name {
+	font-weight: bold;
+}
+
+#bio {
+	color: #333;
+}
+
+@media screen and (max-width: 600px) {
+	main {
+		margin-left: 0.6em;
+		margin-right: 0.6em;
+		padding: 1.5em;
+		width: auto;
+	}
+}
+
+@media (prefers-color-scheme: dark) {
+	.info-value,
+	#challenge-msg {
+		background-color: #222;
+		color: #aaf;
+	}
+
+	#copy {
+		background-color: #333;
+		color: #ccc;
+		border: none;
+	}
+	
+	#bio {
+		color: #aaa;
+	}
+}
