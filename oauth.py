@@ -71,10 +71,10 @@ def queryVerifyInfo(vid):
     elif result['isAuthed'] == False:
         return result, 202
     else:
-        vid = result['vid']
+        uid = result['uid']
         expire = result['expire']
-        sign = calcToken(vid, expire)
-        finalToken = f'{vid}.{expire}.{sign}'
+        sign = calcToken(uid, vid, expire)
+        finalToken = f'{uid}.{vid}.{expire}.{sign}'
         result['token'] = finalToken
         return result, 200
 
@@ -105,10 +105,10 @@ def createSession():
         cid = request.args['client_id']
         userToken = request.headers['Authorization'][7:]
         currentTs = int(time.time())
-        vid, expire, sign = userToken.split('.')
+        uid, vid, expire, sign = userToken.split('.')
         if int(expire) < currentTs:
             return 'Expired token', 403
-        if not secrets.compare_digest(calcToken(vid, expire), sign):
+        if not secrets.compare_digest(calcToken(uid, vid, expire), sign):
             return 'Invalid sign', 403
 
         sid, accCode = session.createSession(
@@ -200,6 +200,6 @@ def userInfoProxy():
     )
 
 
-def calcToken(uid, expire):
-    h = hmac.new(hmacKey, f'{uid}.{expire}'.encode(), 'sha1')
+def calcToken(uid, vid, expire):
+    h = hmac.new(hmacKey, f'{uid}.{vid}.{expire}'.encode(), 'sha1')
     return h.hexdigest()
