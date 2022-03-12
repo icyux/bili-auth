@@ -76,7 +76,7 @@ def mainLoop():
 
         try:
             checkMsg()
-        except Exception as e:
+        except requests.exceptions.RequestException as e:
             print(e)
 
         time.sleep(4 + random() * 2)
