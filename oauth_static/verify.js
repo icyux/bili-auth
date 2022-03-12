@@ -91,7 +91,7 @@ async function checkVerify() {
 	setButtonDisable(false);
 }
 
-function setUserInfo(uid) {
+async function setUserInfo(uid) {
 	let resp = await fetch(`/proxy/user?uid=${uid}`);
 	let userInfo = await resp.json();
 	let avatarURL = userInfo['avatar'];
