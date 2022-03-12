@@ -27,12 +27,19 @@ tokenMaxAge = 86400
 def mainPage():
     return render_template('base.html')
 
-@app.route('/oauth/authorize')
-def oauthPage():
+
+@app.route('/verify')
+def verifyPage():
     return render_template('verify.html', **{
         'botUid': bili_utils.selfUid,
         'botName': bili_utils.selfName,
     })
+
+
+@app.route('/oauth/authorize')
+def oauthAuthorizePage():
+    return render_template('authorize.html')
+
 
 @app.route('/oauth/application/<cid>')
 def getApp(cid):
