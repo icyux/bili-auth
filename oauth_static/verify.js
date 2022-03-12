@@ -86,6 +86,12 @@ async function checkVerify() {
 	}
 
 	let uid = result.info['uid'];
+	await setUserInfo(uid);
+	nextStep();
+	setButtonDisable(false);
+}
+
+function setUserInfo(uid) {
 	let resp = await fetch(`/proxy/user?uid=${uid}`);
 	let userInfo = await resp.json();
 	let avatarURL = userInfo['avatar'];
@@ -94,8 +100,6 @@ async function checkVerify() {
 	document.getElementById('avatar').src = `/proxy/avatar?url=${encodeURIComponent(avatarURL)}`;
 	document.getElementById('user-name').innerText = userInfo['nickname'];
 	document.getElementById('bio').innerText = userInfo['bio'];
-	nextStep();
-	setButtonDisable(false);
 }
 
 function redirect2origin() {
