@@ -63,7 +63,10 @@ async function init() {
 
 	document.getElementById('app-id').innerText = cid;
 	document.getElementById('app-name').innerText = appInfo['name'];
+	document.getElementById('app-url').href = appInfo['url'];
 	document.getElementById('app-url').innerText = appInfo['url'];
+	document.getElementById('app-icon').src = appInfo['icon'];
+	document.getElementById('app-desc').innerText = appInfo['desc'];
 	nextStep();
 }
 
@@ -83,8 +86,7 @@ async function queryExistedAccCode() {
 		headers: authHeader,
 	});
 	if (resp.status === 403) {
-		alert('查询会话失败。');
-		return;
+		throw new Error('Invalid token');
 	}
 
 	let sessions = await resp.json();
@@ -110,7 +112,15 @@ async function createSession() {
 }
 
 async function authorizeApp() {
-	const existedCode = await queryExistedAccCode();
+	var existedCode;
+	try {
+		existedCode = await queryExistedAccCode();
+	}
+	catch (e) {
+		alert('无效的 Token。请尝试重新验证。');
+		verifyRedirect();
+		return;
+	}
 	if (existedCode) {
 		code = existedCode;
 	}
@@ -128,7 +138,6 @@ async function setUserInfo(uid) {
 		avatarURL += '@60w_60h_1c_1s.webp';
 	document.getElementById('avatar').src = `/proxy/avatar?url=${encodeURIComponent(avatarURL)}`;
 	document.getElementById('user-name').innerText = userInfo['nickname'];
-	document.getElementById('bio').innerText = userInfo['bio'];
 }
 
 function redirectCallback() {
@@ -144,16 +153,6 @@ function verifyRedirect() {
 	const callback = window.location.pathname + window.location.search;
 	const callbackEncoded = encodeURIComponent(callback);
 	window.location.href = `/verify?redirect=${callbackEncoded}`;
-}
-
-async function copyVerifyCode() {
-	try {
-		await navigator.clipboard.writeText(document.getElementById('challenge-msg').innerText);
-		alert('已复制内容到剪贴板。现在您可以在私信页面直接粘贴。');
-	}
-	catch (e) {
-		alert('复制失败，您的浏览器不支持 Clipboard API 或拒绝剪贴板访问。请手动复制消息。');
-	}
 }
 
 init();
