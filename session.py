@@ -71,6 +71,26 @@ def getSessionInfo(key, value):
 	return result
 
 
+def getSessionsByUid(uid, cid=None):
+	cur = db.cursor()
+	if cid is None:
+		cur.execute(
+			'SELECT * FROM session WHERE uid=?',
+			(uid, ),
+		)
+	else:
+		cur.execute(
+			'SELECT * FROM session WHERE uid=? AND cid=?',
+			(uid, cid),
+		)
+
+	cols = [desc[0] for desc in cur.description]
+	rows = cur.fetchall()
+	result = [{cols[i]:row[i] for i in range(len(cols))} for row in rows]
+	cur.close()
+	return result
+
+
 def revokeSessionByVid(*, vid):
 	cur = db.cursor()
 	cur.execute(
