@@ -62,7 +62,7 @@ img.icon {
 	background-color: #37cc37;
 }
 
-@media screen and (max-width: 500px) {
+@media screen and (max-width: 700px) {
 	img.icon {
 		width: 3em;
 		height: 3em;
