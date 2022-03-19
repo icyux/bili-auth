@@ -27,7 +27,7 @@ async function checkRequestState() {
 	});
 	if (req.status == 202)
 		return {status: 'waiting'};
-	if (req.status == 404)
+	if (req.status == 404 || req.status == 403)
 		return {status: 'timeout'};
 	if (req.status == 200) {
 		let result = await req.json();
