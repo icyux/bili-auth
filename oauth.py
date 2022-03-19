@@ -29,6 +29,45 @@ def setDB(mainDB):
     db = mainDB
 
 
+def authRequired(uidRequired=True):
+    def middleware(handler):
+        def wrapper(*kw, **args):
+            try:
+                userToken = request.headers['Authorization'][7:]
+                currentTs = int(time.time())
+
+                try:
+                    uid, vid, expire, sign = userToken.split('.')
+                except ValueError as e:
+                    if uidRequired:
+                        raise e
+                    uid = None
+                    vid, expire, sign = userToken.split('.')
+
+                if int(expire) < currentTs:
+                    return 'Expired token', 403
+                if not secrets.compare_digest(calcToken(uid, vid, expire), sign):
+                    return 'Invalid sign', 403
+
+                if type(args) != dict:
+                    args = {}
+
+                if uidRequired:
+                    args['uid'] = uid
+                args['vid'] = vid
+
+                return handler(*kw, **args)
+
+            except (IndexError, ValueError):
+                return 'Invalid token', 400
+
+        # rename wrapper name to prevent duplicated handler name
+        wrapper.__name__ = handler.__name__
+        return wrapper
+
+    return middleware
+
+
 @app.route('/')
 def mainPage():
     return render_template('base.html')
@@ -78,8 +117,11 @@ def queryApp(cid):
     finally:
         cur.close()
 
-@app.route('/api/verify/<vid>', methods=('GET',))
-def queryVerifyInfo(vid):
+
+@app.route('/api/verify/<vidParam>', methods=('GET',))
+@authRequired(uidRequired=False)
+def queryVerifyInfo(vidParam, *, vid):
+    assert vidParam == vid
     result = vr.getVerifyInfo(vid)
     if result is None:
         return '', 404
@@ -95,8 +137,14 @@ def queryVerifyInfo(vid):
 
 @app.route('/api/verify', methods=('POST',))
 def createVerify():
-    code = vr.createVerify()
-    return code, 201
+    vid, expire = vr.createVerify()
+    sign = calcToken(None, vid, expire)
+    token = f'{vid}.{expire}.{sign}'
+
+    return {
+        'vid': vid,
+        'token': token,
+    }, 201
 
 
 @app.route('/api/verify/<vid>', methods=('DELETE',))
@@ -114,35 +162,8 @@ def delVerify(vid):
         return '', 400
 
 
-def authRequired(handler):
-    def wrapper(*kw, **args):
-        try:
-            userToken = request.headers['Authorization'][7:]
-            currentTs = int(time.time())
-            uid, vid, expire, sign = userToken.split('.')
-            if int(expire) < currentTs:
-                return 'Expired token', 403
-            if not secrets.compare_digest(calcToken(uid, vid, expire), sign):
-                return 'Invalid sign', 403
-
-            if type(args) != dict:
-                args = {}
-
-            args['uid'] = uid
-            args['vid'] = vid
-
-            return handler(*kw, **args)
-
-        except (IndexError, ValueError):
-            return '', 400
-
-    # rename wrapper name to prevent duplicated handler name
-    wrapper.__name__ = handler.__name__
-    return wrapper
-
-
 @app.route('/api/session')
-@authRequired
+@authRequired()
 def querySession(*, uid, vid):
     cid = request.args.get('client_id')
     origSessions = session.getSessionsByUid(uid, cid)
@@ -157,7 +178,7 @@ def querySession(*, uid, vid):
 
 
 @app.route('/api/session', methods=('POST', ))
-@authRequired
+@authRequired()
 def createSession(*, uid, vid):
     cid = request.args['client_id']
     sid, accCode = session.createSession(
@@ -247,5 +268,9 @@ def userInfoProxy():
 
 
 def calcToken(uid, vid, expire):
-    h = hmac.new(hmacKey, f'{uid}.{vid}.{expire}'.encode(), 'sha1')
+    if uid is None:
+        body = f'{uid}.{vid}.{expire}'
+    else:
+        body = f'{vid}.{expire}'
+    h = hmac.new(hmacKey, body.encode(), 'sha1')
     return h.hexdigest()

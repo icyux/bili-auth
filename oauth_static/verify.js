@@ -2,6 +2,7 @@
 
 var redirect;
 var vid;
+var token;
 var step = 0;
 const finalStep = 2;
 
@@ -10,16 +11,20 @@ async function generateRequest() {
 		method: 'POST',
 	});
 
-	vid = await req.text();
+	let data = await req.json();
 	if (req.status == 201) {
-		return vid;
+		return [data['vid'], data['token']];
 	}
 
 	return null;
 }
 
 async function checkRequestState() {
-	let req = await fetch(`/api/verify/${vid}`);
+	let req = await fetch(`/api/verify/${vid}`, {
+		headers: {
+			'Authorization': `Bearer ${token}`,
+		},
+	});
 	if (req.status == 202)
 		return {status: 'waiting'};
 	if (req.status == 404)
@@ -64,7 +69,7 @@ function setButtonDisable(state) {
 
 async function startVerify() {
 	setButtonDisable(true);
-	const vid = await generateRequest();
+	[vid, token] = await generateRequest();
 
 	if (vid) {
 		document.getElementById('challenge-msg').innerText = `/auth ${vid}`;

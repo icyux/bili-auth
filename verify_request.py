@@ -53,7 +53,7 @@ def createVerify():
 	db.commit()
 	if affected == 1:
 		tasks.put(expire)
-		return vid
+		return vid, expire
 	else:
 		return None
 
