@@ -31,7 +31,7 @@ def setDB(mainDB):
 
 def authRequired(uidRequired=True):
     def middleware(handler):
-        def wrapper(*kw, **args):
+        def wrapper(*args, **kw):
             try:
                 userToken = request.headers['Authorization'][7:]
                 currentTs = int(time.time())
@@ -49,14 +49,14 @@ def authRequired(uidRequired=True):
                 if not secrets.compare_digest(calcToken(uid, vid, expire), sign):
                     return 'Invalid sign', 403
 
-                if type(args) != dict:
-                    args = {}
+                if type(kw) != dict:
+                    kw = {}
 
                 if uidRequired:
-                    args['uid'] = uid
-                args['vid'] = vid
+                    kw['uid'] = uid
+                kw['vid'] = vid
 
-                return handler(*kw, **args)
+                return handler(*args, **kw)
 
             except (IndexError, ValueError):
                 return 'Invalid token', 400
