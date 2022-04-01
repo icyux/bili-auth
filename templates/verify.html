@@ -11,7 +11,7 @@
 		我们不会要求您提供，也无法查看您的私有信息（如手机号、密码、邮箱、与其他用户的私信等）。
 	</p>
 	<p>接下来，您只需要一个能收发私信的哔哩哔哩帐号，以及少于一分钟的时间完成验证。</p>
-	<button class='next-step' onclick="startVerify();">开始验证</button>
+	<button class='next-step' onclick='startVerify()'>开始验证</button>
 </div>
 <div id='step-1' hidden>
 	<p>
@@ -30,7 +30,7 @@
 	</p>
 	<p>请在六分钟内完成验证。若提示验证过期，请刷新网页以重新开始验证。</p>
 	<p>确认发送完毕后，请点击"下一步"。</p>
-	<button class='next-step' onclick="checkVerify();">下一步</button>
+	<button class='next-step' onclick='checkVerify()'>下一步</button>
 </div>
 <div id='step-2' hidden>
 	<h3>帐号验证完成，以下为您的用户信息。</h3>
@@ -41,6 +41,6 @@
 			<div id='bio'></div>
 		</div>
 	</div>
-	<button class='next-step' onclick="redirect2origin()">下一步</button>
+	<button class='next-step' onclick='redirect2origin()'>下一步</button>
 </div>
 {% endblock %}
