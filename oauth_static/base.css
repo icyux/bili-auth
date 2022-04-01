@@ -37,6 +37,10 @@ footer div {
 	padding: 0.5em;
 }
 
+.url {
+	color: #88f;
+}
+
 @media screen and (max-width: 600px) {
 	main {
 		margin-left: 0.6em;
@@ -70,7 +74,8 @@ footer div {
 		color: #ccc;
 	}
 
-	a {
+	a,
+	.url {
 		color: #66f;
 	}
 }

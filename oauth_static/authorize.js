@@ -67,6 +67,7 @@ async function init() {
 	document.getElementById('app-url').innerText = appInfo['url'];
 	document.getElementById('app-icon').src = appInfo['icon'];
 	document.getElementById('app-desc').innerText = appInfo['desc'];
+	document.getElementById('redirect-uri').innerText = redirect;
 	nextStep();
 }
 
