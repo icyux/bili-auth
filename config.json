@@ -13,6 +13,11 @@
 
 	"oauth_service": {
 		"host": "localhost",
-		"port": 8080
+		"port": 8080,
+
+		// base64 encoded HMAC key, randomly generated if not specified.
+		// we support you generate it with this shell script:
+		// "head -c 64 /dev/random | base64"
+		"hmac_key": "",
 	},
 }

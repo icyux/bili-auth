@@ -9,6 +9,8 @@ import msg_handler
 import verify_request as vr
 import session
 import sqlite3
+import secrets
+import base64
 
 
 # read config
@@ -21,6 +23,13 @@ if biliCfg['dev_id'] == '':
 
 # fill config into bili_utils
 bili_utils.init(**biliCfg)
+
+# generate global HMAC key
+hmacKey = base64.b64decode(cfg['oauth_service']['hmac_key'])
+if hmacKey == b'':
+	hmacKey = secrets.token_bytes(64)
+
+oauth.hmacKey = hmacKey
 
 # connect database
 db = sqlite3.connect('oauth_application.db3', check_same_thread=False)
@@ -39,4 +48,6 @@ wakerThread.daemon = True
 wakerThread.start()
 
 # run oauth http service
-oauth.app.run(**cfg['oauth_service'])
+host = cfg['oauth_service']['host']
+port = cfg['oauth_service']['port']
+oauth.app.run(host=host, port=port)

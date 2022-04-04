@@ -18,9 +18,6 @@ app = Flask(__name__,
 )
 app.debug = False
 
-db = None
-
-hmacKey = secrets.token_bytes(64)
 tokenMaxAge = 86400
 
 
