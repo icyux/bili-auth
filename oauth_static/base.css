@@ -22,16 +22,23 @@ header {
 	color: #fff;
 }
 
-header .user-display {
+header #user-display {
 	display: inline-flex;
 	align-items: center;
 	margin-left: auto;
 	margin-right: 1em;
+	padding: 0.6em;
 	font-size: 1rem;
+	border-radius: 0.5em;
+	transition: background-color 0.5s;
+}
+
+header #user-display:hover {
+	background-color: rgba(255,255,255,0.2);
 }
 
 #header-avatar {
-	margin: 0.5em;
+	margin-right: 0.6em;
 	width: 1.6em;
 	height: 1.6em;
 	border-radius: calc(50%);
@@ -105,5 +112,8 @@ footer div {
 	header span {
 		font-size: 1.2rem;
 		color: #fff;
+	}
+	footer {
+		width: 90%;
 	}
 }

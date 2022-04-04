@@ -18,10 +18,17 @@ async function headerUserDisplay() {
 	if (vt === undefined)
 		return
 
-	const uid = vt.split('.')[0];
+	const uid = vt.split('.')[0]
 	let userInfo = await fetchUserInfo(uid)
-	document.getElementById('header-avatar').src = userInfo['avatar'];
-	document.getElementById('header-username').innerText = userInfo['nickname'];
+	document.getElementById('header-avatar').src = userInfo['avatar']
+	document.getElementById('header-username').innerText = userInfo['nickname']
+	document.getElementById('user-display').onclick = () => {
+		location.href = '/user'
+	}
+}
+
+async function loginRedirect() {
+	window.location.href = '/verify'
 }
 
 headerUserDisplay()
