@@ -19,13 +19,18 @@
 
 	<main>
 	{% block main %}
-		<div>Welcome to OAuth Center! Why not start a request now? </div>
+		<p>欢迎使用 <em>bili-auth</em> ！ 这是一个第三方实现的哔哩哔哩帐号验证服务。</p>
+		<p>介绍视频：<a href='https://www.bilibili.com/video/BV1iS4y1S7QB' target='_blank'>让你的应用快速接入哔哩哔哩帐号登录 | bili-auth</a>
+		<p>作为用户，您可以使用哔哩哔哩帐号，安全快捷地登录已支持的应用。</p>
+		<p>作为开发者，您可以轻松给您的应用添加哔哩哔哩帐号登录的功能。本项目提供遵循 OAuth 2.0 标准的接口，以方便开发者接入。本项目开源，您可自由部署。项目地址在页面底部。</p>
 	{% endblock %}
 	</main>
 
 	<footer>
-		<div>bili-auth: third-party implemented auth api with Bilibili account.</div>
-		<div>GitHub: <a href="https://github.com/vapehacker/bili-auth">vapehacker/bili-auth</a>
+		<div>
+			<a href='https://github.com/vapehacker/bili-auth' target='_blank'><strong>bili-auth</strong></a>
+			: Third-party implemented Bilibili OAuth 2.0 API | 第三方哔哩哔哩 OAuth 2.0 API，基于私信鉴权
+		</div>
 	</footer>
 </body>
 </html>
