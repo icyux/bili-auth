@@ -4,22 +4,36 @@ body {
 }
 
 header {
+	display: flex;
+	align-items: center;
 	width: 100%;
 	background-color: #6ae;
 	box-shadow: 0 0 0.5em;
 }
 
-header span {
+header span.title {
 	display: inline-block;
 	font-size: 1.5em;
-	color: #fff;
+	color: inherit;
 	margin: 0.5em 1em;
 }
 
+header {
+	color: #fff;
+}
+
 header .user-display {
-	display: inline-block;
-	float: right;
+	display: inline-flex;
+	align-items: center;
+	margin-left: auto;
+	margin-right: 1em;
 	font-size: 1rem;
+}
+
+#header-avatar {
+	margin: 0.5em;
+	width: 1.6em;
+	height: 1.6em;
 }
 
 main {
@@ -64,9 +78,6 @@ footer div {
 	header {
 		background-color: #357;
 		box-shadow: none;
-	}
-
-	header span {
 		color: #eee;
 	}
 
@@ -90,6 +101,5 @@ footer div {
 	header span {
 		font-size: 1.2rem;
 		color: #fff;
-		margin: 0.3rem 1rem;
 	}
 }
