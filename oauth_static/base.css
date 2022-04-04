@@ -16,6 +16,12 @@ header span {
 	margin: 0.5em 1em;
 }
 
+header .user-display {
+	display: inline-block;
+	float: right;
+	font-size: 1rem;
+}
+
 main {
 	width: 80vw;
 	min-height: 50vh;
