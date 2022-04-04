@@ -34,6 +34,7 @@ header .user-display {
 	margin: 0.5em;
 	width: 1.6em;
 	height: 1.6em;
+	border-radius: calc(50%);
 }
 
 main {
