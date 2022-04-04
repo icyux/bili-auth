@@ -221,7 +221,7 @@ def createAccessToken():
 def queryByToken():
     try:
         tkn = re.match(r'^Bearer (.+)$', request.headers['Authorization']).group(1)
-    except IndexError:
+    except (KeyError, IndexError):
         return '', 400
 
     sessionInfo = session.getSessionInfo('token', tkn)
