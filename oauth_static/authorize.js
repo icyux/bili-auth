@@ -132,13 +132,9 @@ async function authorizeApp() {
 }
 
 async function setUserInfo(uid) {
-	let resp = await fetch(`/proxy/user?uid=${uid}`);
-	let userInfo = await resp.json();
-	let avatarURL = userInfo['avatar'];
-	if (/\.jpg$/.test(avatarURL))
-		avatarURL += '@60w_60h_1c_1s.webp';
-	document.getElementById('avatar').src = `/proxy/avatar?url=${encodeURIComponent(avatarURL)}`;
-	document.getElementById('user-name').innerText = userInfo['nickname'];
+	const user = await fetchUserInfo(uid);
+	document.getElementById('avatar').src = user.avatar;
+	document.getElementById('user-name').innerText = user.nickname;
 }
 
 function redirectCallback() {
