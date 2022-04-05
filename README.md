@@ -28,7 +28,7 @@ Flask >= 2.0.1
 开发者可自行部署本项目。只需填写 Cookie 等必要项即可完成配置。
 
 配置项全部放在 "config.json" 中，格式如下：
-```json5
+```js
 {
 	"bili": {
 		// user id 机器人uid，必填
@@ -43,8 +43,12 @@ Flask >= 2.0.1
 	},
 
 	"oauth_service": {
-		"host": "监听地址，默认localhost",
+		"host": "监听地址",
 		"port": 8080,
+		
+		// base64 编码的 HMAC Key，用于后端对颁发的 token （实现类似 JWT）验证。若留空则每次启动随机生成。
+		// 建议在 Shell 中运行这个命令生成：head -c 64 /dev/random | base64
+		"hmac_key": "",
 	},
 }
 
