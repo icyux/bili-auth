@@ -9,6 +9,7 @@ header {
 	width: 100%;
 	background-color: #6ae;
 	box-shadow: 0 0 0.5em;
+	color: #fff;
 }
 
 header span.title {
@@ -16,10 +17,6 @@ header span.title {
 	font-size: 1.5em;
 	color: inherit;
 	margin: 0.5em 1em;
-}
-
-header {
-	color: #fff;
 }
 
 header #user-display {
@@ -87,7 +84,7 @@ footer div {
 	}
 
 	header {
-		background-color: #357;
+		background-color: #369;
 		box-shadow: none;
 		color: #eee;
 	}
@@ -104,7 +101,7 @@ footer div {
 
 	a,
 	.url {
-		color: #66f;
+		color: #3af;
 	}
 }
 
