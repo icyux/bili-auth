@@ -106,6 +106,9 @@ def queryApp(cid):
     try:
         cols = [desc[0] for desc in cur.description]
         row = cur.fetchone()
+        if row is None:
+            return None
+
         result = {cols[i]:row[i] for i in range(len(cols))}
         return result
 
