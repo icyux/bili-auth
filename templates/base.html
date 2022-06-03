@@ -6,12 +6,12 @@
 	<title>{% block title %}bili-auth{% endblock %}</title>
 
 	<link rel="stylesheet" href="/static/base.css">
-	<script src='/static/base.js'></script>
+	<script src='/static/display_userinfo.js' defer></script>
 </head>
 <body>
 	<header>
 		<span class='title'>bili-auth</span>
-		<div id='user-display' onclick='location.href = "/verify"'>
+		<div id='user-display' onclick='location.href = "/verify"' hidden>
 			<img id='header-avatar'src='/static/nonlogin.svg'>
 			<span id='header-username'>未登录</span>
 		</div>

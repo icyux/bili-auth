@@ -14,21 +14,30 @@ async function fetchUserInfo(uid) {
 }
 
 async function headerUserDisplay() {
+	const showDisplay = () => document.getElementById('user-display').hidden = false
 	const vt = localStorage['verifyToken']
-	if (vt === undefined)
+	if (vt === undefined) {
+		showDisplay()
 		return
+	}
 
-	const uid = vt.split('.')[0]
+	const [uid, vid, expire, sign] = vt.split('.')
+	const curTs = Math.floor(Date.now() / 1000)
+	if (curTs > Number(expire)) {
+		showDisplay()
+		return
+	}
+
 	let userInfo = await fetchUserInfo(uid)
 	document.getElementById('header-avatar').src = userInfo['avatar']
 	document.getElementById('header-username').innerText = userInfo['nickname']
-	document.getElementById('user-display').onclick = () => {
-		location.href = '/user'
-	}
+	showDisplay()
+	document.getElementById('user-display').onclick = () => location.href = '/user'
 }
 
 async function loginRedirect() {
 	window.location.href = '/verify'
 }
 
-headerUserDisplay()
+if (!/\/verify$/.test(window.location.pathname))
+	headerUserDisplay()
