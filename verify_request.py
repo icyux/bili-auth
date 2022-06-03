@@ -39,14 +39,14 @@ def generateVid():
 	return vid
 
 
-def createVerify():
+def createVerify(*, userAgent=None):
 	vid = generateVid()
 	create = int(time.time())
 	expire = create + verifyReqMaxAge
 	cur = db.cursor()
 	cur.execute(
-		'INSERT INTO verify ("vid", "create", "expire") VALUES (?,?,?)',
-		(vid, create, expire),
+		'INSERT INTO verify ("vid", "create", "expire", "ua") VALUES (?,?,?,?)',
+		(vid, create, expire, userAgent),
 	)
 	affected = cur.rowcount
 	cur.close()
@@ -61,7 +61,7 @@ def createVerify():
 def getVerifyInfo(vid):
 	cur = db.cursor()
 	cur.execute(
-		'SELECT "create", "expire", "uid" FROM verify WHERE vid=?',
+		'SELECT "create", "expire", "ua", "uid" FROM verify WHERE vid=?',
 		(vid, ),
 	)
 	result = cur.fetchone()
@@ -73,8 +73,9 @@ def getVerifyInfo(vid):
 			'vid': vid,
 			'create': result[0],
 			'expire': result[1],
-			'isAuthed': result[2] is not None,
-			'uid': result[2],
+			'ua': result[2],
+			'isAuthed': result[3] is not None,
+			'uid': result[3],
 		}
 
 

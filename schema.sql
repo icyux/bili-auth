@@ -12,6 +12,7 @@ CREATE TABLE "verify" (
 	"vid"		TEXT NOT NULL UNIQUE,
 	"create"	INTEGER NOT NULL,
 	"expire"	INTEGER NOT NULL,
+	"ua"		TEXT,
 	"uid"		INTEGER,
 	PRIMARY KEY("vid")
 );

@@ -7,8 +7,16 @@ var step = 0;
 const finalStep = 2;
 
 async function generateRequest() {
+	const [platform, browser] = parseUserAgent()
+	let mergedUA = `${platform};${browser}`
 	let req = await fetch('/api/verify', {
 		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({
+			'ua': mergedUA,
+		}),
 	});
 
 	let data = await req.json();

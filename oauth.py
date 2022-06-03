@@ -137,7 +137,13 @@ def queryVerifyInfo(vidParam, *, vid):
 
 @app.route('/api/verify', methods=('POST',))
 def createVerify():
-    vid, expire = vr.createVerify()
+    try:
+        data = request.get_json()
+        ua = data['ua']
+    except Exception:
+        ua = None
+
+    vid, expire = vr.createVerify(userAgent=ua)
     sign = calcToken(None, vid, expire)
     token = f'{vid}.{expire}.{sign}'
 

@@ -40,8 +40,19 @@ def cmdHandler(uid, action, arg):
         vid = arg.lower()
         if vr.checkVerify(vid=vid, uid=uid):
             info = vr.getVerifyInfo(vid)
-            reply = r'【 bili-auth 】 验证完成。\n如果此次请求为意外发出, 请回复"/revoke {}"以撤销此次验证。\n此消息是自动回复。您可发送"/about"了解本项目。'
-            reply = reply.format(vid)
+            try:
+                ua = info['ua'].split(';')
+                platform, browser = ua[0], ua[1]
+            except (AttributeError, IndexError):
+                platform, browser = '未知', '未知'
+
+            reply = '\n'.join((
+                '【 bili-auth 】 验证完成。',
+                f'发起验证的用户操作系统：{platform}，',
+                f'浏览器（仅供参考）：{browser}。',
+                f'如果此次请求为意外发出, 请回复"/revoke {vid}"以撤销此次验证。',
+                '此消息是自动回复。您可以发送"/about"了解本项目。',
+            ))
         else:
             reply = '【 bili-auth 】 未找到此验证请求, 可能是此验证信息已过期。请尝试重新发起验证。'
         sendText(uid, reply)
