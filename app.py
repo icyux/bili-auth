@@ -1,16 +1,17 @@
 #!/usr/bin/env python3
 
-import uuid
-import threading
-import oauth
-import bili_utils
-import config_reader
-import msg_handler
-import verify_request as vr
-import session
-import sqlite3
-import secrets
 import base64
+import secrets
+import sqlite3
+import threading
+import uuid
+
+from bili import msg_handler
+from service import oauth
+from misc import config_reader
+from model import session
+from model import verify_request as vr
+import bili
 
 
 # read config
@@ -21,8 +22,8 @@ biliCfg = cfg['bili']
 if biliCfg['dev_id'] == '':
 	biliCfg['dev_id'] = str(uuid.uuid4()).upper()
 
-# fill config into bili_utils
-bili_utils.init(**biliCfg)
+# fill config into bili utils
+bili.init(**biliCfg)
 
 # generate global HMAC key
 hmacKey = base64.b64decode(cfg['oauth_service']['hmac_key'])

@@ -1,8 +1,9 @@
+import secrets
 import sqlite3
 import time
-import secrets
-import session
-from msg_handler import tasks
+
+from model import session
+from bili.msg_handler import tasks
 
 
 db = None

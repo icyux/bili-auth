@@ -1,7 +1,7 @@
+import json
+import re
 import requests
 import time
-import re
-import json
 
 selfUid = ''
 selfName = ''

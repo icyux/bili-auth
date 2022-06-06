@@ -1,16 +1,17 @@
 from flask import Flask, render_template, request, jsonify
-import sqlite3
+import hmac
 import re
 import requests
-import threading
-import msg_handler
-import bili_utils
 import secrets
-import hmac
+import sqlite3
+import threading
 import time
-import bili_utils
-import session
-import verify_request as vr
+
+from bili import msg_handler
+from bili import utils as bu
+from model import session
+from model import verify_request as vr
+
 
 app = Flask(__name__,
     static_folder='oauth_static',
@@ -73,8 +74,8 @@ def mainPage():
 @app.route('/verify')
 def verifyPage():
     return render_template('verify.html', **{
-        'botUid': bili_utils.selfUid,
-        'botName': bili_utils.selfName,
+        'botUid': bu.selfUid,
+        'botName': bu.selfName,
     })
 
 
@@ -216,7 +217,7 @@ def createAccessToken():
             return 'Token has been already existed', 403
 
         sessionInfo = session.getSessionInfo('accCode', code)
-        userInfo = bili_utils.getUserInfo(sessionInfo['uid'])
+        userInfo = bu.getUserInfo(sessionInfo['uid'])
         return {
             'token': tkn,
             'user': userInfo,
@@ -234,7 +235,7 @@ def queryByToken():
 
     if sessionInfo:
         uid = sessionInfo['uid']
-        userInfo = bili_utils.getUserInfo(uid)
+        userInfo = bu.getUserInfo(uid)
         return userInfo, 200
     else:
         return 'Session not found matched this token', 404
@@ -263,7 +264,7 @@ def userInfoProxy():
     except (IndexError, ValueError):
         return '', 400
 
-    info = bili_utils.getUserInfo(uid)
+    info = bu.getUserInfo(uid)
     if info is None:
         return '', 404
     return info, 200, (

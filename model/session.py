@@ -1,7 +1,8 @@
-import sqlite3
 import secrets
+import sqlite3
 import time
-import verify_request as vr
+
+from model import verify_request as vr
 
 db = None
 accCodeLen = 16

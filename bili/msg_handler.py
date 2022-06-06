@@ -1,10 +1,12 @@
-import time
-import re
-from random import random
-import bili_utils
 import queue; tasks = queue.Queue()  # initialization tasks queue
+
+from random import random
+import re
 import requests
-import verify_request as vr
+import time
+
+from bili import utils as bu
+from model import verify_request as vr
 
 sendCD = 1
 
@@ -21,7 +23,7 @@ aboutText = '''【 bili-auth 】 是一个第三方实现的 Bili OAuth API，�
 
 def checkMsg():
     global ackMts
-    msgList = bili_utils.getNewMsg(ackMts)
+    msgList = bu.getNewMsg(ackMts)
     for m in msgList:
         uid = m['uid']
         content = m['content']
@@ -73,7 +75,7 @@ def sendText(uid, content):
     sleepTime = lastSendTs + sendCD - time.time()
     if sleepTime > 0:
         time.sleep(sleepTime)
-    bili_utils.sendMsg(uid, content)
+    bu.sendMsg(uid, content)
 
 
 def periodicWakeup():
