@@ -11,6 +11,7 @@ from bili import msg_handler
 from bili import utils as bu
 from model import session
 from model import verify_request as vr
+import bili
 
 
 app = Flask(__name__,
@@ -74,8 +75,8 @@ def mainPage():
 @app.route('/verify')
 def verifyPage():
     return render_template('verify.html', **{
-        'botUid': bu.selfUid,
-        'botName': bu.selfName,
+        'botUid': bili.selfUid,
+        'botName': bili.selfName,
     })
 
 
