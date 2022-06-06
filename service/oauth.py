@@ -15,8 +15,9 @@ import bili
 
 
 app = Flask(__name__,
-    static_folder='oauth_static',
+    static_folder='../static',
     static_url_path='/static',
+    template_folder='../templates'
 )
 app.debug = False
 
