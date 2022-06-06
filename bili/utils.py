@@ -2,18 +2,18 @@ import json
 import requests
 import time
 
-from bili import *
+import bili
 
 
 def getNewMsg(beginMts: int, *, recvType: tuple = (1,)):
     beginMts -= 1
     r = requests.get(
         f'https://api.vc.bilibili.com/session_svr/v1/session_svr/new_sessions?begin_ts={beginMts}&build=0&mobi_app=web',
-        headers=authedHeader
+        headers=bili.authedHeader
     )
     requests.get(
         f'https://api.vc.bilibili.com/session_svr/v1/session_svr/ack_sessions?begin_ts={beginMts}&build=0&mobi_app=web',
-        headers=authedHeader
+        headers=bili.authedHeader
     )
     resp = r.json()
     assert resp['code'] == 0
@@ -38,19 +38,19 @@ def getNewMsg(beginMts: int, *, recvType: tuple = (1,)):
         &build=0&mobi_app=web'
         r = requests.get(
             url,
-            headers=authedHeader
+            headers=bili.authedHeader
         )
         updateAck = requests.post(
             'https://api.vc.bilibili.com/session_svr/v1/session_svr/update_ack',
-            headers=authedHeader,
+            headers=bili.authedHeader,
             data={
                 'talker_id': s['talkerid'],
                 'session_type': 1,
                 'ack_seqno': s['endSeq'],
                 'build': 0,
                 'mobi_app': 'web',
-                'csrf_token': csrf,
-                'csrf': csrf,
+                'csrf_token': bili.csrf,
+                'csrf': bili.csrf,
             }
         )
         assert updateAck.json()['code'] == 0
@@ -59,7 +59,7 @@ def getNewMsg(beginMts: int, *, recvType: tuple = (1,)):
         for m in resp['data']['messages']:
             if not m['msg_type'] in recvType:
                 continue
-            if m['sender_uid'] == selfUid:
+            if m['sender_uid'] == bili.selfUid:
                 continue
             if m['msg_type'] == 1:
                 content = json.loads(m['content'])['content']
@@ -83,9 +83,9 @@ def sendMsg(recver: int, content: str, *, msgType: int = 1):
 
     r = requests.post(
         'https://api.vc.bilibili.com/web_im/v1/web_im/send_msg',
-        headers=authedHeader,
+        headers=bili.authedHeader,
         data={
-            'msg[sender_uid]': selfUid,
+            'msg[sender_uid]': bili.selfUid,
             'msg[receiver_id]': recver,
             'msg[receiver_type]': 1,
             'msg[msg_type]': msgType,
@@ -93,9 +93,9 @@ def sendMsg(recver: int, content: str, *, msgType: int = 1):
             'msg[content]': content,
             'msg[timestamp]': int(time.time()),
             'msg[new_face_version]': 0,
-            'msg[dev_id]': selfDevId,
-            'csrf': csrf,
-            'csrf_token': csrf,
+            'msg[dev_id]': bili.selfDevId,
+            'csrf': bili.csrf,
+            'csrf_token': bili.csrf,
             'from_firework': 0,
             'build': 0,
             'mobi_app': 'web',
@@ -110,7 +110,7 @@ def sendMsg(recver: int, content: str, *, msgType: int = 1):
 def getUserInfo(uid: int):
     r = requests.get(
         f'https://api.bilibili.com/x/space/acc/info?mid={uid}&jsonp=jsonp',
-        headers=unauthedHeader
+        headers=bili.unauthedHeader
     )
     resp = r.json()
     try:
