@@ -7,11 +7,10 @@ import threading
 import uuid
 
 from bili import msg_handler
-from service import oauth
 from misc import config_reader
-from model import session
-from model import verify_request as vr
 import bili
+import model
+import service
 
 
 # read config
@@ -30,13 +29,11 @@ hmacKey = base64.b64decode(cfg['oauth_service']['hmac_key'])
 if hmacKey == b'':
 	hmacKey = secrets.token_bytes(64)
 
-oauth.hmacKey = hmacKey
+service.hmacKey = hmacKey
 
 # connect database
-db = sqlite3.connect('oauth_application.db3', check_same_thread=False)
-vr.setDB(db)
-session.setDB(db)
-oauth.setDB(db)
+model.initDB(sqlite3.connect('oauth_application.db3', check_same_thread=False))
+
 
 # run message listener
 msgThread = threading.Thread(target=msg_handler.mainLoop)
@@ -51,4 +48,4 @@ wakerThread.start()
 # run oauth http service
 host = cfg['oauth_service']['host']
 port = cfg['oauth_service']['port']
-oauth.app.run(host=host, port=port)
+service.app.run(host=host, port=port)

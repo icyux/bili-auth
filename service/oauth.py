@@ -1,94 +1,22 @@
-from flask import Flask, render_template, request, jsonify
-import hmac
+from flask import request, jsonify
 import re
-import requests
 import secrets
-import sqlite3
-import threading
-import time
 
-from bili import msg_handler
 from bili import utils as bu
+from misc.hmac_token import calcToken
+from model import application
 from model import session
 from model import verify_request as vr
-import bili
+from service import app
+from service.auth_middleware import authRequired
 
-
-app = Flask(__name__,
-    static_folder='../static',
-    static_url_path='/static',
-    template_folder='../templates'
-)
-app.debug = False
 
 tokenMaxAge = 86400
 
 
-def setDB(mainDB):
-    global db
-    db = mainDB
-
-
-def authRequired(uidRequired=True):
-    def middleware(handler):
-        def wrapper(*args, **kw):
-            try:
-                userToken = request.headers['Authorization'][7:]
-                currentTs = int(time.time())
-
-                try:
-                    uid, vid, expire, sign = userToken.split('.')
-                except ValueError as e:
-                    if uidRequired:
-                        raise e
-                    uid = None
-                    vid, expire, sign = userToken.split('.')
-
-                if int(expire) < currentTs:
-                    return 'Expired token', 403
-                if not secrets.compare_digest(calcToken(uid, vid, expire), sign):
-                    return 'Invalid sign', 403
-
-                if type(kw) != dict:
-                    kw = {}
-
-                if uidRequired:
-                    kw['uid'] = uid
-                kw['vid'] = vid
-
-                return handler(*args, **kw)
-
-            except (IndexError, ValueError):
-                return 'Invalid token', 400
-
-        # rename wrapper name to prevent duplicated handler name
-        wrapper.__name__ = handler.__name__
-        return wrapper
-
-    return middleware
-
-
-@app.route('/')
-def mainPage():
-    return render_template('base.html')
-
-
-@app.route('/verify')
-def verifyPage():
-    return render_template('verify.html', **{
-        'botUid': bili.selfUid,
-        'botName': bili.selfName,
-    })
-
-
-@app.route('/oauth/authorize')
-def oauthAuthorizePage():
-    return render_template('authorize.html')
-
-
 @app.route('/oauth/application/<cid>')
 def getApp(cid):
-    info = queryApp(cid)
+    info = application.query(cid)
     if info is None:
         return '', 404
     else:
@@ -98,77 +26,6 @@ def getApp(cid):
             rtn[field] = info[field]
 
         return rtn, 200
-
-
-def queryApp(cid):
-    cur = db.cursor()
-    cur.execute(
-        'SELECT * FROM app WHERE cid=?',
-        (cid, ),
-    )
-    try:
-        cols = [desc[0] for desc in cur.description]
-        row = cur.fetchone()
-        if row is None:
-            return None
-
-        result = {cols[i]:row[i] for i in range(len(cols))}
-        return result
-
-    except IndexError:
-        return None
-    finally:
-        cur.close()
-
-
-@app.route('/api/verify/<vidParam>', methods=('GET',))
-@authRequired(uidRequired=False)
-def queryVerifyInfo(vidParam, *, vid):
-    assert vidParam == vid
-    result = vr.getVerifyInfo(vid)
-    if result is None:
-        return '', 404
-    elif result['isAuthed'] == False:
-        return result, 202
-    else:
-        uid = result['uid']
-        expire = result['expire']
-        sign = calcToken(uid, vid, expire)
-        finalToken = f'{uid}.{vid}.{expire}.{sign}'
-        result['token'] = finalToken
-        return result, 200
-
-@app.route('/api/verify', methods=('POST',))
-def createVerify():
-    try:
-        data = request.get_json()
-        ua = data['ua']
-    except Exception:
-        ua = None
-
-    vid, expire = vr.createVerify(userAgent=ua)
-    sign = calcToken(None, vid, expire)
-    token = f'{vid}.{expire}.{sign}'
-
-    return {
-        'vid': vid,
-        'token': token,
-    }, 201
-
-
-@app.route('/api/verify/<vid>', methods=('DELETE',))
-def delVerify(vid):
-    return 'deleting verify is currently unavailable', 503
-    if not uid:
-        return '', 400
-    try:
-        result = auth_handler.revokeVerify(code, int(uid))
-        if result:
-            return '', 200
-        else:
-            return '', 404
-    except ValueError:
-        return '', 400
 
 
 @app.route('/api/session')
@@ -209,7 +66,7 @@ def createAccessToken():
     except IndexError:
         return '', 400
 
-    expectSec = queryApp(cid).get('sec')
+    expectSec = application.query(cid).get('sec')
     if csec != '' and secrets.compare_digest(expectSec, csec):
         tkn = session.generateAccessToken(
             cid=cid,
@@ -241,45 +98,3 @@ def queryByToken():
         return userInfo, 200
     else:
         return 'Session not found matched this token', 404
-
-
-@app.route('/proxy/avatar')
-def avatarProxy():
-    url = request.args.get('url')
-    if re.match(r'^https://i[0-9]\.hdslb\.com/bfs/face.*\.webp$', url) is None:
-        return '', 400
-    req = requests.get(url)
-    print(url)
-    if req.status_code == 200:
-        return req.content, 200, (
-            ('Cache-Control', 'max-age=1800'),
-            ('Content-Type', req.headers['Content-Type']),
-            ('Access-Control-Allow-Origin', '*'),
-            ('Vary', 'Origin'),
-        )
-    return '', 404
-
-@app.route('/proxy/user')
-def userInfoProxy():
-    try:
-        uid = int(request.args['uid'])
-    except (IndexError, ValueError):
-        return '', 400
-
-    info = bu.getUserInfo(uid)
-    if info is None:
-        return '', 404
-    return info, 200, (
-        ('Cache-Control', 'max-age=1800'),
-        ('Access-Control-Allow-Origin', '*'),
-        ('Vary', 'Origin'),
-    )
-
-
-def calcToken(uid, vid, expire):
-    if uid is None:
-        body = f'{uid}.{vid}.{expire}'
-    else:
-        body = f'{vid}.{expire}'
-    h = hmac.new(hmacKey, body.encode(), 'sha1')
-    return h.hexdigest()

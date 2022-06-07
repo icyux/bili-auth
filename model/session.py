@@ -3,15 +3,16 @@ import sqlite3
 import time
 
 from model import verify_request as vr
+import model
 
-db = None
+
 accCodeLen = 16
 tokenLen = 24
 
 
-def setDB(mainDB):
+def initDB():
 	global db
-	db = mainDB
+	db = model.db
 
 
 def createSession(*, vid, cid):

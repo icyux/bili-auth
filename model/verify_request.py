@@ -1,21 +1,20 @@
 import secrets
-import sqlite3
 import time
 
+import model
 from model import session
 from bili.msg_handler import tasks
 
 
-db = None
 vidLen = 8
 vidCharset = '0123456789abcdefghijklmnopqrstuvwxyz'
 verifyReqMaxAge = 360
 verifySuccMaxAge = 86400
 
 
-def setDB(mainDB):
+def initDB():
 	global db
-	db = mainDB
+	db = model.db
 
 
 def isVidExisted(vid):
