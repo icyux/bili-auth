@@ -84,6 +84,15 @@
 	margin-bottom: 1em;
 }
 
+#remain {
+	width: max-content;
+	background: linear-gradient(to right, #69f, #6df);
+	background-size: var(--remain, 0) 2px;
+	background-repeat: no-repeat;
+	background-position: bottom left;
+	border-bottom: solid 1px rgba(127, 127, 127, 0.5);
+}
+
 @media screen and (max-width: 600px) {
 	main {
 		margin-left: 0.6em;
@@ -112,5 +121,9 @@
 
 	#show-guide {
 		color: #eee;
+	}
+
+	#remain {
+		border-color: #888;
 	}
 }

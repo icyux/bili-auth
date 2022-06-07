@@ -5,6 +5,7 @@ var vid;
 var token;
 var step = 0;
 const finalStep = 2;
+var expireAt, duration, timerRunId;
 
 async function generateRequest() {
 	const [platform, browser] = parseUserAgent()
@@ -21,6 +22,10 @@ async function generateRequest() {
 
 	let data = await req.json();
 	if (req.status == 201) {
+		const curTs = Math.floor(new Date().getTime() / 1000)
+		expireAt = data['expire'];
+		duration = 360;
+		timerRunId = setInterval(refreshRemainTime, 1000);
 		return [data['vid'], data['token']];
 	}
 
@@ -129,6 +134,19 @@ async function copyVerifyCode() {
 function showGuide() {
 	document.getElementById('guide').hidden = false
 	document.getElementById('show-guide').hidden = true
+}
+
+function refreshRemainTime() {
+	const curTs = Math.floor(new Date().getTime() / 1000)
+	const remainSec = expireAt - curTs
+	if (remainSec < 0) {
+		document.getElementById('remain').innerText = '本次操作已超时。'
+		clearInterval(timerRunId)
+		return
+	}
+	const percent = (remainSec / duration * 100).toFixed(2)
+	document.getElementById('remain').style = `--remain: ${percent}%`
+	document.getElementById('remain-timer').innerText = `${remainSec}秒`
 }
 
 init();
