@@ -21,14 +21,19 @@
 		<button id='copy' onclick='copyVerifyCode()'>复制</button>
 	</p>
 	<p>
-		将上面的这段文本，通过私信发送给机器人帐号
-		<a id='target-bot' target='_blank' href='https://message.bilibili.com/#/whisper/mid{{ botUid }}'>@{{ botName }}</a>
+		将上面的这段文本，通过哔哩哔哩私信发送给机器人帐号
+		<a id='target-bot' target='_blank' href='https://message.bilibili.com/#/whisper/mid{{botUid}}'>@{{ botName }}</a>
 		。
+		<button id='show-guide' onclick='showGuide()'>如何发送私信</button>
 	</p>
-	<p>
-		网页端用户，点击此链接将在新标签中打开私信页面；
-		客户端用户请在 App 中搜索用户 "{{ botName }}"，发起私聊。
-	</p>
+	<div id='guide' hidden>
+		<h4>网页端：</h4>
+		<p>点击上方蓝色的链接将跳转到哔哩哔哩官网，在当前浏览器的新标签中打开私信页面。</p>
+		<h4>手机端 / 移动端 / iOS端 / Android端：</h4>
+		<p>打开 App 首页 &gt; 顶部搜索栏中搜索用户 "{{botName}}" &gt; 找到名为 "{{botName}}" 的用户，点开其个人空间 &gt; 点击右上方的消息图标，发起私聊。</p>
+		<h4>电脑端 / Win端 / macOS端：</h4>
+		<p>请使用网页端完成私信操作，因为目前桌面端（尤其是 Win 客户端）的私信功能支持不完善。</p>
+	</div>
 	<p>请在六分钟内完成验证。若提示验证过期，请刷新网页以重新开始验证。</p>
 	<p>确认发送完毕后，请点击"下一步"。</p>
 	<button class='next-step' onclick='checkVerify()'>下一步</button>

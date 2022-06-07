@@ -126,4 +126,9 @@ async function copyVerifyCode() {
 	}
 }
 
+function showGuide() {
+	document.getElementById('guide').hidden = false
+	document.getElementById('show-guide').hidden = true
+}
+
 init();

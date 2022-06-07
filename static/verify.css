@@ -1,8 +1,9 @@
 .info-value,
 #challenge-msg {
-	padding: 0.2em;
+	padding: 0.2em 0.5em;
+	font-size: 1.1em;
 	background-color: #eef;
-	border-radius: 0.1em;
+	border-radius: 0.2em;
 }
 
 .next-step {
@@ -51,6 +52,38 @@
 	color: #333;
 }
 
+#show-guide {
+	border: none;
+	border-radius: 5px;
+	background-color: rgba(127, 127, 127, 0.2);
+	padding: 0.2em 0.4em;
+}
+
+#show-guide::before {
+	content: '?';
+	font-weight: bold;
+	display: inline-block;
+	padding: 0.1em 0.4em;
+	border-radius: calc(50%);
+	background-color: rgba(127, 127, 127, 0.6)
+}
+
+#guide {
+	padding: 1em;
+	border-radius: 4px;
+	background-color: rgba(127, 127, 127, 0.2);
+}
+
+#guide h4 {
+	margin: 0.4em 0;
+}
+
+#guide p {
+	font-size: 0.9em;
+	margin-top: 0.2em;
+	margin-bottom: 1em;
+}
+
 @media screen and (max-width: 600px) {
 	main {
 		margin-left: 0.6em;
@@ -75,5 +108,9 @@
 	
 	#bio {
 		color: #aaa;
+	}
+
+	#show-guide {
+		color: #eee;
 	}
 }
