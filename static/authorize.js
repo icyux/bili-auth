@@ -59,6 +59,11 @@ async function init() {
 		return;
 	}
 
+	if (redirect.indexOf(appInfo.url) !== 0) {
+		document.getElementById('pending').innerText = '回调 URL 与应用不匹配，请咨询应用管理者';
+		return;	
+	}
+
 	cid = appInfo['cid'];
 
 	document.getElementById('app-id').innerText = cid;
