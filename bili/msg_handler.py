@@ -71,11 +71,13 @@ def cmdHandler(uid, action, arg):
 
 
 def sendText(uid, content):
+    global lastSendTs
     print(f'[send -> {uid}]', content)
     sleepTime = lastSendTs + sendCD - time.time()
     if sleepTime > 0:
         time.sleep(sleepTime)
     bu.sendMsg(uid, content)
+    lastSendTs = time.time()
 
 
 def periodicWakeup():
