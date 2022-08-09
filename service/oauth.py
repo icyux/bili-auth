@@ -67,20 +67,22 @@ def createAccessToken():
         return '', 400
 
     expectSec = application.query(cid).get('sec')
-    if csec != '' and secrets.compare_digest(expectSec, csec):
-        tkn = session.generateAccessToken(
-            cid=cid,
-            accCode=code,
-        )
-        if tkn is None:
-            return 'Token has been already existed', 403
+    if csec == '' or not secrets.compare_digest(expectSec, csec):
+        return 'Invalid client id or client secret', 403
 
-        sessionInfo = session.getSessionInfo('accCode', code)
-        userInfo = bu.getUserInfo(sessionInfo['uid'])
-        return {
-            'token': tkn,
-            'user': userInfo,
-        }
+    tkn = session.generateAccessToken(
+        cid=cid,
+        accCode=code,
+    )
+    if tkn is None:
+        return 'Invalid access code', 403
+
+    sessionInfo = session.getSessionInfo('accCode', code)
+    userInfo = bu.getUserInfo(sessionInfo['uid'])
+    return {
+        'token': tkn,
+        'user': userInfo,
+    }
 
 
 @app.route('/api/user')

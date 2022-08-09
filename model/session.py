@@ -40,10 +40,11 @@ def createSession(*, vid, cid):
 
 def generateAccessToken(*, cid, accCode):
 	token = secrets.token_urlsafe(tokenLen)
+	newAccCode = secrets.token_urlsafe(accCodeLen)
 	cur = db.cursor()
 	cur.execute(
-		'UPDATE session SET token=? WHERE cid=? AND accCode=?',
-		(token, cid, accCode),
+		'UPDATE session SET accCode=?, token=? WHERE cid=? AND accCode=?',
+		(newAccCode, token, cid, accCode),
 	)
 	affected = cur.rowcount
 	cur.close()
