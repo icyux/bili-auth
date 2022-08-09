@@ -1,5 +1,6 @@
 .info-value,
 #challenge-msg {
+	display: inline-block;
 	padding: 0.2em 0.5em;
 	font-size: 1.1em;
 	background-color: #eef;
