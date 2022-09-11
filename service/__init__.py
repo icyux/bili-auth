@@ -1,5 +1,6 @@
 from flask import Flask
-
+import logging
+import sys
 
 app = Flask(__name__,
     static_folder='../static',
@@ -7,6 +8,10 @@ app = Flask(__name__,
     template_folder='../templates',
 )
 app.debug = False
+
+# setup logger
+handler = logging.StreamHandler(stream=sys.stdout)
+app.logger.addHandler(handler)
 
 import service.auth_middleware
 import service.bili_proxy

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env -S python3 -u
 
 import base64
 import secrets
@@ -34,6 +34,9 @@ service.hmacKey = hmacKey
 # connect database
 model.initDB(sqlite3.connect('oauth_application.db3', check_same_thread=False))
 
+
+# set logger
+msg_handler.logger = service.app.logger
 
 # run message listener
 msgThread = threading.Thread(target=msg_handler.mainLoop)

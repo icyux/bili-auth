@@ -13,6 +13,7 @@ sendCD = 1
 patt = re.compile(r'^\s*?/\s*?(\S+?)(?:\s+?(\S+?)?\s*?$|\s*$)', re.IGNORECASE)
 ackMts = int(time.time() * 1000)
 lastSendTs = 0
+logger = None
 
 aboutText = '''【 bili-auth 】 是一个第三方实现的 Bili OAuth API，基于私信验证用户对帐号的所有权。
 它可以让用户使用哔哩哔哩帐号，完成第四方应用鉴权。
@@ -72,7 +73,7 @@ def cmdHandler(uid, action, arg):
 
 def sendText(uid, content):
     global lastSendTs
-    print(f'[send -> {uid}]', content)
+    logger.info(f'[send -> {uid}]', content)
     sleepTime = lastSendTs + sendCD - time.time()
     if sleepTime > 0:
         time.sleep(sleepTime)
@@ -99,7 +100,7 @@ def mainLoop():
         try:
             checkMsg()
         except requests.exceptions.RequestException as e:
-            print(e)
+            logger.warn(e)
 
         time.sleep(4 + random() * 2)
 
