@@ -59,7 +59,7 @@ def cmdHandler(uid, action, arg):
             reply = '【 bili-auth 】 未找到此验证请求, 可能是此验证信息已过期。请尝试重新发起验证。'
         sendText(uid, reply)
     elif action == 'revoke':
-        vid = arg.lower()        
+        vid = arg.lower()
         if vr.revokeVerify(vid=vid, uid=uid):
             reply = '【 bili-auth 】 撤销成功。\nvid: {}\n对应的应用授权已立即被全部撤销，但生效时间取决于第四方应用的实现。'
             reply = reply.format(arg)
