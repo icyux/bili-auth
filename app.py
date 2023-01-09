@@ -4,17 +4,17 @@ import base64
 import secrets
 import sqlite3
 import threading
+import toml
 import uuid
 
 from bili import msg_handler
-from misc import config_reader
 import bili
 import model
 import service
 
 
 # read config
-cfg = config_reader.readConfig('config.json')
+cfg = toml.load('config.toml')
 
 # generate random device UUID
 biliCfg = cfg['bili']
