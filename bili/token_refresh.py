@@ -2,7 +2,7 @@ from selenium import webdriver
 import requests
 import time
 
-from misc import logger
+import misc
 import bili
 
 
@@ -12,6 +12,15 @@ def isCookieExpired():
 		headers=bili.authedHeader,
 	).json()['data']
 	return respPayload['refresh']
+
+
+def getOptions():
+	rawOptions = misc.config['selenium']['options']
+	options = webdriver.ChromeOptions()
+	for op in rawOptions:
+		options.add_argument(op)
+
+	return options
 
 
 def setCookie(driver, domain, origCookie):
@@ -36,7 +45,8 @@ def dumpCookie(driver):
 
 
 def fetchNewCookie():
-	driver = webdriver.Chrome()
+	options = getOptions()
+	driver = webdriver.Chrome(options=options)
 	driver.get('https://www.bilibili.com/')
 	setCookie(driver, '.bilibili.com', bili.cookies)
 	driver.execute_script(f'localStorage.ac_time_value = "{bili.refreshTkn}"')
@@ -54,6 +64,6 @@ def autoRefreshLoop():
 		if isExpired:
 			newCookies, newRefreshTkn = fetchNewCookie()
 			bili.updateCredential(newCookies, newRefreshTkn)
-			logger.info('cookie refreshed')
+			misc.logger.info('cookie refreshed')
 		else:	
 			time.sleep(300)
