@@ -7,10 +7,10 @@ import threading
 import toml
 import uuid
 
-from bili import msg_handler
-import bili
-import model
 import service
+import bili
+import bili.token_refresh
+import model
 
 
 # read config
@@ -33,10 +33,6 @@ service.hmacKey = hmacKey
 
 # connect database
 model.initDB(sqlite3.connect('oauth_application.db3', check_same_thread=False))
-
-
-# set logger
-msg_handler.logger = service.app.logger
 
 # run message listener
 msgThread = threading.Thread(target=msg_handler.mainLoop)

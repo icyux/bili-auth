@@ -5,6 +5,7 @@ import re
 import requests
 import time
 
+from misc import logger
 from bili import utils as bu
 from model import verify_request as vr
 
@@ -13,7 +14,6 @@ sendCD = 1
 patt = re.compile(r'^\s*?/\s*?(\S+?)(?:\s+?(\S+?)?\s*?$|\s*$)', re.IGNORECASE)
 ackMts = int(time.time() * 1000)
 lastSendTs = 0
-logger = None
 
 aboutText = '''【 bili-auth 】 是一个第三方实现的 Bili OAuth API，基于私信验证用户对帐号的所有权。
 它可以让用户使用哔哩哔哩帐号，完成第四方应用鉴权。
