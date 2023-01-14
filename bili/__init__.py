@@ -22,14 +22,10 @@ unauthedHeader = None
 def init():
     global selfUid, selfName, selfDevId, ua
 
-    # generate random device UUID
     cfg = misc.config['bili']
-    if cfg['dev_id'] == '':
-        cfg['dev_id'] = str(uuid.uuid4()).upper()
-
     selfUid = cfg['uid']
     selfName = cfg['nickname']
-    selfDevId = cfg['dev_id']
+    selfDevId = str(uuid.uuid4()).upper()
     ua = cfg['user_agent']
     loadCredential()
 
