@@ -35,12 +35,12 @@ service.hmacKey = hmacKey
 model.initDB(sqlite3.connect('oauth_application.db3', check_same_thread=False))
 
 # run message listener
-msgThread = threading.Thread(target=msg_handler.mainLoop)
+msgThread = threading.Thread(target=bili.msg_handler.mainLoop)
 msgThread.daemon = True
 msgThread.start()
 
 # enable periodic wakeup
-wakerThread = threading.Thread(target=msg_handler.periodicWakeup)
+wakerThread = threading.Thread(target=bili.msg_handler.periodicWakeup)
 wakerThread.daemon = True
 wakerThread.start()
 
