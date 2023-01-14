@@ -1,5 +1,8 @@
 import re
 import toml
+import uuid
+
+import misc
 
 
 CREDENTIAL_PATH = 'credential.toml'
@@ -16,12 +19,18 @@ authedHeader = None
 unauthedHeader = None
 
 
-def init(*, uid, nickname, dev_id, user_agent):
+def init():
     global selfUid, selfName, selfDevId, ua
-    selfUid = uid
-    selfName = nickname
-    selfDevId = dev_id
-    ua = user_agent
+
+    # generate random device UUID
+    cfg = misc.config['bili']
+    if cfg['dev_id'] == '':
+        cfg['dev_id'] = str(uuid.uuid4()).upper()
+
+    selfUid = cfg['uid']
+    selfName = cfg['nickname']
+    selfDevId = cfg['dev_id']
+    ua = cfg['user_agent']
     loadCredential()
 
 
