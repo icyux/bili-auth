@@ -1,4 +1,8 @@
 import re
+import toml
+
+
+CREDENTIAL_PATH = 'credential.toml'
 
 
 selfUid = ''
@@ -6,26 +10,49 @@ selfName = ''
 selfDevId = ''
 ua = ''
 csrf = ''
+cookies = ''
+refreshTkn = ''
 authedHeader = None
 unauthedHeader = None
 
 
-def init(*, uid, cookie, nickname, dev_id, user_agent):
-    global selfUid, selfName, selfDevId, csrf, ua, authedHeader, unauthedHeader
+def init(*, uid, nickname, dev_id, user_agent):
+    global selfUid, selfName, selfDevId, ua
     selfUid = uid
     selfName = nickname
     selfDevId = dev_id
     ua = user_agent
+    loadCredential()
+
+
+def loadCredential():
+    cred = toml.load(CREDENTIAL_PATH)
+    updateCredential(cred['cookies'], cred['refresh_token'], overwrite=False)
+
+
+def updateCredential(newCookies, newRefreshTkn, overwrite=True):
+    global csrf, cookies, authedHeader, unauthedHeader, refreshTkn
+    cookies = newCookies
+    refreshTkn = newRefreshTkn
 
     try:
-        csrf = re.search(r'bili_jct=(.*?); ', cookie).group(1)
+        csrf = re.search(r'bili_jct=(.*?)(?:; |$)', cookies).group(1)
     except AttributeError:
         errInfo = 'Invalid cookie. Check if the key "bili_jct" included for CSRF verify.'
         raise ValueError(errInfo)
+
     authedHeader = {
-        'Cookie': cookie,
+        'Cookie': cookies,
         'User-Agent': ua,
         'Origin': 'https://message.bilibili.com',
         'Referer': 'https://message.bilibili.com/',
     }
     unauthedHeader = {'User-Agent': ua}
+
+    if overwrite:
+        payload = {
+            'cookies': cookies,
+            'refresh_token': refreshTkn
+        }
+        with open(CREDENTIAL_PATH, 'w') as f:
+            toml.dump(payload, f)

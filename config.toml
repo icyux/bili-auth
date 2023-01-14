@@ -1,8 +1,6 @@
 [bili]
 	# user id
 	uid = 0
-	# cookie value
-	cookie = ""
 	# name will display on the verify request page
 	nickname = ""
 	# device id (UUID), randomly generated if not specified

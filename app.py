@@ -44,6 +44,11 @@ wakerThread = threading.Thread(target=bili.msg_handler.periodicWakeup)
 wakerThread.daemon = True
 wakerThread.start()
 
+# token auto refresh
+refreshThread = threading.Thread(target=bili.token_refresh.autoRefreshLoop)
+refreshThread.daemon = True
+refreshThread.start()
+
 # run oauth http service
 host = cfg['oauth_service']['host']
 port = cfg['oauth_service']['port']
