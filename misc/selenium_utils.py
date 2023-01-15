@@ -3,6 +3,9 @@ from selenium import webdriver
 import misc
 
 
+proxy = None
+
+
 class Options(webdriver.ChromeOptions):
 	def __init__(self, rawOptions):
 		super().__init__()
@@ -14,6 +17,10 @@ class ChromeDriver(webdriver.Chrome):
 	def __init__(self, *, options=None):
 		if options is None:
 			options = Options(misc.config['selenium']['options'])
+
+		if proxy is not None:
+			options.add_argument(f'--proxy-server={proxy}')
+
 		path = misc.config['selenium']['path']
 		super().__init__(executable_path=path, options=options)
 

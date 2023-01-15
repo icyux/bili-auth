@@ -12,6 +12,13 @@
 		"--blink-settings=imagesEnabled=false",
 	]
 
+[proxy]
+	# proxy for both requests and selenium
+	enable = false
+	# allow HTTP proxy only
+	type = "http"
+	addr = "host:port"
+
 [oauth_service]
 	host = "localhost"
 	port = 8080

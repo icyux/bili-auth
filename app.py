@@ -6,6 +6,7 @@ import sqlite3
 import threading
 import toml
 
+from misc import proxy_setup
 import misc
 import service
 import bili
@@ -18,6 +19,9 @@ misc.config = toml.load('config.toml')
 
 # init bili utils
 bili.init()
+
+# init proxy
+proxy_setup.init()
 
 # generate global HMAC key
 hmacKey = base64.b64decode(misc.config['oauth_service']['hmac_key'])
