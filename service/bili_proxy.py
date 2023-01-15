@@ -2,6 +2,7 @@ from flask import request
 import re
 import requests
 
+from misc.requests_session import session as rs
 from service import app
 from bili import utils as bu
 
@@ -11,7 +12,7 @@ def avatarProxy():
     url = request.args.get('url')
     if re.match(r'^https://i[0-9]\.hdslb\.com/bfs/face.*\.webp$', url) is None:
         return '', 400
-    req = requests.get(url)
+    req = rs.get(url)
     print(url)
     if req.status_code == 200:
         return req.content, 200, (

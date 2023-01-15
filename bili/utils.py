@@ -2,16 +2,17 @@ import json
 import requests
 import time
 
+from misc.requests_session import session as rs
 import bili
 
 
 def getNewMsg(beginMts: int, *, recvType: tuple = (1,)):
     beginMts -= 1
-    r = requests.get(
+    r = rs.get(
         f'https://api.vc.bilibili.com/session_svr/v1/session_svr/new_sessions?begin_ts={beginMts}&build=0&mobi_app=web',
         headers=bili.authedHeader
     )
-    requests.get(
+    rs.get(
         f'https://api.vc.bilibili.com/session_svr/v1/session_svr/ack_sessions?begin_ts={beginMts}&build=0&mobi_app=web',
         headers=bili.authedHeader
     )
@@ -36,11 +37,11 @@ def getNewMsg(beginMts: int, *, recvType: tuple = (1,)):
         url = f'https://api.vc.bilibili.com/svr_sync/v1/svr_sync/fetch_session_msgs?\
         sender_device_id=1&talker_id={s["talkerid"]}&session_type=1&size=50&begin_seqno={s["beginSeq"]}\
         &build=0&mobi_app=web'
-        r = requests.get(
+        r = rs.get(
             url,
             headers=bili.authedHeader
         )
-        updateAck = requests.post(
+        updateAck = rs.post(
             'https://api.vc.bilibili.com/session_svr/v1/session_svr/update_ack',
             headers=bili.authedHeader,
             data={
@@ -81,7 +82,7 @@ def sendMsg(recver: int, content: str, *, msgType: int = 1):
         content = content.replace('"', '\\"').replace('\n', '\\n')
         content = '{{"content":"{}"}}'.format(content)
 
-    r = requests.post(
+    r = rs.post(
         'https://api.vc.bilibili.com/web_im/v1/web_im/send_msg',
         headers=bili.authedHeader,
         data={
@@ -108,7 +109,7 @@ def sendMsg(recver: int, content: str, *, msgType: int = 1):
 
 
 def getUserInfo(uid: int):
-    r = requests.get(
+    r = rs.get(
         f'https://api.bilibili.com/x/space/acc/info?mid={uid}&jsonp=jsonp',
         headers=bili.unauthedHeader
     )

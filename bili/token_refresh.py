@@ -1,14 +1,14 @@
 from selenium.common import exceptions as seleniumExceptions
-import requests
 import time
 
+from misc.requests_session import session as rs
 from misc.selenium_utils import ChromeDriver
 import misc
 import bili
 
 
 def isCookieExpired():
-	respPayload = requests.get(
+	respPayload = rs.get(
 		f'https://passport.bilibili.com/x/passport-login/web/cookie/info?csrf={bili.csrf}',
 		headers=bili.authedHeader,
 	).json()['data']
