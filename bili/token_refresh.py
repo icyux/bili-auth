@@ -46,7 +46,8 @@ def dumpCookie(driver):
 
 def fetchNewCookie():
 	options = getOptions()
-	driver = webdriver.Chrome(options=options)
+	path = misc.config['selenium']['path']
+	driver = webdriver.Chrome(executable_path=path, options=options)
 	driver.get('https://www.bilibili.com/')
 	setCookie(driver, '.bilibili.com', bili.cookies)
 	driver.execute_script(f'localStorage.ac_time_value = "{bili.refreshTkn}"')
