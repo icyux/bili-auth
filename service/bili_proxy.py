@@ -1,6 +1,5 @@
 from flask import request
 import re
-import requests
 
 from misc.requests_session import session as rs
 from service import app

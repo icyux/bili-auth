@@ -1,5 +1,4 @@
 import json
-import requests
 import time
 
 from misc.requests_session import session as rs
