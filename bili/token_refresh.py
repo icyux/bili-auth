@@ -2,7 +2,7 @@ from selenium.common import exceptions as seleniumExceptions
 import requests
 import time
 
-from misc.selenium_utils import IntegratedChromeDriver
+from misc.selenium_utils import ChromeDriver
 import misc
 import bili
 
