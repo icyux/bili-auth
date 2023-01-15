@@ -1,4 +1,5 @@
 from selenium import webdriver
+from selenium.common import exceptions as seleniumExceptions
 import requests
 import time
 
@@ -23,6 +24,13 @@ def getOptions():
 	return options
 
 
+def runScript(driver, path):
+	with open(path, encoding='UTF-8') as f:
+		script = f.read()
+
+	return driver.execute_script(script)
+
+
 def setCookie(driver, domain, origCookie):
 	pairs = origCookie.split('; ')
 	for p in pairs:
@@ -45,26 +53,37 @@ def dumpCookie(driver):
 
 
 def fetchNewCookie():
-	options = getOptions()
-	path = misc.config['selenium']['path']
-	driver = webdriver.Chrome(executable_path=path, options=options)
-	driver.get('https://www.bilibili.com/')
-	setCookie(driver, '.bilibili.com', bili.cookies)
-	driver.execute_script(f'localStorage.ac_time_value = "{bili.refreshTkn}"')
-	driver.refresh()
-	time.sleep(10)
-	newRefreshTkn = driver.execute_script('return localStorage.ac_time_value')
-	newCookies = dumpCookie(driver)
-	driver.close()
-	return newCookies, newRefreshTkn
+	try:
+		# init selenium
+		options = getOptions()
+		path = misc.config['selenium']['path']
+		driver = webdriver.Chrome(executable_path=path, options=options)
+
+		# load credentials
+		driver.get('https://bilibili.com/')
+		setCookie(driver, '.bilibili.com', bili.cookies)
+		driver.execute_script(f'localStorage["ac_time_value"] = "{bili.refreshTkn}"')
+		driver.refresh()
+
+		# fetch refreshed credentials
+		newRefreshTkn = runScript(driver, 'script/listen_refresh_token.js')
+		newCookies = dumpCookie(driver)
+		return newCookies, newRefreshTkn
+
+	finally:
+		driver.close()
 
 
 def autoRefreshLoop():
 	while True:
 		isExpired = isCookieExpired()
 		if isExpired:
-			newCookies, newRefreshTkn = fetchNewCookie()
-			bili.updateCredential(newCookies, newRefreshTkn)
-			misc.logger.info('cookie refreshed')
-		else:	
-			time.sleep(300)
+			try:
+				newCookies, newRefreshTkn = fetchNewCookie()
+				bili.updateCredential(newCookies, newRefreshTkn)
+				misc.logger.info('cookie refreshed')
+			except seleniumExceptions.JavascriptException:
+				misc.logger.warn('cookie refresh failed')
+
+		else:
+			time.sleep(5 * 60)
