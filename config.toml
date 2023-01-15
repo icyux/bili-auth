@@ -9,6 +9,7 @@
 	path = "chromedriver"
 	options = [
 		"--headless",
+		"--blink-settings=imagesEnabled=false",
 	]
 
 [oauth_service]
