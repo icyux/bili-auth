@@ -12,8 +12,7 @@ app = Flask(__name__,
 app.debug = False
 
 # setup logger
-handler = logging.StreamHandler(stream=sys.stdout)
-app.logger.addHandler(handler)
+app.logger.setLevel(logging.INFO)
 misc.logger = app.logger
 
 import service.auth_middleware
