@@ -77,7 +77,7 @@ def createAccessToken():
     if tkn is None:
         return 'Invalid access code', 403
 
-    sessionInfo = session.getSessionInfo('accCode', code)
+    sessionInfo = session.getSessionInfo('token', tkn)
     userInfo = bu.getUserInfo(sessionInfo['uid'])
     return {
         'token': tkn,
