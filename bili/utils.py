@@ -2,6 +2,7 @@ import json
 import time
 
 from misc.requests_session import session as rs
+from misc.requests_session import noAuthSession as rnas
 import bili
 
 
@@ -108,7 +109,7 @@ def sendMsg(recver: int, content: str, *, msgType: int = 1):
 
 
 def getUserInfo(uid: int):
-    r = rs.get(
+    r = rnas.get(
         f'https://api.bilibili.com/x/space/acc/info?mid={uid}&jsonp=jsonp',
         headers=bili.unauthedHeader
     )

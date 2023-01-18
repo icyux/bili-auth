@@ -19,6 +19,9 @@
 	type = "http"
 	addr = "host:port"
 
+	# set if proxy is enabled for all requests including which bearing NO credentials
+	globalProxy = false
+
 [oauth_service]
 	host = "localhost"
 	port = 8080

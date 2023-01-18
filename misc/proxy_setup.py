@@ -10,6 +10,7 @@ def init():
 		typ = proxyPref['type']
 		addr = proxyPref['addr']
 		addrUrl = f'{typ}://{addr}'
+		isGlobal = proxyPref['globalProxy']
 
 		# selenium proxy
 		selenium_utils.proxy = addrUrl
@@ -19,4 +20,8 @@ def init():
 			'all': addrUrl,
 		}
 
-		misc.logger.info('proxy enabled')
+		if isGlobal:
+			requests_session.noAuthSession = requests_session.session
+			misc.logger.info('proxy enabled (global)')
+		else:
+			misc.logger.info('proxy enabled')
