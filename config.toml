@@ -1,3 +1,5 @@
+# for detailed configure instruction, see doc/deploy.md
+
 [bili]
 	# user id
 	uid = 0
@@ -27,6 +29,4 @@
 	port = 8080
 
 	# base64 encoded HMAC key, randomly generated if not specified.
-	# we support you generate it with this shell script:
-	# "head -c 64 /dev/random | base64"
 	hmac_key = ""
