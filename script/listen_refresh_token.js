@@ -14,6 +14,6 @@ return await Promise.race([
 		}
 	})(),
 	new Promise((resolve, reject) => {
-		setTimeout(() => reject('timeout'), 10000)
+		setTimeout(() => reject('timeout'), 60000)
 	}),
 ])

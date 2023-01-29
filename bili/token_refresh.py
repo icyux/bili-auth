@@ -17,6 +17,7 @@ def isCookieExpired():
 
 def fetchNewCookie():
 	with ChromeDriver() as d:
+		d.set_script_timeout(120)
 		# load credentials
 		d.get('https://bilibili.com/')
 		d.setCookie('.bilibili.com', bili.cookies)
@@ -34,6 +35,7 @@ def autoRefreshLoop():
 		isExpired = isCookieExpired()
 		if isExpired:
 			try:
+				misc.logger.info('cookie expired. refreshing...')
 				newCookies, newRefreshTkn = fetchNewCookie()
 				bili.updateCredential(newCookies, newRefreshTkn)
 				misc.logger.info('cookie refreshed')
@@ -41,4 +43,5 @@ def autoRefreshLoop():
 				misc.logger.warn('cookie refresh failed')
 
 		else:
-			time.sleep(5 * 60)
+			misc.logger.info('cookie alive')
+			time.sleep(5 * 3600)  # 5 hours interval
