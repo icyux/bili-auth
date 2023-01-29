@@ -73,7 +73,7 @@ def cmdHandler(uid, action, arg):
 
 def sendText(uid, content):
     global lastSendTs
-    logger.info(f'[send -> {uid}]', content)
+    logger.info(f'send->{uid}: {content}')
     sleepTime = lastSendTs + sendCD - time.time()
     if sleepTime > 0:
         time.sleep(sleepTime)
