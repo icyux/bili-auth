@@ -17,7 +17,7 @@ lastSendTs = 0
 
 aboutText = '''【 bili-auth 】 是一个第三方实现的 Bili OAuth API，基于私信验证用户对帐号的所有权。
 它可以让用户使用哔哩哔哩帐号，完成第四方应用鉴权。
-提供通用的 OAuth2.0 API，应用可快速接入。
+提供通用的 OAuth 2.0 API，应用可快速接入。
 代码开源，开发者可本地部署。
 更多信息，您可以访问 GitHub: vapehacker/bili-auth 。
 '''
@@ -49,12 +49,15 @@ def cmdHandler(uid, action, arg):
             except (AttributeError, IndexError):
                 platform, browser = '未知', '未知'
 
+            dt = time.strftime('%Y-%m-%d %H:%M:%S (UTC%z)', time.localtime(info['create']))
             reply = '\n'.join((
-                '【 bili-auth 】 验证完成。',
-                f'发起验证的用户操作系统：{platform}，',
-                f'浏览器（仅供参考）：{browser}。',
-                f'如果此次请求为意外发出, 请回复"/revoke {vid}"以撤销此次验证。',
-                '此消息是自动回复。您可以发送"/about"了解本项目。',
+                '【 bili-auth 】 验证完成，以下为详细信息。',
+                f'请求来源：{platform}, {browser}',
+                f'验证代码：{vid}',
+                f'创建时间：{dt}',
+                '您发送的消息是一条验证请求，可用于登录第三方应用。系统自动回复此消息以告知您验证结果。',
+                f'如果您在不知情的情况下意外发送了此次请求，请回复"/revoke {vid}"以撤销此次验证。',
+                '如果您对本项目有兴趣，可以发送"/about"进一步了解。'
             ))
         else:
             reply = '【 bili-auth 】 未找到此验证请求, 可能是此验证信息已过期。请尝试重新发起验证。'
