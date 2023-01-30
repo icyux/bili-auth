@@ -27,3 +27,6 @@
 [oauth_service]
 	# base64 encoded HMAC key, randomly generated if not specified.
 	hmac_key = ""
+
+[log]
+	format = "[%(module)s] %(levelname)s: %(message)s"

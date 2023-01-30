@@ -15,9 +15,6 @@ import bili.token_refresh
 import model
 
 
-# read config
-misc.config = toml.load('config.toml')
-
 # init bili utils
 bili.init()
 

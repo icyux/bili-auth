@@ -1,6 +1,5 @@
 #!/usr/bin/env -S python3 -u
 
-import logging
 import toml
 
 from bili import updateCredential
@@ -9,7 +8,6 @@ from misc.selenium_utils import *
 import misc
 
 
-misc.logger = logging.Logger(__name__)
 misc.config = toml.load('config.toml')
 proxy_setup.init()
 options = Options([])

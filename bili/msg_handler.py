@@ -1,11 +1,11 @@
 import queue; tasks = queue.Queue()  # initialization tasks queue
 
 from random import random
+import logging
 import re
 import requests
 import time
 
-from misc import logger
 from bili import utils as bu
 from model import verify_request as vr
 
@@ -76,7 +76,7 @@ def cmdHandler(uid, action, arg):
 
 def sendText(uid, content):
     global lastSendTs
-    logger.info(f'send->{uid}: {content}')
+    logging.info(f'send->{uid}: {content}')
     sleepTime = lastSendTs + sendCD - time.time()
     if sleepTime > 0:
         time.sleep(sleepTime)
@@ -103,7 +103,7 @@ def mainLoop():
         try:
             checkMsg()
         except requests.exceptions.RequestException as e:
-            logger.warn(e)
+            logging.warn(e)
 
         time.sleep(4 + random() * 2)
 

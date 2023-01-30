@@ -1,9 +1,9 @@
 from selenium.common import exceptions as seleniumExceptions
+import logging
 import time
 
 from misc.requests_session import session as rs
 from misc.selenium_utils import ChromeDriver
-import misc
 import bili
 
 
@@ -35,13 +35,13 @@ def autoRefreshLoop():
 		isExpired = isCookieExpired()
 		if isExpired:
 			try:
-				misc.logger.info('cookie expired. refreshing...')
+				logging.info('cookie expired. refreshing...')
 				newCookies, newRefreshTkn = fetchNewCookie()
 				bili.updateCredential(newCookies, newRefreshTkn)
-				misc.logger.info('cookie refreshed')
+				logging.info('cookie refreshed')
 			except seleniumExceptions.JavascriptException:
-				misc.logger.warn('cookie refresh failed')
+				logging.warn('cookie refresh failed')
 
 		else:
-			misc.logger.info('cookie alive')
+			logging.info('cookie alive')
 			time.sleep(5 * 3600)  # 5 hours interval

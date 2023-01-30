@@ -1,3 +1,5 @@
+import logging
+
 import misc
 from misc import selenium_utils
 from misc import requests_session
@@ -22,6 +24,6 @@ def init():
 
 		if isGlobal:
 			requests_session.noAuthSession = requests_session.session
-			misc.logger.info('proxy enabled (global)')
+			logging.info('proxy enabled (global)')
 		else:
-			misc.logger.info('proxy enabled')
+			logging.info('proxy enabled')
