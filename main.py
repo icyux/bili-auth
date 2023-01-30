@@ -8,6 +8,7 @@ import toml
 
 from misc import proxy_setup
 import misc
+from service import app
 import service
 import bili
 import bili.token_refresh
@@ -47,8 +48,3 @@ wakerThread.start()
 refreshThread = threading.Thread(target=bili.token_refresh.autoRefreshLoop)
 refreshThread.daemon = True
 refreshThread.start()
-
-# run oauth http service
-host = misc.config['oauth_service']['host']
-port = misc.config['oauth_service']['port']
-service.app.run(host=host, port=port)
