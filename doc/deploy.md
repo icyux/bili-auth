@@ -49,16 +49,17 @@ sqlite3 ./oauth_application.db3 < ./schema.sql
 	globalProxy = false
 
 [oauth_service]
-	# Web 应用的监听地址。
-	host = "localhost"
-	# Web 应用的监听端口
-	port = 8080
-
 	# HMAC 密钥，base64 编码。用于保存用户鉴权信息。默认留空，每次运行时随机生成。
 	# 如果需要手动指定，可以在终端运行此命令生成：
 	# head -c 64 /dev/random | base64
 	hmac_key = ""
+
+[log]
+	# 日志格式。参见 <https://docs.python.org/zh-cn/3/library/logging.html#logrecord-attributes>
+	format = "..."
 ```
+
+HTTP 监听地址则在 `uwsgi.ini` 配置。
 
 ## 鉴权凭据生成
 
@@ -75,7 +76,7 @@ sqlite3 ./oauth_application.db3 < ./schema.sql
 credential.toml 中一共需要配置 `cookies` 和 `refresh_token` 两项，您也可以手动填入。首先在浏览器上登录您的账号，打开开发者工具，然后执行以下操作：
 
 1. 随意选择一个发往 "\*.bilibili.com" 的请求，复制请求头中 `Cookie` 对应的值。cookie 中应当至少包含 "SESSDATA" 和 "bili_jct"。将这个值填入凭据文件中的 `cookies`。
-2. 查看 www.<nolink/>bilibili.com 对应的本地存储中 `ac_time_value` 对应的值，可以在浏览器控制台输入 `localStorage['ac_time_value']` 来获取。将这个值填入凭据文件中的 `refresh_token` 。
+2. 查看 www<nolink/>.bilibili.com 对应的本地存储中 `ac_time_value` 对应的值，可以在浏览器控制台输入 `localStorage['ac_time_value']` 来获取。将这个值填入凭据文件中的 `refresh_token` 。
 
 ## 添加 OAuth 应用
 
@@ -91,5 +92,8 @@ credential.toml 中一共需要配置 `cookies` 和 `refresh_token` 两项，您
 
 ## 运行
 
-直接运行 app.py 即可。
+上一步的依赖中应该已经安装好了 *uWSGI*，它将作为 Web 服务的容器。在项目根目录运行以下命令即可启动服务：
 
+```sh
+uwsgi --ini uwsgi.ini
+```
