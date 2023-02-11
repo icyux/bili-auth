@@ -63,7 +63,7 @@ HTTP 监听地址则在 `uwsgi.ini` 配置。
 
 ## 鉴权凭据生成
 
-本项目需要您配置有效的哔哩哔哩账户凭据。您可以使用以下任意一种方式生成凭据。
+您需要配置有效的哔哩哔哩账户凭据。可以使用以下任意一种方式生成凭据。
 
 ### 使用脚本
 
@@ -75,8 +75,9 @@ HTTP 监听地址则在 `uwsgi.ini` 配置。
 
 credential.toml 中一共需要配置 `cookies` 和 `refresh_token` 两项，您也可以手动填入。首先在浏览器上登录您的账号，打开开发者工具，然后执行以下操作：
 
-1. 随意选择一个发往 "\*.bilibili.com" 的请求，复制请求头中 `Cookie` 对应的值。cookie 中应当至少包含 "SESSDATA" 和 "bili_jct"。将这个值填入凭据文件中的 `cookies`。
+1. 随意选择一个发往 "\*.bilibili.com" 的请求，复制请求头中 `Cookie` 对应的值。cookie 中应当至少包含 "SESSDATA" 和 "bili_jct" 两个键，格式形如 `a=b; c=d`。将这个值填入凭据文件中的 `cookies`。
 2. 查看 www<nolink/>.bilibili.com 对应的本地存储中 `ac_time_value` 对应的值，可以在浏览器控制台输入 `localStorage['ac_time_value']` 来获取。将这个值填入凭据文件中的 `refresh_token` 。
+3. 清除 "www<nolink/>.bilibili.com" 的 Cookies（不是直接退出帐号）。由于凭据自动刷新后之前原先凭据将无法使用，因此上述操作获取到的凭据不应该同时在 bili-auth 和您的浏览器中使用，否则 bili-auth 中的凭据有可能失效无法刷新。直接退出帐号同样会使当前凭据失效。您可以在执行清除站点 Cookies 的操作后，在浏览器中重新登录帐号。
 
 ## 添加 OAuth 应用
 
