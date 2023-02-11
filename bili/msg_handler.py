@@ -40,7 +40,7 @@ def checkMsg():
 
 
 def cmdHandler(uid, action, arg):
-    if action == 'auth':
+    if action == 'auth' and arg is not None:
         vid = arg.lower()
         if vr.checkVerify(vid=vid, uid=uid):
             info = vr.getVerifyInfo(vid)
@@ -63,7 +63,7 @@ def cmdHandler(uid, action, arg):
         else:
             reply = '【 bili-auth 】 未找到此验证请求, 可能是此验证信息已过期。请尝试重新发起验证。'
         sendText(uid, reply)
-    elif action == 'revoke':
+    elif action == 'revoke' and arg is not None:
         vid = arg.lower()
         if vr.revokeVerify(vid=vid, uid=uid):
             reply = '【 bili-auth 】 撤销成功。\nvid: {}\n对应的应用授权已立即被全部撤销，但生效时间取决于第四方应用的实现。'
