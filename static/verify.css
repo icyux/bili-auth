@@ -27,6 +27,55 @@
 	background-color: #ccc;
 }
 
+button.option {
+	display: flex;
+	align-items: center;
+	padding: 0.5em;
+	font-size: 1.1em;
+	border: none;
+	border-radius: 0.4em;
+	background-color: #0000;
+	transition: background-color 0.3s;
+}
+
+button.option img {
+	width: 2em;
+	height: 2em;
+	margin-right: 1em;
+}
+
+button.option:hover:not(:disabled) {
+	background-color: #6ae;
+	color: #fff;
+}
+
+button.option:disabled {
+	color: #aaa;
+}
+
+#auth-main {
+	display: flex;
+	flex-direction: row;
+}
+
+#qrcode[src] {
+	width: 8em;
+	height: 8em;
+}
+
+img.guide {
+	height: 8em;
+}
+
+#auth-by-qrscan:has(#qrcode[src]) {
+	margin-left: 2em;
+	padding-left: 2em;
+	border-left: dashed 2px #555;
+}
+#auth-by-qrscan li {
+	margin: 0 0 1em;
+}
+
 #avatar {
 	width: 4em;
 	height: 4em;
@@ -53,38 +102,6 @@
 	color: #333;
 }
 
-#show-guide {
-	border: none;
-	border-radius: 5px;
-	background-color: rgba(127, 127, 127, 0.2);
-	padding: 0.2em 0.4em;
-}
-
-#show-guide::before {
-	content: '?';
-	font-weight: bold;
-	display: inline-block;
-	padding: 0.1em 0.4em;
-	border-radius: calc(50%);
-	background-color: rgba(127, 127, 127, 0.6)
-}
-
-#guide {
-	padding: 1em;
-	border-radius: 4px;
-	background-color: rgba(127, 127, 127, 0.2);
-}
-
-#guide h4 {
-	margin: 0.4em 0;
-}
-
-#guide p {
-	font-size: 0.9em;
-	margin-top: 0.2em;
-	margin-bottom: 1em;
-}
-
 #remain {
 	width: max-content;
 	background: linear-gradient(to right, #69f, #6df);
@@ -108,6 +125,11 @@
 	#challenge-msg {
 		background-color: #222;
 		color: #aaf;
+	}
+
+	button.option {
+		background-color: #0000;
+		color: #eee;
 	}
 
 	#copy {

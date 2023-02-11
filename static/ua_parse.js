@@ -1,7 +1,8 @@
 'use strict'
 
+const ua = navigator.userAgent
+
 function parseUserAgent() {
-	const ua = navigator.userAgent
 
 	let platform = null
 	if (/Android/.test(ua))
@@ -34,4 +35,8 @@ function parseUserAgent() {
 		browser = 'Chromium'
 
 	return [platform, browser]
+}
+
+function isMobile() {
+	return (/Mobile/.test(ua))
 }

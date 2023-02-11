@@ -1,9 +1,12 @@
 from flask import request
+import io
+import qrcode
 
 from misc.hmac_token import calcToken
 from model import verify_request as vr
 from service import app
 from service.auth_middleware import authRequired
+import bili
 
 
 @app.route('/api/verify/<vidParam>', methods=('GET',))
@@ -40,6 +43,11 @@ def createVerify():
         'vid': vid,
         'token': token,
         'expire': expire,
+        'botInfo': {
+            'name': bili.selfName,
+            'uid': bili.selfUid,
+            'qrcode': '/bot-qrcode',
+        },
     }, 201
 
 
@@ -56,3 +64,14 @@ def delVerify(vid):
             return '', 404
     except ValueError:
         return '', 400
+
+
+@app.route('/bot-qrcode')
+def botQrcode():
+    img = qrcode.make(f'bilibili://space/{bili.selfUid}', border=1)
+    buf = io.BytesIO()
+    img.save(buf, format='PNG')
+    data = buf.getvalue()
+    return data, 200, (
+        ('Content-Type', 'image/png'),
+    )

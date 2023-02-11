@@ -4,44 +4,87 @@
 <link rel='stylesheet' href='/static/verify.css'>
 <script src='/static/ua_parse.js' defer></script>
 <script src='/static/verify.js' defer></script>
-<div id='step-0'>
-	<h3>验证您的哔哩哔哩帐号</h3>
+
+<div id='intro'>
+	<h2>验证您的哔哩哔哩帐号</h2>
 	<p>我们将通过私信验证的方式，确认您对某个哔哩哔哩帐号的实际控制权。</p>
 	<p>
+		我们<strong>不会要求</strong>您提供任何私有信息（密码、手机号、邮箱、与其他用户的私信等）。
 		我们只会验证您对帐号的实际控制权，以及访问您帐号的公开信息（UID、昵称、头像、个性签名）。
-		我们不会要求您提供，也无法查看您的私有信息（如手机号、密码、邮箱、与其他用户的私信等）。
 	</p>
-	<p>接下来，您只需准备好一个已经登录哔哩哔哩帐号的设备，以及少于一分钟的时间完成验证。</p>
-	<button class='next-step' onclick='startVerify()'>开始验证</button>
+	<p>接下来，您只需准备好一个已经登录哔哩哔哩帐号的设备，以及两分钟左右的时间完成验证。</p>
+	<button class='next-step' onclick='nextStep("auth-type-select")'>开始验证</button>
 </div>
-<div id='step-1' hidden>
-	<p>
-		您需要发送这段文本：
-		<span id='challenge-msg'></span>
-		<button id='copy' onclick='copyVerifyCode()'>复制</button>
-	</p>
-	<p>
-		将它通过哔哩哔哩私信发送给机器人帐号
-		<a id='target-bot' target='_blank' href='https://message.bilibili.com/#/whisper/mid{{botUid}}'>@{{ botName }}</a>
-		。
-		<button id='show-guide' onclick='showGuide()'>如何发送私信</button>
-	</p>
-	<div id='guide' hidden>
-		<h4>网页端：</h4>
-		<p>点击上方蓝色的链接将跳转到哔哩哔哩官网，在当前浏览器的新标签中打开私信页面。</p>
-		<h4>手机端 / 移动端 / iOS端 / Android端：</h4>
-		<p>打开 App 首页 &gt; 顶部搜索栏中搜索用户 "{{botName}}" &gt; 找到名为 "{{botName}}" 的用户，点开其个人空间 &gt; 点击右上方的消息图标，发起私聊。</p>
-		<h4>电脑端 / Win端 / macOS端：</h4>
-		<p>请使用网页端完成私信操作，因为目前桌面端（尤其是 Win 客户端）的私信功能支持不完善。</p>
+
+<div id='auth-type-select' hidden>
+	<h2>确认您的登录类型</h2>
+	<p>您的帐号登录在哪种类型的平台上？这有助于我们展示合适的验证方式。</p>
+	<div>
+		<button class='option' onclick='startVerify("web")'>
+			<img src='/static/bili-web-icon.ico'>
+			<span>网页端（浏览器）</span>
+		</button>
+		<button class='option' onclick='startVerify("app")'>
+			<img src='/static/bili-app-icon.png'>
+			<span>移动端（安卓、iOS 等平台）或手表端</span>
+		</button>
+		<button class='option' disabled>
+			<img src='/static/not-supported.png'>
+			<span>桌面端、电视端、车机端：暂无支持</span>
+		</button>
 	</div>
-	<p>
-		<span id='remain'>请在 <span id='remain-timer'>6分钟</span> 内完成操作。</span>
-		<span>超时后，您需要刷新页面以重新开始验证。</span>
-	</p>
-	<p>确认发送完毕后，回到此页面，然后点击"下一步"。</p>
-	<button class='next-step' onclick='checkVerify()'>下一步</button>
 </div>
-<div id='step-2' hidden>
+
+<div id='auth-main' hidden>
+	<div>
+		<h2>发送确认消息</h2>
+		<p>
+			<div>
+				请将下面这条消息，通过私信发送给机器人帐号
+				<strong id='send-target'>@{{ botName }}</strong>
+				：
+			</div>
+			<div>
+				<span id='challenge-msg'></span>
+				<button id='copy' onclick='copyVerifyCode()'>复制</button>
+			</div>
+		</p>
+		<div id='auth-by-applink' hidden>
+			<div>点击下方按钮，即可直接在 App 内打开机器人的个人空间，在个人空间界面点击右上角私信图标即可发送消息。</div>
+			<button onclick='openInApp()'>在 App 内打开</button>
+		</div>
+		<div id='auth-by-web' hidden>
+			<div>点击即可直接在当前浏览器新标签页打开与机器人的私信页面。</div>
+			<button onclick='openInNewTab()'>跳转到私信界面</button>
+		</div>
+		<p>
+			<span id='remain'>请在 <span id='remain-timer'>6分钟</span> 内完成操作。</span>
+			<span>超时后，您需要刷新页面以重新开始验证。</span>
+		</p>
+		<p>确认发送完毕后，回到此页面，然后点击"下一步"。</p>
+		<button class='next-step' onclick='checkVerify()'>下一步</button>
+	</div>
+	<div id='auth-by-qrscan' hidden>
+		<h4>如何找到此用户？</h4>
+		<p>您可以使用以下任意一个方法：</p>
+		<ul>
+			<li>
+				<p>进入 App，扫描下方二维码直接跳转到个人空间。</p>
+				<div>
+					<img class='guide' src='/static/qrscan-guide.jpg'>
+					<img id='qrcode'>
+				</div>
+			</li>
+			<li>
+				若此设备上已安装 App，可以点击下方按钮直接跳转。
+				<button onclick='openInApp()'>在 App 内打开</button>
+			</li>
+			<li>手动搜索昵称查找用户。</li>
+		</ul>
+	</div>
+</div>
+
+<div id='finish' hidden>
 	<h3>帐号验证完成，以下为您的用户信息。</h3>
 	<div class='user-info'>
 		<img id='avatar' src=''>

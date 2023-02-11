@@ -3,8 +3,8 @@
 var redirect;
 var vid;
 var token;
-var step = 0;
-const finalStep = 2;
+var botUid;
+var step = 'intro';
 var expireAt, duration, timerRunId;
 
 async function generateRequest() {
@@ -26,7 +26,7 @@ async function generateRequest() {
 		expireAt = data['expire'];
 		duration = 360;
 		timerRunId = setInterval(refreshRemainTime, 1000);
-		return [data['vid'], data['token']];
+		return data;
 	}
 
 	return null;
@@ -69,10 +69,10 @@ async function init() {
 	redirect = arg['redirect'];
 }
 
-function nextStep() {
-	step++;
-	document.getElementById(`step-${step-1}`).hidden = true;
-	document.getElementById(`step-${step}`).hidden = false;
+function nextStep(nxtStep) {
+	document.getElementById(step).hidden = true;
+	document.getElementById(nxtStep).hidden = false;
+	step = nxtStep;
 }
 
 function setButtonDisable(state) {
@@ -80,13 +80,24 @@ function setButtonDisable(state) {
 		e.disabled = state;
 }
 
-async function startVerify() {
+async function startVerify(authType) {
 	setButtonDisable(true);
-	[vid, token] = await generateRequest();
+	document.querySelectorAll("button.option").forEach((btn) => btn.disabled = true);
 
-	if (vid) {
+	const result = await generateRequest();
+
+	if (result) {
+		[vid, token, botUid] = [result.vid, result.token, result.botInfo.uid];
 		document.getElementById('challenge-msg').innerText = `/auth ${vid}`;
-		nextStep();
+		if (authType === 'app') {
+			if (isMobile()) authType = 'applink';
+			else {
+				authType = 'qrscan';
+				document.getElementById('qrcode').src = result.botInfo.qrcode;
+			}
+		}
+		nextStep('auth-main');
+		document.getElementById(`auth-by-${authType}`).hidden = false;
 	}
 	else
 		alert('获取验证错误。请稍侯再试。');
@@ -105,7 +116,7 @@ async function checkVerify() {
 
 	let uid = result.info['uid'];
 	await setUserInfo(uid);
-	nextStep();
+	nextStep('finish');
 	setButtonDisable(false);
 }
 
@@ -131,9 +142,12 @@ async function copyVerifyCode() {
 	}
 }
 
-function showGuide() {
-	document.getElementById('guide').hidden = false
-	document.getElementById('show-guide').hidden = true
+function openInApp() {
+	window.open(`bilibili://space/${botUid}`);
+}
+
+function openInNewTab() {
+	window.open(`https://message.bilibili.com/#/whisper/mid${botUid}`);
 }
 
 function refreshRemainTime() {
