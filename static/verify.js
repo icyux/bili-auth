@@ -143,7 +143,7 @@ async function copyVerifyCode() {
 }
 
 function openInApp() {
-	window.open(`bilibili://space/${botUid}`);
+	window.location.href = `bilibili://space/${botUid}`;
 }
 
 function openInNewTab() {
