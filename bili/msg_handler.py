@@ -29,6 +29,7 @@ def checkMsg():
         uid = m['uid']
         content = m['content']
         ts = m['ts']
+        logging.info(f'recv<-{uid}: {content}')
         result = patt.search(content)
         if result:
             action = result.group(1).lower()
