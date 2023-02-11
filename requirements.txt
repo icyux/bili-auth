@@ -3,3 +3,5 @@ requests >= 2.21.0
 toml >= 0.10.1
 selenium >= 4.7.2
 uwsgi >= 2.0.21
+qrcode >= 7.4.2
+pillow >= 8.1.0
