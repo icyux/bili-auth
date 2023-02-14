@@ -7,6 +7,7 @@ import requests
 import time
 
 from bili import utils as bu
+from misc import config
 from model import verify_request as vr
 
 sendCD = 1
@@ -39,9 +40,11 @@ def checkMsg():
 
 
 def cmdHandler(uid, action, arg):
+    isRespRequired = config['bili']['verifyResultResp']
     if action == '确认授权' and arg is not None:
         vid = arg.lower()
-        if vr.checkVerify(vid=vid, uid=uid):
+        isSucc = vr.checkVerify(vid=vid, uid=uid)
+        if isSucc and isRespRequired:
             info = vr.getVerifyInfo(vid)
             try:
                 ua = info['ua'].split(';')
