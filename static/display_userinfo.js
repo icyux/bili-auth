@@ -6,9 +6,7 @@ async function fetchUserInfo(uid) {
 
 	let origAvatarURL = userInfo['avatar']
 	if (/\.jpg$/.test(origAvatarURL))
-		origAvatarURL += '@60w_60h_1c_1s.webp'
-	const proxiedAvatarURL = `/proxy/avatar?url=${encodeURIComponent(origAvatarURL)}`
-	userInfo['avatar'] = proxiedAvatarURL
+		userInfo['avatar'] = `${origAvatarURL}@60w_60h_1c_1s.webp`
 
 	return userInfo
 }

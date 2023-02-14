@@ -1,26 +1,7 @@
 from flask import request
-import re
 
-from misc.requests_session import noAuthSession as rnas
 from service import app
 from bili import utils as bu
-
-
-@app.route('/proxy/avatar')
-def avatarProxy():
-    url = request.args.get('url')
-    if re.match(r'^https://i[0-9]\.hdslb\.com/bfs/face.*\.webp$', url) is None:
-        return '', 400
-    req = rnas.get(url)
-    print(url)
-    if req.status_code == 200:
-        return req.content, 200, (
-            ('Cache-Control', 'max-age=1800'),
-            ('Content-Type', req.headers['Content-Type']),
-            ('Access-Control-Allow-Origin', '*'),
-            ('Vary', 'Origin'),
-        )
-    return '', 404
 
 
 @app.route('/proxy/user')
