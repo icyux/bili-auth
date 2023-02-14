@@ -11,7 +11,7 @@ from model import verify_request as vr
 
 sendCD = 1
 
-patt = re.compile(r'^\s*?/\s*?(\S+?)(?:\s+?(\S+?)?\s*?$|\s*$)', re.IGNORECASE)
+patt = re.compile(r'^\s*?/?\s*?(\S+?)(?:\s+?(\S+?)?\s*?$|\s*$)', re.IGNORECASE)
 ackMts = int(time.time() * 1000)
 lastSendTs = 0
 
@@ -34,13 +34,12 @@ def checkMsg():
         if result:
             action = result.group(1).lower()
             arg = result.group(2)
-            if action in ('auth', 'revoke', 'about'):
-                cmdHandler(uid, action, arg)
+            cmdHandler(uid, action, arg)
         ackMts = max(ts * 1000, ackMts)
 
 
 def cmdHandler(uid, action, arg):
-    if action == 'auth' and arg is not None:
+    if action == '确认授权' and arg is not None:
         vid = arg.lower()
         if vr.checkVerify(vid=vid, uid=uid):
             info = vr.getVerifyInfo(vid)

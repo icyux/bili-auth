@@ -88,7 +88,7 @@ async function startVerify(authType) {
 
 	if (result) {
 		[vid, token, botUid] = [result.vid, result.token, result.botInfo.uid];
-		document.getElementById('challenge-msg').innerText = `/auth ${vid}`;
+		document.getElementById('challenge-msg').innerText = `确认授权 ${vid}`;
 		if (authType === 'app') {
 			if (isMobile()) authType = 'applink';
 			else {
