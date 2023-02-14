@@ -48,14 +48,14 @@ def cmdHandler(uid, action, arg):
             info = vr.getVerifyInfo(vid)
             try:
                 ua = info['ua'].split(';')
-                platform, browser = ua[0], ua[1]
+                reqBy = f'{ua[0]}, {ua[1]}'
             except (AttributeError, IndexError):
-                platform, browser = '未知', '未知'
+                reqBy = '未知'
 
             dt = time.strftime('%Y-%m-%d %H:%M:%S (UTC%z)', time.localtime(info['create']))
             reply = '\n'.join((
                 '【 bili-auth 】 验证完成，以下为详细信息。',
-                f'请求来源：{platform}, {browser}',
+                f'请求来源：{reqBy}',
                 f'验证代码：{vid}',
                 f'创建时间：{dt}',
                 '您发送的消息是一条验证请求，可用于登录第三方应用。系统自动回复此消息以告知您验证结果。',
@@ -68,7 +68,7 @@ def cmdHandler(uid, action, arg):
     elif action == 'revoke' and arg is not None:
         vid = arg.lower()
         if vr.revokeVerify(vid=vid, uid=uid):
-            reply = '【 bili-auth 】 撤销成功。\nvid: {}\n对应的应用授权已立即被全部撤销，但生效时间取决于第四方应用的实现。'
+            reply = '【 bili-auth 】 撤销成功。\n验证代码: {}\n对应的应用授权已立即被全部撤销，但生效时间取决于第四方应用的实现。'
             reply = reply.format(arg)
         else:
             reply = '【 bili-auth 】 未找到此 vid 对应的验证信息。'
