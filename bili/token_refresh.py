@@ -40,7 +40,9 @@ def autoRefreshLoop():
 				bili.updateCredential(newCookies, newRefreshTkn)
 				logging.info('cookie refreshed')
 			except seleniumExceptions.JavascriptException:
-				logging.warn('cookie refresh failed')
+				logging.warn('cookie refresh timeout')
+			except seleniumExceptions.WebDriverException as e:
+				logging.warn(f'cookie refresh failed: {repr(e)}')
 
 		else:
 			logging.info('cookie alive')
