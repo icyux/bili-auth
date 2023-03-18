@@ -7,14 +7,10 @@ import bili
 
 
 def getNewMsg(beginMts: int, *, recvType: tuple = (1,)):
-    beginMts -= 1
     r = rs.get(
         f'https://api.vc.bilibili.com/session_svr/v1/session_svr/new_sessions?begin_ts={beginMts}&build=0&mobi_app=web',
-        headers=bili.authedHeader
-    )
-    rs.get(
-        f'https://api.vc.bilibili.com/session_svr/v1/session_svr/ack_sessions?begin_ts={beginMts}&build=0&mobi_app=web',
-        headers=bili.authedHeader
+        headers=bili.authedHeader,
+        timeout=10,
     )
     resp = r.json()
     assert resp['code'] == 0
@@ -23,14 +19,26 @@ def getNewMsg(beginMts: int, *, recvType: tuple = (1,)):
     else:
         return []
 
+    ackRequired = False
     for session in resp['data']['session_list']:
+        sessionTs = session['session_ts']
+        if sessionTs > beginMts:
+            ackRequired = True
+            beginMts = sessionTs
         if session['unread_count'] == 0:
             continue
         sessionList.append({
             'talkerid': session['talker_id'],
             'beginSeq': session['ack_seqno'],
-            'endSeq': session['ack_seqno'] + session['unread_count'],
+            'endSeq': session['max_seqno'],
         })
+
+    # ack sessions
+    if ackRequired:
+        rs.get(
+            f'https://api.vc.bilibili.com/session_svr/v1/session_svr/ack_sessions?begin_ts={beginMts}&build=0&mobi_app=web',
+            headers=bili.authedHeader
+        )
 
     msgList = []
     for s in sessionList:
@@ -41,6 +49,26 @@ def getNewMsg(beginMts: int, *, recvType: tuple = (1,)):
             url,
             headers=bili.authedHeader
         )
+        resp = r.json()
+        assert resp['code'] == 0
+        for m in resp['data']['messages']:
+            if not m['msg_type'] in recvType:
+                continue
+            if m['sender_uid'] == bili.selfUid:
+                continue
+            if m['msg_type'] == 1:
+                content = json.loads(m['content'])['content']
+            else:
+                content = m['content']
+            msgList.append({
+                'uid': m['sender_uid'],
+                'msgType': m['msg_type'],
+                'content': content,
+                'ts': m['timestamp'],
+                'seq': m['msg_seqno'],
+            })
+
+        # update session ack
         updateAck = rs.post(
             'https://api.vc.bilibili.com/session_svr/v1/session_svr/update_ack',
             headers=bili.authedHeader,
@@ -55,25 +83,7 @@ def getNewMsg(beginMts: int, *, recvType: tuple = (1,)):
             }
         )
         assert updateAck.json()['code'] == 0
-        resp = r.json()
-        assert resp['code'] == 0
-        for m in resp['data']['messages']:
-            if not m['msg_type'] in recvType:
-                continue
-            if m['sender_uid'] == bili.selfUid:
-                continue
-            if m['msg_type'] == 1:
-                content = json.loads(m['content'])['content']
-            else:
-                content = m['content']
-            # logging.info(f'recv msg: uid={m["sender_uid"]}, content={content}')
-            msgList.append({
-                'uid': m['sender_uid'],
-                'msgType': m['msg_type'],
-                'content': content,
-                'ts': m['timestamp'],
-                'seq': m['msg_seqno'],
-            })
+
     return msgList
 
 

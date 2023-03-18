@@ -13,7 +13,7 @@ from model import verify_request as vr
 sendCD = 1
 
 patt = re.compile(r'^\s*?/?\s*?(\S+?)(?:\s+?(\S+?)?\s*?$|\s*$)', re.IGNORECASE)
-ackMts = int(time.time() * 1000)
+ackMts = int(time.time() * 1000000)
 lastSendTs = 0
 
 aboutText = '''【 bili-auth 】 是一个第三方实现的 Bili OAuth API，基于私信验证用户对帐号的所有权。
@@ -36,7 +36,6 @@ def checkMsg():
             action = result.group(1).lower()
             arg = result.group(2)
             cmdHandler(uid, action, arg)
-        ackMts = max(ts * 1000, ackMts)
 
 
 def cmdHandler(uid, action, arg):
