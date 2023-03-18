@@ -45,7 +45,7 @@ def createVerify(*, userAgent=None):
 	expire = create + verifyReqMaxAge
 	cur = db.cursor()
 	cur.execute(
-		'INSERT INTO verify ("vid", "create", "expire", "ua") VALUES (?,?,?,?)',
+		'INSERT INTO verify (`vid`, `create`, `expire`, `ua`) VALUES (?,?,?,?)',
 		(vid, create, expire, userAgent),
 	)
 	affected = cur.rowcount
@@ -61,7 +61,7 @@ def createVerify(*, userAgent=None):
 def getVerifyInfo(vid):
 	cur = db.cursor()
 	cur.execute(
-		'SELECT "create", "expire", "ua", "uid" FROM verify WHERE vid=?',
+		'SELECT `create`, `expire`, `ua`, `uid` FROM verify WHERE vid=?',
 		(vid, ),
 	)
 	result = cur.fetchone()

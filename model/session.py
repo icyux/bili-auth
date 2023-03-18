@@ -24,7 +24,7 @@ def createSession(*, vid, cid):
 	cur = db.cursor()
 	try:
 		cur.execute(
-			'INSERT INTO session ("vid", "uid", "cid", "create", "accCode") VALUES (?,?,?,?,?)',
+			'INSERT INTO session (`vid`, `uid`, `cid`, `create`, `accCode`) VALUES (?,?,?,?,?)',
 			(vid, uid, cid, createTs, accessCode),
 		)
 		affected = cur.rowcount

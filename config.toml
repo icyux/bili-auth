@@ -1,5 +1,19 @@
 # for detailed configure instruction, see doc/deploy.md
 
+[database]
+	# SQLite3 config
+
+	type = "sqlite3"
+	path = "./oauth_application.db3"
+
+	# MySQL config
+	#type = "mysql"
+	#host = "localhost"
+	#port = 3306
+	#db = "db-name"
+	#user = "user"
+	#pswd = "password"
+
 [bili]
 	# user id
 	uid = 0

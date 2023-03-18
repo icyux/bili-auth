@@ -7,6 +7,7 @@ import threading
 import toml
 
 from misc import proxy_setup
+from model import execute_wrapper
 import misc
 from service import app
 import service
@@ -29,7 +30,23 @@ if hmacKey == b'':
 service.hmacKey = hmacKey
 
 # connect database
-model.initDB(sqlite3.connect('oauth_application.db3', check_same_thread=False))
+dbCfg = misc.config['database']
+dbType = dbCfg['type']
+
+if dbType == 'sqlite3':
+	model.initDB(sqlite3.connect(dbCfg['path'], check_same_thread=False))
+
+elif dbType == 'mysql':
+	model.initDB(execute_wrapper.WrappedMysqlConn(
+		host=dbCfg['host'],
+		port=dbCfg['port'],
+		db=dbCfg['db'],
+		user=dbCfg['user'],
+		passwd=dbCfg['pswd'],
+	))
+
+else:
+	raise ValueError('unsupported database type')
 
 # run message listener
 msgThread = threading.Thread(target=bili.msg_handler.mainLoop)
