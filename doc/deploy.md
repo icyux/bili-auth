@@ -9,16 +9,57 @@
 ```sh
 pip3 install -r ./requirements.txt
 ```
+### 数据库
+
+目前支持 SQLite3 和 MySQL (MariaDB) 两种类型的数据库。
+
+#### SQLite3（默认）
+在配置文件 config.toml 中的 `database` 段填写如下配置：
+```toml
+[database]
+	# 数据库类型
+	type = "sqlite3"
+	# 数据库文件的路径
+	path = "./bili-auth.db3"
+```
 
 初始化数据库结构：
 ```sh
-sqlite3 ./oauth_application.db3 < ./schema.sql
+# 如果数据库名称为 "bili-auth.db3"，则在项目根目录运行以下命令：
+sqlite3 ./bili-auth.db3 < ./schema.sql
 ```
+
+#### MySQL
+
+在配置文件 config.toml 中的 `database` 段填写如下配置：
+
+```toml
+[database]
+	# 数据库类型
+	type = "mysql"
+	# 数据库主机地址
+	host = "localhost"
+	# 数据库端口
+	port = 3306
+	# 库名称
+	db = "db-name"
+	# 登录用户名
+	user = "user"
+	# 登录密码
+	pswd = "password"
+```
+
+数据库结构文件为 "schema_mysql.sql"。根据您使用的数据库客户端软件的不同，在数据库控制台执行此文件内的所有 `CREATE` 语句即可。
+
 ## 填写配置文件
 
 配置文件为 config.toml 。除了 `uid` 和 `nickname` 需要根据实际情况填写以外，大部分配置项可以保持默认。
 
 ```toml
+[database]
+	# 数据库配置。参考上一节的内容。
+	type = "..."
+
 [bili]
 	# 机器人账号的 UID。在生成跳转链接及机器人发送私信时使用。
 	uid = 0
