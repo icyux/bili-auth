@@ -8,6 +8,8 @@ class WrappedMysqlConn(Connection):
 		super().__init__(**kw)
 
 	def cursor(self):
+		# reconnect if conn has been closed
+		self.ping(reconnect=True)
 		return WrappedCursor(self)
 
 
