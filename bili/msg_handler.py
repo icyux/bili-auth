@@ -66,7 +66,7 @@ def cmdHandler(uid, action, arg):
         sendText(uid, reply)
     elif action == 'revoke' and arg is not None:
         vid = arg.lower()
-        if vr.revokeVerify(vid=vid, uid=uid):
+        if vr.revokeVerify(vid=vid, uid=uid) is not None:
             reply = '【 bili-auth 】 撤销成功。\n验证代码: {}\n对应的应用授权已立即被全部撤销，但生效时间取决于第四方应用的实现。'
             reply = reply.format(arg)
         else:
