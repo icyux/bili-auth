@@ -120,7 +120,7 @@ def sendMsg(recver: int, content: str, *, msgType: int = 1):
 
 def getUserInfo(uid: int):
     r = rnas.get(
-        f'https://api.bilibili.com/x/space/acc/info?mid={uid}&jsonp=jsonp',
+        f'https://api.bilibili.com/x/space/wbi/acc/info?mid={uid}',
         headers=bili.unauthedHeader
     )
     resp = r.json()
