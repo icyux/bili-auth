@@ -2,7 +2,7 @@ from flask import request
 import secrets
 import time
 
-from misc.hmac_token import calcToken
+from misc.hmac_token import calcSign
 
 
 def authRequired(uidRequired=True):
@@ -22,7 +22,7 @@ def authRequired(uidRequired=True):
 
                 if int(expire) < currentTs:
                     return 'Expired token', 403
-                if not secrets.compare_digest(calcToken(uid, vid, expire), sign):
+                if not secrets.compare_digest(calcSign(uid, vid, expire), sign):
                     return 'Invalid sign', 403
 
                 if type(kw) != dict:

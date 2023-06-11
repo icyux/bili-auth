@@ -123,7 +123,7 @@ async function checkVerify() {
 async function setUserInfo(uid) {
 	const user = await fetchUserInfo(uid);
 	document.getElementById('avatar').src = user.avatar;
-	document.getElementById('user-name').innerText = user.nickname;
+	document.getElementById('user-name').innerText = user.name;
 	document.getElementById('bio').innerText = user.bio;
 }
 

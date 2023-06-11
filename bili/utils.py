@@ -127,7 +127,7 @@ def getUserInfo(uid: int):
     try:
         return {
             'uid': resp['data']['mid'],
-            'nickname': resp['data']['name'],
+            'name': resp['data']['name'],
             'avatar': resp['data']['face'].replace('http://', 'https://'),
             'bio': resp['data']['sign'],
         }

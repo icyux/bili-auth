@@ -7,7 +7,7 @@ if (isset($_SESSION['user'])) {
 	$raw = $_SESSION['user'];
 	$info = [
 		'uid' => $raw['uid'],
-		'nickname' => $raw['nickname'],
+		'name' => $raw['nickname'],
 		'bio' => $raw['bio'],
 		'avatar' => $raw['avatar'],
 	];

@@ -2,7 +2,7 @@ from flask import request
 import io
 import qrcode
 
-from misc.hmac_token import calcToken
+from misc.hmac_token import calcSign
 from model import verify_request as vr
 from service import app
 from service.auth_middleware import authRequired
@@ -21,7 +21,7 @@ def queryVerifyInfo(vidParam, *, vid):
     else:
         uid = result['uid']
         expire = result['expire']
-        sign = calcToken(uid, vid, expire)
+        sign = calcSign(uid, vid, expire)
         finalToken = f'{uid}.{vid}.{expire}.{sign}'
         result['token'] = finalToken
         return result, 200
@@ -36,7 +36,7 @@ def createVerify():
         ua = None
 
     vid, expire = vr.createVerify(userAgent=ua)
-    sign = calcToken(None, vid, expire)
+    sign = calcSign(None, vid, expire)
     token = f'{vid}.{expire}.{sign}'
 
     return {

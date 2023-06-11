@@ -3,7 +3,7 @@ import re
 import secrets
 
 from bili import utils as bu
-from misc.hmac_token import calcToken
+from misc.hmac_token import calcSign
 from model import application
 from model import session
 from model import verify_request as vr
