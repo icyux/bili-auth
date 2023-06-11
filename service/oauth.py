@@ -83,20 +83,3 @@ def createAccessToken():
         'token': tkn,
         'user': userInfo,
     }
-
-
-@app.route('/api/user')
-def queryByToken():
-    try:
-        tkn = re.match(r'^Bearer (.+)$', request.headers['Authorization']).group(1)
-    except (KeyError, IndexError):
-        return '', 400
-
-    sessionInfo = session.getSessionInfo('token', tkn)
-
-    if sessionInfo:
-        uid = sessionInfo['uid']
-        userInfo = bu.getUserInfo(uid)
-        return userInfo, 200
-    else:
-        return 'Session not found matched this token', 404

@@ -12,8 +12,8 @@ app.debug = False
 
 
 import service.auth_middleware
-import service.bili_proxy
 import service.oauth
+import service.user_info
 import service.verify
 import service.view
 

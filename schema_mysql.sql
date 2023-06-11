@@ -27,3 +27,12 @@ CREATE TABLE `session` (
 	`token`		VARCHAR(32),
 	PRIMARY KEY(`sid`)
 );
+
+CREATE TABLE `users` (
+	`uid`		BIGINT UNSIGNED NOT NULL,
+	`name`		VARCHAR(30) NOT NULL,
+	`bio`		VARCHAR(100) NOT NULL,
+	`avatar`	VARCHAR(100) NOT NULL,
+	`updateTs`	BIGINT UNSIGNED NOT NULL,
+	PRIMARY KEY (`uid`)
+);

@@ -1,7 +1,12 @@
 'use strict'
 
 async function fetchUserInfo(uid) {
-	let resp = await fetch(`/proxy/user?uid=${uid}`)
+	const vt = localStorage['verifyToken']
+	let resp = await fetch(`/api/user`,{
+		headers: {
+			'Authorization': `BUTKN ${vt}`,
+		},
+	})
 	let userInfo = await resp.json()
 
 	let origAvatarURL = userInfo['avatar']

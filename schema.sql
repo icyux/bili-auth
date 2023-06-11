@@ -27,3 +27,12 @@ CREATE TABLE "session" (
 	"token"		TEXT,
 	PRIMARY KEY("sid" AUTOINCREMENT)
 );
+
+CREATE TABLE "users" (
+	"uid"		INTEGER NOT NULL UNIQUE,
+	"name"		TEXT NOT NULL,
+	"bio"		TEXT NOT NULL,
+	"avatar"	TEXT NOT NULL,
+	"updateTs"	INTEGER NOT NULL,
+	PRIMARY KEY("uid")
+);

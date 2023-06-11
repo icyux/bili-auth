@@ -9,4 +9,5 @@ def initDB(mainDB):
 	db = mainDB
 	application.initDB()
 	session.initDB()
+	user.initDB()
 	verify_request.initDB()
