@@ -3,10 +3,8 @@ import re
 import secrets
 
 from bili import utils as bu
-from misc.hmac_token import calcSign
 from model import application
 from model import session
-from model import verify_request as vr
 from service import app
 from service.auth_middleware import authRequired
 

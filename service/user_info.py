@@ -32,7 +32,6 @@ def getCurUserInfo():
 		else:
 			return 'not authorized user', 403
 
-
 	# an authentified user is querying self info
 	elif request.headers.get('Authorization', '')[:5] == 'BUTKN':
 		tkn = request.headers['Authorization'][6:]

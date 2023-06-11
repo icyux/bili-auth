@@ -8,8 +8,8 @@ from bili.msg_handler import tasks
 
 vidLen = 8
 vidCharset = '0123456789abcdefghijklmnopqrstuvwxyz'
-verifyReqMaxAge = 360
-verifySuccMaxAge = 86400
+verifyReqMaxAge = 6 * 60
+verifySuccMaxAge = 30 * 86400
 
 
 def initDB():

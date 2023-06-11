@@ -1,5 +1,4 @@
 import secrets
-import sqlite3
 import time
 
 from model import verify_request as vr
