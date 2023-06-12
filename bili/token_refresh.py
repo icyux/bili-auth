@@ -19,7 +19,7 @@ def fetchNewCookie():
 	with ChromeDriver() as d:
 		d.set_script_timeout(120)
 		# load credentials
-		d.get('https://bilibili.com/')
+		d.get('https://www.bilibili.com/')
 		d.setCookie('.bilibili.com', bili.cookies)
 		d.execute_script(f'localStorage["ac_time_value"] = "{bili.refreshTkn}"')
 		d.refresh()

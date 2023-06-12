@@ -3,6 +3,7 @@ import time
 
 from misc.requests_session import session as rs
 from misc.requests_session import noAuthSession as rnas
+from bili import api
 import bili
 
 
@@ -117,8 +118,13 @@ def sendMsg(recver: int, content: str, *, msgType: int = 1):
 
 
 def getUserInfo(uid: int):
-    r = rnas.get(
-        f'https://api.bilibili.com/x/space/wbi/acc/info?mid={uid}&token=',
+    r = api.request(
+        method='GET',
+        path='/x/space/wbi/acc/info',
+        params={
+            'mid': uid,
+        },
+        wbi=True,
     )
     resp = r.json()
     try:
