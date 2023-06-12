@@ -30,9 +30,9 @@ CREATE TABLE "session" (
 
 CREATE TABLE "users" (
 	"uid"		INTEGER NOT NULL UNIQUE,
-	"name"		TEXT NOT NULL,
-	"bio"		TEXT NOT NULL,
-	"avatar"	TEXT NOT NULL,
+	"name"		TEXT,
+	"bio"		TEXT,
+	"avatar"	TEXT,
 	"updateTs"	INTEGER NOT NULL,
 	PRIMARY KEY("uid")
 );

@@ -118,21 +118,30 @@ def sendMsg(recver: int, content: str, *, msgType: int = 1):
 
 
 def getUserInfo(uid: int):
-    r = api.request(
-        method='GET',
-        path='/x/space/wbi/acc/info',
-        params={
-            'mid': uid,
-        },
-        wbi=True,
-    )
-    resp = r.json()
     try:
+        data = api.request(
+            method='GET',
+            path='/x/space/wbi/acc/info',
+            params={
+                'mid': uid,
+            },
+            wbi=True,
+        )
         return {
-            'uid': resp['data']['mid'],
-            'name': resp['data']['name'],
-            'avatar': resp['data']['face'].replace('http://', 'https://'),
-            'bio': resp['data']['sign'],
+            'uid': data['mid'],
+            'name': data['name'],
+            'avatar': data['face'].replace('http://', 'https://'),
+            'bio': data['sign'],
         }
-    except IndexError:
-        return None
+
+    except api.BiliApiError as e:
+        # deleted account
+        if e.code == -404:
+            return {
+                'uid': uid,
+                'name': None,
+                'avatar': None,
+                'bio': None,
+            }
+        else:
+            raise e

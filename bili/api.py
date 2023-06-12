@@ -13,7 +13,15 @@ maxAge = 3600
 
 # todo: raise api error
 class BiliApiError(Exception):
-	pass
+	def __init__(self, code, msg):
+		self.code = code
+		self.msg = msg
+
+	def __repr__(self):
+		return f'BiliApiError({self.code}, {self.msg})'
+
+	def __str__(self):
+		return repr(self)
 
 
 def request(*, method='GET', sub='api', path, params={}, wbi=False, credential=False):
@@ -27,7 +35,12 @@ def request(*, method='GET', sub='api', path, params={}, wbi=False, credential=F
 
 	session = rs if credential else rnas
 	resp = session.request(method, url)
-	return resp
+	resp.raise_for_status()
+	body = resp.json()
+	if body['code'] != 0:
+		raise BiliApiError(body['code'], body['message'])
+
+	return body['data']
 
 
 def wbiSign(params):
