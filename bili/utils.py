@@ -9,7 +9,6 @@ import bili
 def getNewMsg(beginMts: int, *, recvType: tuple = (1,)):
     r = rs.get(
         f'https://api.vc.bilibili.com/session_svr/v1/session_svr/new_sessions?begin_ts={beginMts}&build=0&mobi_app=web',
-        headers=bili.authedHeader,
         timeout=10,
     )
     resp = r.json()
@@ -37,7 +36,6 @@ def getNewMsg(beginMts: int, *, recvType: tuple = (1,)):
     if ackRequired:
         rs.get(
             f'https://api.vc.bilibili.com/session_svr/v1/session_svr/ack_sessions?begin_ts={beginMts}&build=0&mobi_app=web',
-            headers=bili.authedHeader
         )
 
     msgList = []
@@ -121,7 +119,6 @@ def sendMsg(recver: int, content: str, *, msgType: int = 1):
 def getUserInfo(uid: int):
     r = rnas.get(
         f'https://api.bilibili.com/x/space/wbi/acc/info?mid={uid}&token=',
-        headers=bili.unauthedHeader
     )
     resp = r.json()
     try:

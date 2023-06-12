@@ -2,6 +2,8 @@ import re
 import toml
 import uuid
 
+from misc.requests_session import session as rs
+from misc.requests_session import noAuthSession as rnas
 import misc
 
 
@@ -52,7 +54,9 @@ def updateCredential(newCookies, newRefreshTkn, overwrite=True):
         'Origin': 'https://message.bilibili.com',
         'Referer': 'https://message.bilibili.com/',
     }
+    rs.headers = authedHeader
     unauthedHeader = {'User-Agent': ua}
+    rnas.headers = unauthedHeader
 
     if overwrite:
         payload = {
