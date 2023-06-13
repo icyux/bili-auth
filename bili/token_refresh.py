@@ -2,17 +2,22 @@ from selenium.common import exceptions as seleniumExceptions
 import logging
 import time
 
-from misc.requests_session import session as rs
+from bili import api
 from misc.selenium_utils import ChromeDriver
 import bili
 
 
 def isCookieExpired():
-	respPayload = rs.get(
-		f'https://passport.bilibili.com/x/passport-login/web/cookie/info?csrf={bili.csrf}',
-		headers=bili.authedHeader,
-	).json()['data']
-	return respPayload['refresh']
+	data = api.request(
+		method='GET',
+		sub='passport',
+		path='/x/passport-login/web/cookie/info',
+		params={
+			'csrf': bili.csrf,
+		},
+		credential=True,
+	)
+	return data['refresh']
 
 
 def fetchNewCookie():

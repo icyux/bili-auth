@@ -1,26 +1,28 @@
 import json
 import time
 
-from misc.requests_session import session as rs
-from misc.requests_session import noAuthSession as rnas
 from bili import api
 import bili
 
 
 def getNewMsg(beginMts: int, *, recvType: tuple = (1,)):
-    r = rs.get(
-        f'https://api.vc.bilibili.com/session_svr/v1/session_svr/new_sessions?begin_ts={beginMts}&build=0&mobi_app=web',
+    data = api.request(
+        method='GET',
+        sub='api.vc',
+        path='/session_svr/v1/session_svr/new_sessions',
+        params={
+            'begin_ts': beginMts,
+        },
+        credential=True,
         timeout=10,
     )
-    resp = r.json()
-    assert resp['code'] == 0
-    if resp['data'].get('session_list'):
+    if data.get('session_list'):
         sessionList = []
     else:
         return []
 
     ackRequired = False
-    for session in resp['data']['session_list']:
+    for session in data['session_list']:
         sessionTs = session['session_ts']
         if sessionTs > beginMts:
             ackRequired = True
@@ -35,22 +37,31 @@ def getNewMsg(beginMts: int, *, recvType: tuple = (1,)):
 
     # ack sessions
     if ackRequired:
-        rs.get(
-            f'https://api.vc.bilibili.com/session_svr/v1/session_svr/ack_sessions?begin_ts={beginMts}&build=0&mobi_app=web',
+        api.request(
+            method='GET',
+            sub='api.vc',
+            path='/session_svr/v1/session_svr/ack_sessions',
+            params={
+                'begin_ts': beginMts,
+            },
+            credential=True,
         )
 
     msgList = []
     for s in sessionList:
-        url = f'https://api.vc.bilibili.com/svr_sync/v1/svr_sync/fetch_session_msgs?\
-        sender_device_id=1&talker_id={s["talkerid"]}&session_type=1&size=50&begin_seqno={s["beginSeq"]}\
-        &build=0&mobi_app=web'
-        r = rs.get(
-            url,
-            headers=bili.authedHeader
+        data = api.request(
+            method='GET',
+            sub='api.vc',
+            path='/svr_sync/v1/svr_sync/fetch_session_msgs',
+            params={
+                'talker_id': s["talkerid"],
+                'begin_seqno': s["beginSeq"],
+                'size': 50,
+                'session_type': 1,
+            },
+            credential=True,
         )
-        resp = r.json()
-        assert resp['code'] == 0
-        for m in resp['data']['messages']:
+        for m in data['messages']:
             if not m['msg_type'] in recvType:
                 continue
             if m['sender_uid'] == bili.selfUid:
@@ -68,20 +79,19 @@ def getNewMsg(beginMts: int, *, recvType: tuple = (1,)):
             })
 
         # update session ack
-        updateAck = rs.post(
-            'https://api.vc.bilibili.com/session_svr/v1/session_svr/update_ack',
-            headers=bili.authedHeader,
+        api.request(
+            method='POST',
+            sub='api.vc',
+            path='/session_svr/v1/session_svr/update_ack',
             data={
                 'talker_id': s['talkerid'],
                 'session_type': 1,
                 'ack_seqno': s['endSeq'],
-                'build': 0,
-                'mobi_app': 'web',
                 'csrf_token': bili.csrf,
                 'csrf': bili.csrf,
-            }
+            },
+            credential=True,
         )
-        assert updateAck.json()['code'] == 0
 
     return msgList
 
@@ -91,9 +101,10 @@ def sendMsg(recver: int, content: str, *, msgType: int = 1):
         content = content.replace('"', '\\"').replace('\n', '\\n')
         content = '{{"content":"{}"}}'.format(content)
 
-    r = rs.post(
-        'https://api.vc.bilibili.com/web_im/v1/web_im/send_msg',
-        headers=bili.authedHeader,
+    data = api.request(
+        method='POST',
+        sub='api.vc',
+        path='/web_im/v1/web_im/send_msg',
         data={
             'msg[sender_uid]': bili.selfUid,
             'msg[receiver_id]': recver,
@@ -106,15 +117,10 @@ def sendMsg(recver: int, content: str, *, msgType: int = 1):
             'msg[dev_id]': bili.selfDevId,
             'csrf': bili.csrf,
             'csrf_token': bili.csrf,
-            'from_firework': 0,
-            'build': 0,
-            'mobi_app': 'web',
-        }
+        },
+        credential=True,
     )
-    resp = r.json()
-    if resp['code'] == 0:
-        return resp['data']['msg_key']
-    return False
+    return data['msg_key']
 
 
 def getUserInfo(uid: int):

@@ -24,17 +24,20 @@ class BiliApiError(Exception):
 		return repr(self)
 
 
-def request(*, method='GET', sub='api', path, params={}, wbi=False, credential=False):
-	assert sub in ['api', 'api.vc']
-	if wbi:
+def request(*, method='GET', sub='api', path, params=None, data=None, timeout=None, wbi=False, credential=False):
+	assert sub in ['api', 'api.vc', 'passport']
+	if params is None:
+		qs = ''
+	elif wbi:
 		qs = '?' + wbiSign(params)
-	elif len(params) > 0:
+	else:
 		qs = '?' + encodeParams(params)
+
 
 	url = f'https://{sub}.bilibili.com{path}{qs}'
 
 	session = rs if credential else rnas
-	resp = session.request(method, url)
+	resp = session.request(method, url, data=data, timeout=timeout)
 	resp.raise_for_status()
 	body = resp.json()
 	if body['code'] != 0:
