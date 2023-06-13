@@ -35,7 +35,7 @@ async function generateRequest() {
 async function checkRequestState() {
 	let req = await fetch(`/api/verify/${vid}`, {
 		headers: {
-			'Authorization': `Bearer ${token}`,
+			'Authorization': `BUTKN ${token}`,
 		},
 	});
 	if (req.status == 202)

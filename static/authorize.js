@@ -30,7 +30,7 @@ async function init() {
 		verifyRedirect();
 		return;
 	}
-	authHeader = {'Authorization': `Bearer ${tkn}`};
+	authHeader = {'Authorization': `BUTKN ${tkn}`};
 
 	await setUserInfo(uid);
 

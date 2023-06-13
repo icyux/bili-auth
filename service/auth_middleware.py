@@ -2,28 +2,18 @@ from flask import request
 import secrets
 import time
 
-from misc.hmac_token import calcSign
+from misc.hmac_token import checkToken
 
 
 def authRequired(uidRequired=True):
     def middleware(handler):
         def wrapper(*args, **kw):
             try:
-                userToken = request.headers['Authorization'][7:]
-                currentTs = int(time.time())
+                userToken = request.headers['Authorization'][6:]
+                checkResult = checkToken(userToken)
 
-                try:
-                    uid, vid, expire, sign = userToken.split('.')
-                except ValueError as e:
-                    if uidRequired:
-                        raise e
-                    uid = None
-                    vid, expire, sign = userToken.split('.')
-
-                if int(expire) < currentTs:
-                    return 'Expired token', 403
-                if not secrets.compare_digest(calcSign(uid, vid, expire), sign):
-                    return 'Invalid sign', 403
+                if checkResult is None or (uidRequired and checkResult['uid'] is None):
+                    return 'invalid or expired token', 403
 
                 if type(kw) != dict:
                     kw = {}
