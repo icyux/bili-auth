@@ -19,7 +19,7 @@ def getApp(cid):
         return '', 404
     else:
         rtn = {}
-        fieldList = ('cid', 'name', 'url', 'desc', 'icon')
+        fieldList = ('cid', 'name', 'link', 'desc', 'icon', 'prefix')
         for field in fieldList:
             rtn[field] = info[field]
 

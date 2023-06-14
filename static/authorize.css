@@ -46,7 +46,7 @@ img.icon {
 	margin-bottom: 0.5em;
 }
 
-.confirm {
+#authorize {
 	display: block;
 	margin: 1em auto;
 	background-color: #3a3;
@@ -58,8 +58,12 @@ img.icon {
 	transition: background-color 0.3s;
 }
 
-.confirm:hover {
+#authorize:hover {
 	background-color: #37cc37;
+}
+
+#authorize:disabled {
+	background-color: #686;
 }
 
 @media screen and (max-width: 700px) {

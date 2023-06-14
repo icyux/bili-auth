@@ -55,7 +55,7 @@ async function init() {
 
 	redirect = arg['redirect_uri'];
 	if (redirect === undefined) {
-		document.getElementById('pending').innerText = '重定向 URL 未指定，请咨询应用管理者';
+		document.getElementById('pending').innerText = '回调 URL 未指定，请咨询应用管理者。';
 		return;
 	}
 
@@ -68,8 +68,8 @@ async function init() {
 
 	document.getElementById('app-id').innerText = cid;
 	document.getElementById('app-name').innerText = appInfo['name'];
-	document.getElementById('app-url').href = appInfo['url'];
-	document.getElementById('app-url').innerText = appInfo['url'];
+	document.getElementById('app-url').href = appInfo['link'];
+	document.getElementById('app-url').innerText = appInfo['link'];
 	document.getElementById('app-icon').src = appInfo['icon'];
 	document.getElementById('app-desc').innerText = appInfo['desc'];
 	document.getElementById('redirect-uri').innerText = redirect;
@@ -118,6 +118,8 @@ async function createSession() {
 }
 
 async function authorizeApp() {
+	document.getElementById('authorize').disabled = true;
+	document.getElementById('authorize').innerText = '正在授权...';
 	var existedCode;
 	try {
 		existedCode = await queryExistedAccCode();
