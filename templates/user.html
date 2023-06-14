@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block title %}用户信息 | bili-auth{% endblock %}
+{% block main %}
+<link rel='stylesheet' href='/static/user.css'>
+<script src='/static/user.js' defer></script>
+
+<div class='user-info'>
+	<img id='avatar' src='' referrerpolicy='no-referrer'>
+	<div class='name-bio-container'>
+		<div id='user-name'></div>
+		<div id='bio'></div>
+	</div>
+</div>
+
+<div id='navigator'>
+	<div class='option selected' id='opt-0'>授权的应用</div>
+	<div class='option' id='opt-1'>创建的应用</div>
+</div>
+
+<template id='app-tpl'>
+	<li class='app-info'>
+		<img class='app-icon'>
+		<div class='app-name'></div>
+		<button></button>
+	</li>
+</template>
+
+
+<div id='area-0'>
+	<ul id='authorized-apps'></ul>
+</div>
+
+<div id='area-1' hidden>
+	<ul id='created-apps'></ul>
+	<button id='create-new-app'>创建新应用</button>
+</div>
+
+{% endblock %}

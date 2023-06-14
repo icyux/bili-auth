@@ -59,8 +59,8 @@ async function init() {
 		return;
 	}
 
-	if (redirect.indexOf(appInfo.url) !== 0) {
-		document.getElementById('pending').innerText = '回调 URL 与应用不匹配，请咨询应用管理者';
+	if (redirect.indexOf(appInfo.prefix) !== 0) {
+		document.getElementById('pending').innerText = '回调 URL 与预设前缀不匹配，请咨询应用管理者。';
 		return;	
 	}
 

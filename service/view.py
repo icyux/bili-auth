@@ -20,3 +20,8 @@ def verifyPage():
 @app.route('/oauth/authorize')
 def oauthAuthorizePage():
     return render_template('authorize.html')
+
+
+@app.route('/user')
+def userPage():
+	return render_template('user.html')
