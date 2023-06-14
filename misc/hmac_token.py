@@ -21,8 +21,11 @@ def checkToken(token):
 	if not (3 <= len(data) <= 4):
 		return None
 	
-	uid = data[0] if len(data) == 4 else None
 	vid, exp, sign = data[-3:]
+	try:
+		uid = int(data[0]) if len(data) == 4 else None
+	except ValueError:
+		return None
 
 	trueSign = calcSign(uid, vid, exp)
 
