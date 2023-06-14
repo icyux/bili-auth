@@ -79,5 +79,21 @@ def revokeAuthorization(*, cid, uid):
         'DELETE FROM session WHERE uid = ? AND cid = ?',
         (uid, cid),
     )
+    affected = cur.rowcount
     cur.close()
     db.commit()
+
+    return affected > 0
+
+
+def deleteApplication(cid):
+    cur = db.cursor()
+    cur.execute(
+        'DELETE FROM app WHERE cid = ?',
+        (cid, ),
+    )
+    affected = cur.rowcount
+    cur.close()
+    db.commit()
+
+    return affected > 0

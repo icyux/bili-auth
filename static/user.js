@@ -17,11 +17,11 @@ async function fetchAuthorizedApps() {
 	let authorizedApps = await resp.json()
 	let tpl = document.getElementById('app-tpl')
 	for (let app of authorizedApps) {
-		tpl.content.querySelector('.app-icon').src = app['icon']
-		tpl.content.querySelector('.app-name').innerText = app['name']
-		tpl.content.querySelector('button').innerText = '撤销授权'
-		tpl.content.querySelector('button').onclick = () => revokeAuthorization(app['cid'])
 		let row = document.importNode(tpl.content, true)
+		row.querySelector('.app-icon').src = app['icon']
+		row.querySelector('.app-name').innerText = app['name']
+		row.querySelector('button').innerText = '撤销授权'
+		row.querySelector('button').onclick = () => revokeAuthorization(app['cid'])
 		document.getElementById('authorized-apps').appendChild(row)
 	}
 }
@@ -36,27 +36,44 @@ async function fetchCreatedApps() {
 	let createdApps = await resp.json()
 	let tpl = document.getElementById('app-tpl')
 	for (let app of createdApps) {
-		tpl.content.querySelector('.app-icon').src = app['icon']
-		tpl.content.querySelector('.app-name').innerText = app['name']
-		tpl.content.querySelector('button').innerText = '删除应用'
-		// todo
-		// tpl.content.querySelector('button').onclick = ...
 		let row = document.importNode(tpl.content, true)
-		document.getElementById('authorized-apps').appendChild(row)
+		row.querySelector('.app-icon').src = app['icon']
+		row.querySelector('.app-name').innerText = app['name']
+		row.querySelector('button').innerText = '删除应用'
+		row.querySelector('button').onclick = () => deleteApplication(app['cid'])
+		document.getElementById('created-apps').appendChild(row)
 	}
 }
 
 async function revokeAuthorization(cid) {
-	// todo: implement the API on backend
-	return
 	if (confirm('确认撤销对该应用的授权？')) {
 		const vt = localStorage.verifyToken
-		await fetch(`/path/to/api`, {
+		let resp = await fetch(`/api/user/apps/authorized?cid=${cid}`, {
 			method: 'DELETE',
 			headers: {
 				'Authorization': `BUTKN ${vt}`,
 			},
 		})
+		if (resp.status === 200)
+			alert('已撤销。')
+		else
+			alert('撤销失败。')
+	}
+}
+
+async function deleteApplication(cid) {
+	if (confirm('确认删除该应用？')) {
+		const vt = localStorage.verifyToken
+		let resp = await fetch(`/oauth/application/${cid}`, {
+			method: 'DELETE',
+			headers: {
+				'Authorization': `BUTKN ${vt}`,
+			},
+		})
+		if (resp.status === 200)
+			alert('已删除。')
+		else
+			alert('删除失败。')
 	}
 }
 

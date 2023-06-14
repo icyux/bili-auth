@@ -1,9 +1,8 @@
 from flask import request, jsonify
-import re
 import secrets
 
 from bili import utils as bu
-from model import application
+from model import application, user
 from model import session
 from service import app
 from service.auth_middleware import authRequired
@@ -17,13 +16,20 @@ def getApp(cid):
     info = application.query(cid)
     if info is None:
         return '', 404
-    else:
-        rtn = {}
-        fieldList = ('cid', 'name', 'link', 'desc', 'icon', 'prefix')
-        for field in fieldList:
-            rtn[field] = info[field]
 
-        return rtn, 200
+    rtn = {}
+    fieldList = ('cid', 'name', 'link', 'desc', 'icon', 'prefix')
+    for field in fieldList:
+        rtn[field] = info[field]
+
+    ownerInfo = user.queryUserInfo(info['ownerUid'])
+    rtn['owner'] = {
+        'uid': info['ownerUid'],
+        'name': ownerInfo['name'],
+        'avatar': ownerInfo['avatar'],
+    }
+
+    return rtn, 200
 
 
 @app.route('/api/session')
@@ -81,3 +87,34 @@ def createAccessToken():
         'token': tkn,
         'user': userInfo,
     }
+
+
+@app.route('/api/user/apps/authorized', methods=('DELETE', ))
+@authRequired()
+def revokeAuthorization(*, uid, vid):
+    cid = request.args.get('cid')
+    if cid is None:
+        return '', 400
+
+    result = application.revokeAuthorization(uid=uid, cid=cid)
+    if result is True:
+        return '', 200
+    else:
+        return '', 404
+
+
+@app.route('/oauth/application/<cid>', methods=('DELETE', ))
+@authRequired()
+def deleteApplication(cid, *, uid, vid):
+    appInfo = application.query(cid)
+    if appInfo is None:
+        return '', 404
+
+    if appInfo['ownerUid'] != uid:
+        return '', 403
+
+    result = application.deleteApplication(cid)
+    if result is True:
+        return '', 200
+    else:
+        return '', 500
