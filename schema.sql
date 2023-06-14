@@ -1,10 +1,12 @@
 CREATE TABLE "app" (
-	"cid"	TEXT NOT NULL UNIQUE,
-	"sec"	TEXT NOT NULL,
-	"name"	TEXT,
-	"url"	TEXT,
-	"desc"	TEXT,
-	"icon"	TEXT,
+	"cid"		TEXT NOT NULL UNIQUE,
+	"sec"		TEXT NOT NULL,
+	"name"		TEXT,
+	"createTs"	BIGINT UNSIGNED,
+	"ownerUid"	BIGINT UNSIGNED,
+	"url"		TEXT,
+	"desc"		TEXT,
+	"icon"		TEXT,
 	PRIMARY KEY("cid")
 );
 

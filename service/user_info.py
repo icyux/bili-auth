@@ -5,6 +5,7 @@ from bili import utils as bu
 from misc.hmac_token import checkToken
 from model import application, session, user
 from service import app
+from service.auth_middleware import authRequired
 
 
 @app.route('/api/user')
@@ -72,3 +73,15 @@ def fetchUserInfo(uid):
 		return userInfo
 	else:
 		return 'failed to cache user info', 500
+
+
+@app.route('/api/user/apps/authorized')
+@authRequired(uidRequired=True)
+def getAuthorizedApps(*, uid, vid):
+	return application.getAuthorizedApps(uid)
+
+
+@app.route('/api/user/apps/created')
+@authRequired(uidRequired=True)
+def getCreatedApps(*, uid, vid):
+	return application.getCreatedApps(uid)

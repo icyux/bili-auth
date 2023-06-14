@@ -19,12 +19,12 @@ def authRequired(uidRequired=True):
                     kw = {}
 
                 if uidRequired:
-                    kw['uid'] = uid
-                kw['vid'] = vid
+                    kw['uid'] = checkResult['uid']
+                kw['vid'] = checkResult['vid']
 
                 return handler(*args, **kw)
 
-            except (IndexError, ValueError):
+            except (KeyError, IndexError, ValueError):
                 return 'Invalid token', 400
 
         # rename wrapper name to prevent duplicated handler name

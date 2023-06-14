@@ -1,10 +1,13 @@
 CREATE TABLE `app` (
-	`cid`	CHAR(8) NOT NULL,
-	`sec`	VARCHAR(30) NOT NULL,
-	`name`	VARCHAR(60),
-	`url`	VARCHAR(100),
-	`desc`	VARCHAR(100),
-	`icon`	VARCHAR(100),
+	`cid`		CHAR(8) NOT NULL,
+	`sec`		VARCHAR(30) NOT NULL,
+	`name`		VARCHAR(30) NOT NULL,
+	`createTs`	BIGINT UNSIGNED,
+	`ownerUid`	BIGINT UNSIGNED,
+	`link`		VARCHAR(100),
+	`prefix`	VARCHAR(100),
+	`desc`		VARCHAR(100),
+	`icon`		VARCHAR(100),
 	PRIMARY KEY(`cid`)
 );
 
