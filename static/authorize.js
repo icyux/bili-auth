@@ -136,12 +136,6 @@ async function authorizeApp() {
 	redirectCallback();
 }
 
-async function setUserInfo(uid) {
-	const user = await fetchUserInfo(uid);
-	document.getElementById('avatar').src = user.avatar;
-	document.getElementById('user-name').innerText = user.name;
-}
-
 function redirectCallback() {
 	if (/=/.test(redirect))
 		redirect += '&';

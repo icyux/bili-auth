@@ -16,6 +16,19 @@ async function fetchUserInfo(uid) {
 	return userInfo
 }
 
+async function setUserInfo(uid) {
+	const user = await fetchUserInfo(uid);
+	const bio = user.bio === '' ? '（未设置个性签名）' : user.bio;
+	try {
+		document.getElementById('avatar').src = user.avatar;
+		document.getElementById('user-name').innerText = user.name;
+		document.getElementById('bio').innerText = bio;
+	}
+	catch (TypeError) {
+		// pass
+	}
+}
+
 async function headerUserDisplay() {
 	const showDisplay = () => document.getElementById('user-display').hidden = false
 	const vt = localStorage['verifyToken']

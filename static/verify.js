@@ -120,13 +120,6 @@ async function checkVerify() {
 	setButtonDisable(false);
 }
 
-async function setUserInfo(uid) {
-	const user = await fetchUserInfo(uid);
-	document.getElementById('avatar').src = user.avatar;
-	document.getElementById('user-name').innerText = user.name;
-	document.getElementById('bio').innerText = user.bio;
-}
-
 function redirect2origin() {
 	if (redirect === undefined) redirect = '/';
 	window.location.href = redirect;
