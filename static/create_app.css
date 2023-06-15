@@ -1,0 +1,71 @@
+/* input area */
+
+label {
+	display: block;
+}
+
+input {
+	display: block;
+	width: 30em;
+	max-width: 90%;
+	font-size: 1.2em;
+	line-height: 1.3em;
+	background-color: #0000;
+	border: none;
+	border-bottom: solid 1px #777;
+	outline: none;
+}
+
+.comment {
+	font-size: 0.8em;
+	color: #333;
+	margin: 1em 0 2em;
+}
+
+input:focus {
+	border-color: #6ae;
+}
+
+@media (prefers-color-scheme: dark) {
+	input {
+		color: #fff;
+	}
+	.comment {
+		color: #ccc;
+	}
+}
+
+/* button */
+
+.next-step {
+	background-color: #0000;
+	padding: 0.5em 1.5em;
+	border: solid 1px #6ae;
+	border-radius: 0.3em;
+	color: #6ae;
+	transition: background-color 0.3s, color 0.3s;
+}
+
+.next-step:hover {
+	background-color: #6ae;
+	color: #fff;
+}
+
+.next-step:disabled {
+	border-color: #777;
+	color: #777;
+}
+
+/* credential container */
+
+.value-field {
+	padding: 0.1em 0.3em;
+	background-color: #def;
+}
+
+@media (prefers-color-scheme: dark) {
+	.value-field {
+		background: none;
+		border-bottom: dashed 2px #6ae;
+	}
+}

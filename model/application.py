@@ -1,3 +1,6 @@
+import secrets
+import time
+
 import model
 
 
@@ -25,6 +28,39 @@ def query(cid):
         return None
     finally:
         cur.close()
+
+
+def updateApp(*, uid, name, icon, link, desc, prefix):
+    curTs = int(time.time())
+
+    # retry at most 3 times
+    for _ in range(3):
+        cid = secrets.token_hex(4)
+        if query(cid) is None:
+            break
+    else:
+        return None
+
+    csec = secrets.token_urlsafe(18)
+
+    cur = db.cursor()
+    cur.execute(
+        'REPLACE INTO app \
+        (cid, sec, name, ownerUid, createTs, link, prefix, `desc`, icon) \
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        (cid, csec, name, uid, curTs, link, prefix, desc, icon),
+    )
+    affected = cur.rowcount
+    cur.close()
+    db.commit()
+    
+    if affected == 1:
+        return {
+            'cid': cid,
+            'csec': csec,
+        }
+    else:
+        return None
 
 
 def getAuthorizedApps(uid):

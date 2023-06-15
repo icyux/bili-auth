@@ -92,6 +92,10 @@ function switchOption(event) {
 	document.getElementById(`area-${optionId}`).hidden = false
 }
 
+function openAppCreatePage() {
+	window.open('/oauth/application/new', '_blank')
+}
+
 async function init() {
 	document.getElementById('navigator').onclick = (e) => switchOption(e)
 	await setUserInfo()

@@ -32,6 +32,27 @@ def getApp(cid):
     return rtn, 200
 
 
+@app.route('/oauth/application', methods=('POST', ))
+@authRequired()
+def createApp(*, uid, vid):
+    appInfo = {}
+    try:
+        appInfo['name'] = request.form['name']
+        appInfo['icon'] = request.form['icon']
+        appInfo['link'] = request.form['link']
+        appInfo['desc'] = request.form['desc']
+        appInfo['prefix'] = request.form['prefix']
+
+    except KeyError:
+        return '', 400
+
+    result = application.updateApp(uid=uid, **appInfo)
+    if result is None:
+        return '', 500
+    else:
+        return result
+
+
 @app.route('/api/session')
 @authRequired()
 def querySession(*, uid, vid):

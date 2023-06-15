@@ -25,3 +25,8 @@ def oauthAuthorizePage():
 @app.route('/user')
 def userPage():
 	return render_template('user.html')
+
+
+@app.route('/oauth/application/new')
+def appCreatePage():
+	return render_template('create_app.html')

@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title %}创建应用 | bili-auth{% endblock %}
+{% block main %}
+<link rel='stylesheet' href='/static/create_app.css'>
+<script src='/static/create_app.js' defer></script>
+
+<div id='create-app'>
+	<h2>创建应用</h2>
+
+	<p>您将要创建一个 OAuth 2.0 应用，请在此填写应用的有关信息。</p>
+
+	<label for='name'>名称</label>
+	<input type='text' id='name' autocomplete='off' maxlength=30>
+	<div class='comment'>简短的应用名称。将展示在授权页面上。</div>
+
+	<label for='icon-url'>图标 URL</label>
+	<input type='url' id='icon-url' autocomplete='off' maxlength=100>
+	<div class='comment'>应用图标的 URL，图标将展示在授权页面上。本实例不提供图片上传服务，您可以在其他图床服务上传图标后填入图片链接。</div>
+
+	<label for='description'>简介</label>
+	<input type='text' id='description' autocomplete='off' maxlength=100>
+	<div class='comment'>关于应用的简短介绍。将展示给用户。</div>
+
+	<label for='link'>链接</label>
+	<input type='url' id='link' autocomplete='off' maxlength=100>
+	<div class='comment'>链接到应用相关页面的 URL。您可以填写应用的主页、项目链接或开发者的个人主页等链接。</div>
+
+	<label for='callback-prefix'>回调 URL 匹配前缀</label>
+	<input type='text' id='callback-prefix' autocomplete='off' maxlength=100>
+	<div class='comment'>
+		<div>授权时的回调地址（redirect_uri）必须与您预设的前缀完全匹配。</div>
+		<div>例如，若您提供的前缀是“https://example.com/oauth”，则这些是合法的回调地址：</div>
+		<div>“https://example.com/oauth” “https://example.com/oauth/callback”</div>
+		<div>而这些都是不合法的回调地址：</div>
+		<div>“https://example.com/callback”（路径不符）、“https://oauth.example.com/oauth”（域名不符）、“http://example.com/oauth”（协议不符）</div>
+		<div>实例会拒绝跳转至不合法的回调地址。</div>
+	</div>
+
+	<button class='next-step' id='submit-appinfo' onclick='submitAppInfo()'>提交应用信息</button>
+
+</div>
+
+<div id='display-info' hidden>
+	<h2>保存凭据</h2>
+
+	<p>应用已创建，以下是访问 API 需要的凭据。</p>
+
+	<div>应用编号（Client ID）：<span class='value-field' id='client-id'></span></div>
+	<div class='comment'>应用编号用于在实例中唯一标识您的应用。这是公开信息，在授权页面会向用户展示。</div>
+
+	<div>应用密钥（Client Secret）：<span class='value-field' id='client-secret'></span></div>
+	<div class='comment'>应用密钥被用作访问 API 的身份认证。这是私有信息，不应公开，请妥善保管。出于安全考虑，此密钥之后不会再次展示，届时您无法重新查看。</div>
+
+	<p>保存凭据后，您可以关闭此标签页，并刷新用户页面，该应用应该会出现在“创建的应用”列表中。</p>
+</div>
+
+{% endblock %}
