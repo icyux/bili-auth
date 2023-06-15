@@ -17,6 +17,8 @@
 
 关于环境准备、配置填写、应用管理、运行，参考 [部署流程](doc/deploy.md) 。
 
+关于第四方应用的 OAuth 接入，参考 [OAuth 应用管理与接入](doc/oauth.md)。
+
 
 ## Demo
 

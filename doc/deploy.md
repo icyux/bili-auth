@@ -120,18 +120,6 @@ credential.toml 中一共需要配置 `cookies` 和 `refresh_token` 两项，您
 2. 查看 www<nolink/>.bilibili.com 对应的本地存储中 `ac_time_value` 对应的值，可以在浏览器控制台输入 `localStorage['ac_time_value']` 来获取。将这个值填入凭据文件中的 `refresh_token` 。
 3. 清除 "www<nolink/>.bilibili.com" 的 Cookies（不是直接退出帐号）。由于凭据自动刷新后之前原先凭据将无法使用，因此上述操作获取到的凭据不应该同时在 bili-auth 和您的浏览器中使用，否则 bili-auth 中的凭据有可能失效无法刷新。直接退出帐号同样会使当前凭据失效。您可以在执行清除站点 Cookies 的操作后，在浏览器中重新登录帐号。
 
-## 添加 OAuth 应用
-
-目前没有实现在 Web 应用中自助添加应用的功能，因此添加应用只能手动操作数据库完成。
-
-存储应用信息的表名为 "app"，结构如下。其中某些字段格式没有强制约束，但是考虑到适配后续版本，建议遵循格式要求。
-
-- **cid**：Client ID，应用的唯一编号。建议格式（正则表达式）：`/[0-9a-f]{8}/`
-- **name**：应用名称。
-- **url**：应用的 URL。回调地址开头必须与此字段相符，否则会拒绝授权。例如，若应用 URL 为 "https://<nolink/>example.com"，则回调地址开头也必须为这个值，此时例如 "https://<nolink/>example.com<nolink/>/callback" 就是一个合法的回调地址。
-- **sec**：Client secret，应用生成 Access token 时需要用到。建议格式（正则表达式）：`/[0-9A-Za-z\-_]{20,26}/`
-- **icon**：应用图标的 URL。
-
 ## 运行
 
 上一步的依赖中应该已经安装好了 *uWSGI*，它将作为 Web 服务的容器。在项目根目录运行以下命令即可启动服务：
