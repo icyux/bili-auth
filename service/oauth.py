@@ -103,7 +103,7 @@ def createAccessToken():
         return 'Invalid access code', 403
 
     sessionInfo = session.getSessionInfo('token', tkn)
-    userInfo = bu.getUserInfo(sessionInfo['uid'])
+    userInfo = user.queryUserInfo(sessionInfo['uid'])
     return {
         'token': tkn,
         'user': userInfo,
