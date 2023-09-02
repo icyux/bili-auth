@@ -11,6 +11,7 @@ from misc import config
 from model import verify_request as vr
 
 sendCD = 1
+maxErrCnt = 3
 
 patt = re.compile(r'^\s*?/?\s*?(\S+?)(?:\s+?(\S+?)?\s*?$|\s*$)', re.IGNORECASE)
 ackMts = int(time.time() * 1000000)
@@ -95,6 +96,8 @@ def periodicWakeup():
 
 def mainLoop():
     maxExpire = 0
+    curErrCnt = 0
+
     while True:
 
         while maxExpire < time.time():
@@ -104,8 +107,11 @@ def mainLoop():
 
         try:
             checkMsg()
+            curErrCnt = 0
         except requests.exceptions.RequestException as e:
-            logging.warn(e)
+            curErrCnt += 1
+            if curErrCnt >= maxErrCnt:
+                logging.warn(f'max requesting error rate reached: {repr(e)}')
 
         time.sleep(4 + random() * 2)
 
