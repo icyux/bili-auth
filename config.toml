@@ -4,7 +4,7 @@
 	# SQLite3 config
 
 	type = "sqlite3"
-	path = "./oauth_application.db3"
+	path = "./bili-auth.db3"
 
 	# MySQL config
 

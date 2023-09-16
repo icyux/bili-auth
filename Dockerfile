@@ -17,6 +17,7 @@ COPY ./ /app/
 RUN sed -i 's#browserPath = ""#browserPath = "/usr/bin/chromium"#g' config.toml; \
 	sed -i 's/# "--no-sandbox"/"--no-sandbox"/g' config.toml; \
 	sed -i 's/localhost:8080/0.0.0.0:8080/g' uwsgi.ini;
+RUN python3 init_sqlite3.py
 
 CMD /usr/local/bin/uwsgi --ini uwsgi.ini
 EXPOSE 8080
