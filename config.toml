@@ -26,10 +26,11 @@
 	verifyResultResp = true
 
 [selenium]
-	path = "chromedriver"
+	browserPath = ""
 	options = [
 		"--headless",
 		"--blink-settings=imagesEnabled=false",
+		# "--no-sandbox",
 	]
 
 [proxy]

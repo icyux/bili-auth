@@ -18,11 +18,14 @@ class ChromeDriver(webdriver.Chrome):
 		if options is None:
 			options = Options(misc.config['selenium']['options'])
 
+		browserPath = misc.config['selenium']['browserPath']
+		if browserPath != '':
+			options.binary_location = browserPath
+
 		if proxy is not None:
 			options.add_argument(f'--proxy-server={proxy}')
 
-		path = misc.config['selenium']['path']
-		super().__init__(executable_path=path, options=options)
+		super().__init__(options=options)
 
 
 	def runScript(self, path):
