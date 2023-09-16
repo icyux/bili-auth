@@ -49,3 +49,6 @@
 
 [log]
 	format = "[%(module)s] %(levelname)s: %(message)s"
+
+[debug]
+	seleniumTest = false

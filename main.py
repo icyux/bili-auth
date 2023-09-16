@@ -1,6 +1,7 @@
 #!/usr/bin/env -S python3 -u
 
 import base64
+import logging
 import secrets
 import sqlite3
 import threading
@@ -62,3 +63,7 @@ wakerThread.start()
 refreshThread = threading.Thread(target=bili.token_refresh.autoRefreshLoop)
 refreshThread.daemon = True
 refreshThread.start()
+
+# selenium self-test
+if misc.config['debug']['seleniumTest'] == True:
+	bili.token_refresh.seleniumSelfTest()
