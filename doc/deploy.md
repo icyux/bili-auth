@@ -25,8 +25,11 @@ pip3 install -r ./requirements.txt
 
 初始化数据库结构：
 ```sh
-# 如果数据库名称为 "bili-auth.db3"，则在项目根目录运行以下命令：
-sqlite3 ./bili-auth.db3 < ./schema.sql
+# 如果需要自定义数据库名称，则在项目根目录运行以下命令：
+sqlite3 ./example.db3 < ./schema_sqlite3.sql
+
+# 若不改变数据库默认文件名，则直接使用初始化脚本即可：
+python3 ./init_sqlite3.py
 ```
 
 #### MySQL
@@ -69,8 +72,8 @@ sqlite3 ./bili-auth.db3 < ./schema.sql
 	user_agent = "..."
 
 [selenium]
-	# ChromeDriver 的路径。如果已经配置好环境变量则无需更改。
-	path = "chromedriver"
+	# 浏览器的路径，如 /usr/bin/chromium。在 PATH 正确配置的情况下无需填写；除非您使用的是 Chromium，此时请手动设定路径。
+	browserPath = ""
 	# 启动 ChromeDriver 时的额外选项。在运行 credential.py 时不会使用到。
 	options = [
 		"--headless",
@@ -98,6 +101,11 @@ sqlite3 ./bili-auth.db3 < ./schema.sql
 [log]
 	# 日志格式。参见 <https://docs.python.org/zh-cn/3/library/logging.html#logrecord-attributes>
 	format = "..."
+
+# 以下为调试选项，您可以忽略。
+[debug]
+	# 启动时运行 Selenium 自检，用于检查 Selenium、ChromeDriver 与浏览器环境是否配置无误，结果在日志中显示。
+	seleniumTest = false
 ```
 
 HTTP 监听地址则在 `uwsgi.ini` 配置。
