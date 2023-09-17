@@ -1,6 +1,6 @@
 # 部署流程
 
-## 初始化
+## 依赖安装
 
 在安装依赖之前，可以先使用 venv 配置虚拟环境。
 
@@ -9,12 +9,17 @@
 ```sh
 pip3 install -r ./requirements.txt
 ```
-### 数据库
+
+## Selenium 环境配置
+
+Selenium 用于模拟浏览器环境以完成凭据自动刷新。您需要安装 Chrome 或 Chromium，以及对应版本的 ChromeDriver，安装流程您可以在网络上自行搜索。如果您需要检查配置是否正确，您可以将 `config.toml` 中的 `seleniumTest` 的值改为 `true` 以执行自检。具体请查看下文章节的描述。
+
+## 数据库
 
 目前支持 SQLite3 和 MySQL (MariaDB) 两种类型的数据库。
 
-#### SQLite3（默认）
-在配置文件 config.toml 中的 `database` 段填写如下配置：
+### SQLite3（默认）
+在配置文件 `config.toml` 中的 `database` 段填写如下配置：
 ```toml
 [database]
 	# 数据库类型
@@ -32,9 +37,9 @@ sqlite3 ./example.db3 < ./schema_sqlite3.sql
 python3 ./init_sqlite3.py
 ```
 
-#### MySQL
+### MySQL
 
-在配置文件 config.toml 中的 `database` 段填写如下配置：
+在配置文件 `config.toml` 中的 `database` 段填写如下配置：
 
 ```toml
 [database]
@@ -52,11 +57,11 @@ python3 ./init_sqlite3.py
 	pswd = "password"
 ```
 
-数据库结构文件为 "schema_mysql.sql"。根据您使用的数据库客户端软件的不同，在数据库控制台执行此文件内的所有 `CREATE` 语句即可。
+数据库结构文件为 `schema_mysql.sql`。根据您使用的数据库客户端软件的不同，在数据库控制台执行此文件内的所有 `CREATE` 语句即可。
 
 ## 填写配置文件
 
-配置文件为 config.toml 。除了 `uid` 和 `nickname` 需要根据实际情况填写以外，大部分配置项可以保持默认。
+配置文件为 `config.toml` 。除了 `uid` 和 `nickname` 需要根据实际情况填写以外，大部分配置项可以保持默认。
 
 ```toml
 [database]
@@ -74,14 +79,15 @@ python3 ./init_sqlite3.py
 [selenium]
 	# 浏览器的路径，如 /usr/bin/chromium。在 PATH 正确配置的情况下无需填写；除非您使用的是 Chromium，此时请手动设定路径。
 	browserPath = ""
-	# 启动 ChromeDriver 时的额外选项。在运行 credential.py 时不会使用到。
+	# 启动 ChromeDriver 时的额外参数。在运行 credential.py 时不会使用到。
+	# 如果您使用 root 用户运行本项目（例如在容器中运行），请添加 “--no-sandbox” 参数。
 	options = [
 		"--headless",
 		"--blink-settings=imagesEnabled=false",
 	]
 
 [proxy]
-	# 代理开关。代理将会在调用需要鉴权的接口及运行 selenium 时启用。
+	# 代理开关。代理将会在调用需要鉴权的接口及运行 Selenium 时启用。
 	enable = false
 	# 代理类型。目前仅支持 HTTP CONNECT 代理，因此不应更改。
 	type = "http"
@@ -112,7 +118,7 @@ HTTP 监听地址则在 `uwsgi.ini` 配置。
 
 ## 鉴权凭据生成
 
-您需要配置有效的哔哩哔哩账户凭据。可以使用以下任意一种方式生成凭据。
+帐户凭据用于在访问哔哩哔哩 API 时验证身份。您可以使用以下任意一种方式配置凭据。
 
 ### 使用脚本
 
@@ -122,11 +128,11 @@ HTTP 监听地址则在 `uwsgi.ini` 配置。
 
 ### 手动配置
 
-credential.toml 中一共需要配置 `cookies` 和 `refresh_token` 两项，您也可以手动填入。首先在浏览器上登录您的账号，打开开发者工具，然后执行以下操作：
+`credential.toml` 中一共需要配置 `cookies` 和 `refresh_token` 两项，您也可以手动填入。首先在浏览器上登录您的账号，打开开发者工具，然后执行以下操作：
 
-1. 随意选择一个发往 "\*.bilibili.com" 的请求，复制请求头中 `Cookie` 对应的值。cookie 中应当至少包含 "SESSDATA" 和 "bili_jct" 两个键，格式形如 `a=b; c=d`。将这个值填入凭据文件中的 `cookies`。
-2. 查看 www<nolink/>.bilibili.com 对应的本地存储中 `ac_time_value` 对应的值，可以在浏览器控制台输入 `localStorage['ac_time_value']` 来获取。将这个值填入凭据文件中的 `refresh_token` 。
-3. 清除 "www<nolink/>.bilibili.com" 的 Cookies（不是直接退出帐号）。由于凭据自动刷新后之前原先凭据将无法使用，因此上述操作获取到的凭据不应该同时在 bili-auth 和您的浏览器中使用，否则 bili-auth 中的凭据有可能失效无法刷新。直接退出帐号同样会使当前凭据失效。您可以在执行清除站点 Cookies 的操作后，在浏览器中重新登录帐号。
+1. 随意选择一个发往 `*.bilibili.com` 的请求，复制请求头中 `Cookie` 对应的值。cookie 中应当至少包含 `SESSDATA` 和 `bili_jct` 两个键，格式形如 `a=b; c=d`。将这个值填入凭据文件中的 `cookies`。
+2. 查看 `www.bilibili.com` 对应的本地存储中 `ac_time_value` 对应的值，可以在浏览器控制台输入 `localStorage['ac_time_value']` 来获取。将这个值填入凭据文件中的 `refresh_token` 。
+3. 清除 `www.bilibili.com` 的 Cookies。若刷新网页后为未登录状态则操作成功。由于凭据在浏览器端自动刷新后原先凭据将失效，因此上述操作获取到的凭据不应同时在 bili-auth 和您的浏览器中使用，否则 bili-auth 中的凭据将失效。直接退出帐号同样会使当前凭据失效。您可以在执行清除站点 Cookies 的操作后，在浏览器中重新登录帐号。
 
 ## 运行
 
