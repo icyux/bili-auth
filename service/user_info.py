@@ -1,6 +1,8 @@
 from flask import request
+import logging
 import secrets
 
+from bili import api
 from bili import utils as bu
 from misc.hmac_token import checkToken
 from model import application, session, user
@@ -67,7 +69,12 @@ def fetchUserInfo(uid):
 		return cachedUserInfo
 
 	# refresh user info
-	userInfo = bu.getUserInfo(uid)
+	try:
+		userInfo = bu.getUserInfo(uid)
+	except api.BiliApiError as e:
+		logging.warn(f'failed to fetch: {repr(e)}')
+		return 'failed to fetch user info', 502
+
 	isSucc = user.updateUserInfo(uid, userInfo)
 	if isSucc:
 		return userInfo
