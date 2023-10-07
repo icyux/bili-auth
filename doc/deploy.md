@@ -112,6 +112,8 @@ python3 ./init_sqlite3.py
 [debug]
 	# 启动时运行 Selenium 自检，用于检查 Selenium、ChromeDriver 与浏览器环境是否配置无误，结果在日志中显示。
 	seleniumTest = false
+	# 启动时运行 API 自检，用于检查能否正常访问B站 API 且不被反爬虫屏蔽，结果在日志中显示。
+	biliApiTest = false
 ```
 
 HTTP 监听地址则在 `uwsgi.ini` 配置。

@@ -1,4 +1,5 @@
 import json
+import logging
 import time
 
 from bili import api
@@ -151,3 +152,12 @@ def getUserInfo(uid: int):
             }
         else:
             raise e
+
+
+def biliApiSelfTest():
+    try:
+        getUserInfo(2)
+        logging.info('bili api self-test ok')
+
+    except Exception as e:
+        logging.warn(f'bili api self-test FAILED: {repr(e)}')

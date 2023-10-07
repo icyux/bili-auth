@@ -14,6 +14,7 @@ from service import app
 import service
 import bili
 import bili.token_refresh
+import bili.utils
 import model
 
 
@@ -67,3 +68,7 @@ refreshThread.start()
 # selenium self-test
 if misc.config['debug']['seleniumTest'] == True:
 	bili.token_refresh.seleniumSelfTest()
+
+# bili api test
+if misc.config['debug']['biliApiTest'] == True:
+	bili.utils.biliApiSelfTest()
