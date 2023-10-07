@@ -21,7 +21,7 @@ async function toast(msg) {
 		elm.style.cssText = styleArr.join(';\n')
 		elm.innerHTML = `
 			<pre style='font-size: 1.6rem'>${msg}</pre>
-			<p>点击关闭提示</p>
+			<p>&lt;点击关闭提示&gt;</p>
 		`
 		elm.onclick = () => {
 			elm.remove()

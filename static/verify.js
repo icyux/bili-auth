@@ -42,6 +42,8 @@ async function checkRequestState() {
 		return {status: 'waiting'};
 	if (req.status == 404 || req.status == 403)
 		return {status: 'timeout'};
+	if (req.status == 500)
+		return {status: 'error'};
 	if (req.status == 200) {
 		let result = await req.json();
 		localStorage['verifyToken'] = result['token']
@@ -108,6 +110,11 @@ async function startVerify(authType) {
 async function checkVerify() {
 	setButtonDisable(true);
 	let result = await checkRequestState(vid);
+	if (result.status === 'error') {
+		alert('服务内部出现错误，请稍后再试');
+		setButtonDisable(false);
+		return;
+	}
 	if (result.status !== 'succ') {
 		alert('暂未获取到验证用户信息，请稍后再试');
 		setButtonDisable(false);
@@ -115,7 +122,14 @@ async function checkVerify() {
 	}
 
 	let uid = result.info['uid'];
-	await setUserInfo(uid);
+	try {
+		await setUserInfo(uid);
+	}
+	catch (e) {
+		alert('获取用户信息失败，请稍后再试；若多次出错您可以向开发者反馈。');
+		setButtonDisable(false);
+		return;	
+	}
 	nextStep('finish');
 	setButtonDisable(false);
 }
