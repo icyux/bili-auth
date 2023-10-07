@@ -15,6 +15,7 @@ with ChromeDriver(options=options) as d:
 	d.set_script_timeout(10 * 60)
 	d.get('https://bilibili.com/')
 	refreshTkn = d.runScript('script/login.js')
+	d.get('https://space.bilibili.com/')
 	cookies = d.dumpCookie()
 	updateCredential(cookies, refreshTkn)
 
