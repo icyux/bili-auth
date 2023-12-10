@@ -1,5 +1,4 @@
 from hashlib import md5
-import logging
 import time
 import urllib.parse
 
@@ -42,8 +41,7 @@ def request(*, method='GET', sub='api', path, params=None, data=None, timeout=No
 	resp.raise_for_status()
 	body = resp.json()
 	if body['code'] != 0:
-		err = BiliApiError(body['code'], body['message'])
-		logging.warn(f'failed to request "{url}": {repr(err)}')
+		raise BiliApiError(body['code'], body['message'])
 
 	return body['data']
 
