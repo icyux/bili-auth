@@ -72,7 +72,7 @@ def fetchUserInfo(uid):
 	try:
 		userInfo = bu.getUserInfo(uid)
 	except api.BiliApiError as e:
-		logging.warn(f'failed to fetch: {repr(e)}')
+		logging.warn(f'failed to fetch "{e.url}": {repr(e)}')
 		return 'failed to fetch user info', 502
 
 	isSucc = user.updateUserInfo(uid, userInfo)

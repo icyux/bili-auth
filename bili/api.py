@@ -13,9 +13,10 @@ maxAge = 3600
 
 # todo: raise api error
 class BiliApiError(Exception):
-	def __init__(self, code, msg):
+	def __init__(self, url, code, msg):
 		self.code = code
 		self.msg = msg
+		self.url = url
 
 	def __repr__(self):
 		return f'BiliApiError({self.code}, {self.msg})'
@@ -41,7 +42,7 @@ def request(*, method='GET', sub='api', path, params=None, data=None, timeout=No
 	resp.raise_for_status()
 	body = resp.json()
 	if body['code'] != 0:
-		raise BiliApiError(body['code'], body['message'])
+		raise BiliApiError(url, body['code'], body['message'])
 
 	return body['data']
 
