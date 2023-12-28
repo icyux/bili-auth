@@ -37,7 +37,13 @@ def fetchNewCookie():
 
 def autoRefreshLoop():
 	while True:
-		isExpired = isCookieExpired()
+		try:
+			isExpired = isCookieExpired()
+		except Exception as e:
+			logging.warn(f'checking cookie status failed: {repr(e)}')
+			time.sleep(5 * 60)  # 5 minutes interval
+			continue
+
 		if isExpired:
 			try:
 				logging.info('cookie expired. refreshing...')
