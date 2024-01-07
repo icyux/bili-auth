@@ -6,7 +6,7 @@ import bili
 
 @app.route('/')
 def mainPage():
-    return render_template('base.html')
+    return render_template('base.html', homepage=True)
 
 
 @app.route('/verify')
