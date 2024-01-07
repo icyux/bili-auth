@@ -47,6 +47,7 @@ header #user-display:hover {
 
 main {
 	width: 80vw;
+	max-width: 60em;
 	min-height: 50vh;
 	margin: 3em auto 2em;
 	padding: 3em;
@@ -67,6 +68,7 @@ footer {
 
 footer div {
 	padding: 0.2em;
+	text-align: center;
 }
 
 .url {
