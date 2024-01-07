@@ -21,7 +21,7 @@ aboutText = '''【 bili-auth 】 是一个第三方实现的 Bili OAuth API，�
 它可以让用户使用哔哩哔哩帐号，完成第四方应用鉴权。
 提供通用的 OAuth 2.0 API，应用可快速接入。
 代码开源，开发者可本地部署。
-更多信息，您可以访问 GitHub: vapehacker/bili-auth 。
+更多信息，您可以访问 GitHub: icyux/bili-auth 。
 '''
 
 def checkMsg():
