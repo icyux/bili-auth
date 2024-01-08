@@ -46,16 +46,12 @@ def cmdHandler(uid, action, arg):
         isSucc = vr.checkVerify(vid=vid, uid=uid)
         if isSucc and isRespRequired:
             info = vr.getVerifyInfo(vid)
-            try:
-                ua = info['ua'].split(';')
-                reqBy = f'{ua[0]}, {ua[1]}'
-            except (AttributeError, IndexError):
-                reqBy = '未知'
+            ua = info.get('ua', '未知')
 
             dt = time.strftime('%Y-%m-%d %H:%M:%S (UTC%z)', time.localtime(info['create']))
             reply = '\n'.join((
                 '【 bili-auth 】 验证完成，以下为详细信息。',
-                f'请求来源：{reqBy}',
+                f'请求来源：{ua}',
                 f'验证代码：{vid}',
                 f'创建时间：{dt}',
                 '您发送的消息是一条验证请求，可用于登录第三方应用。系统自动回复此消息以告知您验证结果。',

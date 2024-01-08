@@ -15,7 +15,7 @@ CREATE TABLE `verify` (
 	`vid`		CHAR(8) NOT NULL,
 	`create`	INTEGER NOT NULL,
 	`expire`	INTEGER NOT NULL,
-	`ua`		VARCHAR(40),
+	`ua`		VARCHAR(80),
 	`uid`		BIGINT,
 	PRIMARY KEY(`vid`)
 );

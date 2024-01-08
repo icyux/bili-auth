@@ -8,15 +8,14 @@ var step = 'intro';
 var expireAt, duration, timerRunId;
 
 async function generateRequest() {
-	const [platform, browser] = parseUserAgent()
-	let mergedUA = `${platform};${browser}`
+	let ua = await parseUserAgent()
 	let req = await fetch('/api/verify', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
 		},
 		body: JSON.stringify({
-			'ua': mergedUA,
+			'ua': ua,
 		}),
 	});
 
