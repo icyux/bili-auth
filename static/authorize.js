@@ -72,6 +72,8 @@ async function init() {
 	document.getElementById('app-url').innerText = appInfo['link'];
 	document.getElementById('app-icon').src = appInfo['icon'];
 	document.getElementById('app-desc').innerText = appInfo['desc'];
+	document.getElementById('app-creator').innerText = `@${appInfo.owner.name}`;
+	document.getElementById('app-creator').href = `https://space.bilibili.com/${appInfo.owner.uid}`;
 	document.getElementById('redirect-uri').innerText = redirect;
 	nextStep();
 }
