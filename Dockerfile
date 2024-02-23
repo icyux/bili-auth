@@ -14,6 +14,7 @@ RUN rm /etc/apt/sources.list; \
 RUN apt update && apt install -y chromium chromium-driver
 WORKDIR /app/
 COPY ./ /app/
+RUN find /app/ -name ".*" -maxdepth 1 -exec rm -rf {} \;
 RUN sed -i 's#browserPath = ""#browserPath = "/usr/bin/chromium"#g' config.toml; \
 	sed -i 's/# "--no-sandbox"/"--no-sandbox"/g' config.toml; \
 	sed -i 's/host = "localhost"/host = "0.0.0.0"/g' config.toml;
