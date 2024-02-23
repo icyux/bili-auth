@@ -58,14 +58,3 @@ def autoRefreshLoop():
 		else:
 			logging.info('cookie alive')
 			time.sleep(5 * 3600)  # 5 hours interval
-
-
-def seleniumSelfTest():
-	try:
-		with ChromeDriver() as d:
-			d.get('https://www.bilibili.com')
-
-		logging.info('selenium self-test ok')
-
-	except Exception as e:
-		logging.warn(f'selenium self-test FAILED: {repr(e)}')

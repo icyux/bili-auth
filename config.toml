@@ -1,5 +1,10 @@
 # for detailed configure instruction, see doc/deploy.md
 
+[service]
+	container = "gunicorn"
+	host = "localhost"
+	port = 8080
+
 [database]
 	# SQLite3 config
 
@@ -52,4 +57,4 @@
 
 [debug]
 	seleniumTest = false
-	biliApiTest = false
+	biliApiTest = true

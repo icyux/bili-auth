@@ -65,10 +65,7 @@ refreshThread = threading.Thread(target=bili.token_refresh.autoRefreshLoop)
 refreshThread.daemon = True
 refreshThread.start()
 
-# selenium self-test
-if misc.config['debug']['seleniumTest'] == True:
-	bili.token_refresh.seleniumSelfTest()
-
-# bili api test
-if misc.config['debug']['biliApiTest'] == True:
-	bili.utils.biliApiSelfTest()
+if __name__ == '__main__':
+	host = misc.config['service']['host']
+	port = misc.config['service']['port']
+	app.run(host=host, port=port)

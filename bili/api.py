@@ -4,6 +4,7 @@ import urllib.parse
 
 from misc.requests_session import session as rs
 from misc.requests_session import noAuthSession as rnas
+from requests import HTTPError
 
 
 wbiKey = None
@@ -40,6 +41,8 @@ def request(*, method='GET', sub='api', path, params=None, data=None, timeout=No
 	session = rs if credential else rnas
 	resp = session.request(method, url, data=data, timeout=timeout)
 	resp.raise_for_status()
+
+
 	body = resp.json()
 	if body['code'] != 0:
 		raise BiliApiError(url, body['code'], body['message'])
