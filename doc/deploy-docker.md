@@ -6,7 +6,7 @@
 
 [Docker Hub: icyu/bili-auth](https://hub.docker.com/r/icyu/bili-auth)
 
-此镜像包含 Python 运行环境、依赖包和 Selenium 环境。目前仅提供适用于 amd64 架构的镜像。
+此镜像包含 Python 运行环境、依赖包和 Selenium 环境。目前仅提供适用于 amd64 架构的镜像。请拉取最新版镜像。
 
 ## 配置
 
