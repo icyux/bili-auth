@@ -106,6 +106,11 @@ def sendMsg(recver: int, content: str, *, msgType: int = 1):
         method='POST',
         sub='api.vc',
         path='/web_im/v1/web_im/send_msg',
+        params={
+            'w_sender_uid': bili.selfUid,
+            'w_receiver_id': recver,
+            'w_dev_id': bili.selfDevId,
+        },
         data={
             'msg[sender_uid]': bili.selfUid,
             'msg[receiver_id]': recver,
@@ -120,6 +125,7 @@ def sendMsg(recver: int, content: str, *, msgType: int = 1):
             'csrf_token': bili.csrf,
         },
         credential=True,
+        wbi=True,
     )
     return data['msg_key']
 
