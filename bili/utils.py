@@ -137,6 +137,15 @@ def getUserInfo(uid: int):
             path='/x/space/wbi/acc/info',
             params={
                 'mid': uid,
+                'token': '',
+                'platform': 'web',
+                'web_location': '1550101',
+                'dm_img_list': '[]',
+                # base64("WebGL 1.0 (OpenGL ES 2.0 Chromium)")
+                'dm_img_str': 'V2ViR0wgMS4wIChPcGVuR0wgRVMgMi4wIENocm9taXVtKQ',
+                # base64("ANGLE (Intel, Intel(R) HD Graphics 4600 (0x00000416) Direct3D11 vs_5_0 ps_5_0, D3D11)Google Inc. (Intel")
+                'dm_cover_img_str': 'QU5HTEUgKEludGVsLCBJbnRlbChSKSBIRCBHcmFwaGljcyA0NjAwICgweDAwMDAwNDE2KSBEaXJlY3QzRDExIHZzXzVfMCBwc181XzAsIEQzRDExKUdvb2dsZSBJbmMuIChJbnRlbC',
+                'dm_img_inter': '{"ds":[],"wh":[3874,3583,8],"of":[98,196,98]}',
             },
             wbi=True,
         )
