@@ -47,6 +47,9 @@ def request(*, method='GET', sub='api', path, params=None, data=None, timeout=No
 	if body['code'] != 0:
 		raise BiliApiError(url, body['code'], body['message'])
 
+	if body['data'].get('v_voucher') is not None:
+		raise BiliApiError(url, -3520, 'silent risk control triggered: "v_voucher" detected in response')
+
 	return body['data']
 
 
