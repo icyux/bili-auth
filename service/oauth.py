@@ -22,7 +22,7 @@ def getApp(cid):
     for field in fieldList:
         rtn[field] = info[field]
 
-    ownerInfo = user.queryUserInfo(info['ownerUid'])
+    ownerInfo = user.mustQueryUserInfo(info['ownerUid'])
     rtn['owner'] = {
         'uid': info['ownerUid'],
         'name': ownerInfo['name'],

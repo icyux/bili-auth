@@ -58,28 +58,12 @@ def getCurUserInfo():
 		return 'credentials required', 401
 
 	# return user info
-	userInfo = fetchUserInfo(uid)
-	return userInfo
-
-
-def fetchUserInfo(uid):
-	# query from DB
-	cachedUserInfo = user.queryUserInfo(uid)
-	if cachedUserInfo is not None:
-		return cachedUserInfo
-
-	# refresh user info
 	try:
-		userInfo = bu.getUserInfo(uid)
-	except api.BiliApiError as e:
-		logging.warn(f'failed to fetch "{e.url}": {repr(e)}')
-		return 'failed to fetch user info', 502
-
-	isSucc = user.updateUserInfo(uid, userInfo)
-	if isSucc:
+		userInfo = user.mustQueryUserInfo(uid)
 		return userInfo
-	else:
-		return 'failed to cache user info', 500
+
+	except api.BiliApiError:
+		return 'failed to fetch user info', 502
 
 
 @app.route('/api/user/apps/authorized')

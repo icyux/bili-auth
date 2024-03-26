@@ -1,5 +1,8 @@
+import logging
 import time
 
+from bili import api
+from bili import utils as bu
 import model
 
 
@@ -41,8 +44,28 @@ def updateUserInfo(uid, data):
 			'REPLACE INTO users (uid, name, bio, avatar, updateTs) VALUES (?, ?, ?, ?, ?)',
 			(uid, data['name'], data['bio'], data['avatar'], int(time.time())),
 		)
-		return cur.rowcount == 1
+		return cur.rowcount >= 1
 
 	finally:
 		cur.close()
 		db.commit()
+
+
+def mustQueryUserInfo(uid):
+	# query from DB
+	cachedUserInfo = queryUserInfo(uid)
+	if cachedUserInfo is not None:
+		return cachedUserInfo
+
+	# refresh user info
+	try:
+		userInfo = bu.getUserInfo(uid)
+	except api.BiliApiError as e:
+		logging.warn(f'failed to fetch "{e.url}": {repr(e)}')
+		raise e
+
+	isSucc = updateUserInfo(uid, userInfo)
+	if isSucc:
+		return userInfo
+	else:
+		raise Exception('failed to update DB')
