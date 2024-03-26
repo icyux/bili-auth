@@ -66,7 +66,7 @@ def updateApp(*, uid, name, icon, link, desc, prefix):
 def getAuthorizedApps(uid):
     cur = db.cursor()
     cur.execute(
-        'SELECT cid, name, link, `desc`, icon FROM app WHERE cid = (SELECT cid FROM session WHERE uid = ?)',
+        'SELECT cid, name, link, `desc`, icon FROM app WHERE cid = ANY(SELECT cid FROM session WHERE uid = ?)',
         (uid, ),
     )
     appsInfo = cur.fetchall()
