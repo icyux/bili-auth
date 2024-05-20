@@ -7,7 +7,7 @@ from bili.msg_handler import tasks
 
 
 vidLen = 8
-vidCharset = '0123456789abcdefghijklmnopqrstuvwxyz'
+vidCharset = '23456789abcdefghjkmnpqrstvwxyz'
 verifyReqMaxAge = 6 * 60
 verifySuccMaxAge = 30 * 86400
 
