@@ -13,7 +13,8 @@ from model import verify_request as vr
 sendCD = 1
 maxErrCnt = 3
 
-patt = re.compile(r'^\s*?/?\s*?(\S+?)(?:\s+?(\S+?)?\s*?$|\s*$)', re.IGNORECASE)
+commandPattern = re.compile(r'^/\s*(\S+)(?:\s+(\S.*)$|$)', re.IGNORECASE)
+claimPattern = re.compile(r'^确认授权\s*(\S+)$')
 ackMts = int(time.time() * 1000000)
 lastSendTs = 0
 
@@ -29,39 +30,49 @@ def checkMsg():
     msgList = bu.getNewMsg(ackMts)
     for m in msgList:
         uid = m['uid']
-        content = m['content']
+        content = m['content'].strip()
         ts = m['ts']
         logging.info(f'recv<-{uid}: {content}')
-        result = patt.search(content)
-        if result:
-            action = result.group(1).lower()
-            arg = result.group(2)
+
+        matchResult = claimPattern.search(content)
+        if matchResult is not None:
+            vid = matchResult.group(1).lower()
+            verifyClaimHandler(uid, vid)
+
+        matchResult = commandPattern.search(content)
+        if matchResult:
+            action = matchResult.group(1).lower()
+            arg = matchResult.group(2)
             cmdHandler(uid, action, arg)
 
 
-def cmdHandler(uid, action, arg):
+def verifyClaimHandler(uid, vid):
     isRespRequired = config['bili']['verifyResultResp']
-    if action == '确认授权' and arg is not None:
-        vid = arg.lower()
-        isSucc = vr.checkVerify(vid=vid, uid=uid)
-        if isSucc and isRespRequired:
-            info = vr.getVerifyInfo(vid)
-            ua = info.get('ua', '未知')
+    isSucc = vr.checkVerify(vid=vid, uid=uid)
+    if isSucc and isRespRequired:
+        info = vr.getVerifyInfo(vid)
+        assert info is not None
 
-            dt = time.strftime('%Y-%m-%d %H:%M:%S (UTC%z)', time.localtime(info['create']))
-            reply = '\n'.join((
-                '【 bili-auth 】 验证完成，以下为详细信息。',
-                f'请求来源：{ua}',
-                f'验证代码：{vid}',
-                f'创建时间：{dt}',
-                '您发送的消息是一条验证请求，可用于登录第三方应用。系统自动回复此消息以告知您验证结果。',
-                f'如果您在不知情的情况下意外发送了此次请求，请回复"/revoke {vid}"以撤销此次验证。',
-                '如果您对本项目有兴趣，可以发送"/about"进一步了解。'
-            ))
-        else:
-            reply = '【 bili-auth 】 未找到此验证请求, 可能是此验证信息已过期。请尝试重新发起验证。'
-        sendText(uid, reply)
-    elif action == 'revoke' and arg is not None:
+        ua = info.get('ua', '未知')
+        dt = time.strftime('%Y-%m-%d %H:%M:%S (UTC%z)', time.localtime(info['create']))
+        reply = '\n'.join((
+            '【 bili-auth 】 验证完成，以下为详细信息。',
+            f'请求来源：{ua}',
+            f'验证代码：{vid}',
+            f'创建时间：{dt}',
+            '您发送的消息是一条验证请求，可用于登录第三方应用。系统自动回复此消息以告知您验证结果。',
+            f'如果您在不知情的情况下意外发送了此次请求，请回复"/revoke {vid}"以撤销此次验证。',
+            '如果您对本项目有兴趣，可以发送"/about"进一步了解。'
+        ))
+
+    else:
+        reply = '【 bili-auth 】 未找到此验证请求, 可能是此验证信息已过期。请尝试重新发起验证。'
+
+    sendText(uid, reply)
+
+
+def cmdHandler(uid, action, arg):
+    if action == 'revoke' and arg is not None:
         vid = arg.lower()
         if vr.revokeVerify(vid=vid, uid=uid) is not None:
             reply = '【 bili-auth 】 撤销成功。\n验证代码: {}\n对应的应用授权已立即被全部撤销，但生效时间取决于第四方应用的实现。'
