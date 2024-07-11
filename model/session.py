@@ -9,6 +9,9 @@ accCodeLen = 16
 tokenLen = 24
 
 
+class VerificationRevokedException(Exception):
+	pass
+
 def initDB():
 	global db
 	db = model.db
@@ -18,6 +21,9 @@ def createSession(*, vid, cid):
 	createTs = int(time.time())
 	accessCode = secrets.token_urlsafe(accCodeLen)
 	vInfo = vr.getVerifyInfo(vid)
+	if vInfo is None:
+		raise VerificationRevokedException()
+
 	uid = vInfo['uid']
 	assert vInfo['isAuthed']
 	cur = db.cursor()

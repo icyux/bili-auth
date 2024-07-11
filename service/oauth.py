@@ -4,6 +4,7 @@ import secrets
 from bili import utils as bu
 from model import application, user
 from model import session
+from model.session import VerificationRevokedException
 from service import app
 from service.auth_middleware import authRequired
 
@@ -72,14 +73,19 @@ def querySession(*, uid, vid):
 @authRequired()
 def createSession(*, uid, vid):
     cid = request.args['client_id']
-    sid, accCode = session.createSession(
-        vid=vid,
-        cid=cid,
-    )
-    return {
-        'sessionId': sid,
-        'accessCode': accCode,
-    }, 200
+    try:
+        sid, accCode = session.createSession(
+            vid=vid,
+            cid=cid,
+        )
+        return {
+            'sessionId': sid,
+            'accessCode': accCode,
+        }, 200
+
+    except VerificationRevokedException:
+        return 'verification has been revoked', 403
+
 
 
 @app.route('/oauth/access_token', methods=('POST', ))

@@ -112,7 +112,8 @@ async function createSession() {
 		headers: authHeader,
 	});
 	if (resp.status === 403) {
-		alert('授权超时，请重试。');
+		alert('当前验证信息已被撤销，请重新验证。');
+		verifyRedirect();
 		return;
 	}
 	const result = await resp.json();
