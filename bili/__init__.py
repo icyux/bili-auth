@@ -4,6 +4,7 @@ import uuid
 
 from misc.requests_session import session as rs
 from misc.requests_session import noAuthSession as rnas
+from misc.cookie import dumpCookies, loadCookies
 import misc
 
 
@@ -39,28 +40,27 @@ def loadCredential():
 
 def updateCredential(newCookies, newRefreshTkn, overwrite=True):
     global csrf, cookies, authedHeader, unauthedHeader, refreshTkn
-    cookies = newCookies
+    cookies = loadCookies(newCookies)
     refreshTkn = newRefreshTkn
 
-    try:
-        csrf = re.search(r'bili_jct=(.*?)(?:; |$)', cookies).group(1)
-    except AttributeError:
+    csrf = cookies.get('bili_jct')
+    if csrf is None:
         errInfo = 'Invalid cookie. Check if the key "bili_jct" included for CSRF verify.'
         raise ValueError(errInfo)
 
     authedHeader = {
-        'Cookie': cookies,
         'User-Agent': ua,
         'Origin': 'https://message.bilibili.com',
         'Referer': 'https://message.bilibili.com/',
     }
     rs.headers = authedHeader
+    rs.cookies.update(cookies)
     unauthedHeader = {'User-Agent': ua}
     rnas.headers = unauthedHeader
 
     if overwrite:
         payload = {
-            'cookies': cookies,
+            'cookies': dumpCookies(cookies),
             'refresh_token': refreshTkn
         }
         with open(CREDENTIAL_PATH, 'w') as f:

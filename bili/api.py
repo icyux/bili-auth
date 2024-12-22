@@ -27,7 +27,7 @@ class BiliApiError(Exception):
 
 
 def request(*, method='GET', sub='api', path, params=None, headers=None, data=None, timeout=None, wbi=False, credential=False, json_response=True):
-	assert sub in ['api', 'api.vc', 'passport', 'space']
+	assert sub in ['api', 'api.vc', 'passport', 'space', 'www']
 	if params is None:
 		qs = ''
 	elif wbi:
@@ -47,10 +47,11 @@ def request(*, method='GET', sub='api', path, params=None, headers=None, data=No
 		if body['code'] != 0:
 			raise BiliApiError(url, body['code'], body['message'])
 
-		if body['data'].get('v_voucher') is not None:
+		data = body.get('data')
+		if data is not None and data.get('v_voucher') is not None:
 			raise BiliApiError(url, -3520, 'silent risk control triggered: "v_voucher" detected in response')
 
-		return body['data']
+		return data
 
 	else:
 		return resp.text
