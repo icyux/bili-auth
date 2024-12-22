@@ -1,6 +1,8 @@
 import json
 import logging
+import re
 import time
+import urllib.parse
 
 from bili import api
 import bili
@@ -130,8 +132,28 @@ def sendMsg(recver: int, content: str, *, msgType: int = 1):
     return data['msg_key']
 
 
+def getWebId(uid: int):
+    data = api.request(
+        method='GET',
+        sub='space',
+        path=f'/{uid}',
+        headers={
+            'Referer': 'https://www.bilibili.com/',
+        },
+        json_response=False,
+    )
+    match = re.search('<script id="__RENDER_DATA__" type="application/json">(.+)</script>', data)
+    if match is None:
+        raise ValueError('access_id not found in the response')
+
+    payload = json.loads(urllib.parse.unquote(match.group(1)))
+    webId = payload['access_id']
+    return webId
+
+
 def getUserInfo(uid: int):
     try:
+        webId = getWebId(uid)
         data = api.request(
             method='GET',
             path='/x/space/wbi/acc/info',
@@ -146,6 +168,11 @@ def getUserInfo(uid: int):
                 # base64("ANGLE (Intel, Intel(R) HD Graphics 4600 (0x00000416) Direct3D11 vs_5_0 ps_5_0, D3D11)Google Inc. (Intel")
                 'dm_cover_img_str': 'QU5HTEUgKEludGVsLCBJbnRlbChSKSBIRCBHcmFwaGljcyA0NjAwICgweDAwMDAwNDE2KSBEaXJlY3QzRDExIHZzXzVfMCBwc181XzAsIEQzRDExKUdvb2dsZSBJbmMuIChJbnRlbC',
                 'dm_img_inter': '{"ds":[],"wh":[3874,3583,8],"of":[98,196,98]}',
+                'w_webid': webId,
+            },
+            headers={
+                'Origin': 'https://space.bilibili.com',
+                'Referer': f'https://space.bilibili.com/{uid}',
             },
             wbi=True,
         )

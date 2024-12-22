@@ -26,8 +26,8 @@ class BiliApiError(Exception):
 		return repr(self)
 
 
-def request(*, method='GET', sub='api', path, params=None, data=None, timeout=None, wbi=False, credential=False):
-	assert sub in ['api', 'api.vc', 'passport']
+def request(*, method='GET', sub='api', path, params=None, headers=None, data=None, timeout=None, wbi=False, credential=False, json_response=True):
+	assert sub in ['api', 'api.vc', 'passport', 'space']
 	if params is None:
 		qs = ''
 	elif wbi:
@@ -39,18 +39,21 @@ def request(*, method='GET', sub='api', path, params=None, data=None, timeout=No
 	url = f'https://{sub}.bilibili.com{path}{qs}'
 
 	session = rs if credential else rnas
-	resp = session.request(method, url, data=data, timeout=timeout)
+	resp = session.request(method, url, data=data, headers=headers, timeout=timeout)
 	resp.raise_for_status()
 
+	if json_response:
+		body = resp.json()
+		if body['code'] != 0:
+			raise BiliApiError(url, body['code'], body['message'])
 
-	body = resp.json()
-	if body['code'] != 0:
-		raise BiliApiError(url, body['code'], body['message'])
+		if body['data'].get('v_voucher') is not None:
+			raise BiliApiError(url, -3520, 'silent risk control triggered: "v_voucher" detected in response')
 
-	if body['data'].get('v_voucher') is not None:
-		raise BiliApiError(url, -3520, 'silent risk control triggered: "v_voucher" detected in response')
+		return body['data']
 
-	return body['data']
+	else:
+		return resp.text
 
 
 def wbiSign(params):
@@ -82,6 +85,7 @@ def getWbiKey():
 		wbiKey = ''.join([k[i] for i in mixinKeyEncTab[:32]])
 		wbiKeyExp = curTs + maxAge
 
+	assert wbiKey is not None
 	return wbiKey
 
 
