@@ -26,16 +26,8 @@
 	# respond after accepting verify request
 	verifyResultResp = true
 
-[selenium]
-	browserPath = ""
-	options = [
-		"--headless",
-		"--blink-settings=imagesEnabled=false",
-		# "--no-sandbox",
-	]
-
 [proxy]
-	# proxy for both requests and selenium
+	# proxy for requests
 	enable = false
 	# allow HTTP proxy only
 	type = "http"
@@ -52,5 +44,4 @@
 	format = "[%(module)s] %(levelname)s: %(message)s"
 
 [debug]
-	seleniumTest = false
 	biliApiTest = true

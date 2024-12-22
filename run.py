@@ -10,13 +10,6 @@ config = misc.config
 containerType = config['service']['container']
 
 # self-test
-if config['debug']['seleniumTest']:
-	print('Performing selenium self-test')
-	succ = misc.selftest.seleniumSelfTest()
-	if not succ:
-		print('Self-test failed, quit.')
-		exit(1)
-
 if config['debug']['biliApiTest']:
 	print('Performing bili api self-test')
 	succ = misc.selftest.biliApiSelfTest()
