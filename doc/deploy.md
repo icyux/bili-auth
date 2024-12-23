@@ -12,10 +12,6 @@
 pip3 install -r ./requirements.txt
 ```
 
-## Selenium 环境配置
-
-Selenium 用于模拟浏览器环境以完成凭据自动刷新。您需要安装 Chrome 或 Chromium，以及对应版本的 ChromeDriver，安装流程您可以在网络上自行搜索。如果您需要检查配置是否正确，您可以将 `config.toml` 中的 `seleniumTest` 的值改为 `true` 以执行自检。具体请查看下文章节的描述。
-
 ## 数据库
 
 目前支持 SQLite3 和 MySQL (MariaDB) 两种类型的数据库。
@@ -63,7 +59,7 @@ python3 ./init_sqlite3.py
 
 ## 填写配置文件
 
-配置文件为 `config.toml` 。除了 `uid` 和 `nickname` 必须根据实际情况填写以外，大部分配置项可以保持默认。
+配置文件为 `config.toml` 。若没有额外需求，所有配置项均可以保持默认。
 
 ```toml
 [service]
@@ -79,26 +75,12 @@ python3 ./init_sqlite3.py
 	type = "..."
 
 [bili]
-	# 机器人账号的 UID。在生成跳转链接及机器人发送私信时使用。
-	uid = 0
-	# 机器人账号的昵称。在引导用户发送私信时使用。
-	nickname = ""
 	# 请求 API 使用的 User-Agent。通常不需要修改，使用项目默认的即可。
 	# 如果您要修改（例如遇到风控无法访问的情况），建议将其替换为主流浏览器最新版的 UA。
 	user_agent = "..."
 
-[selenium]
-	# 浏览器的路径，如 /usr/bin/chromium。在 PATH 正确配置的情况下无需填写；除非您使用的是 Chromium，此时请手动设定路径。
-	browserPath = ""
-	# 启动 ChromeDriver 时的额外参数。在运行 credential.py 时不会使用到。
-	# 如果您使用 root 用户运行本项目（例如在容器中运行），请添加 “--no-sandbox” 参数。
-	options = [
-		"--headless",
-		"--blink-settings=imagesEnabled=false",
-	]
-
 [proxy]
-	# 代理开关。代理将会在调用需要鉴权的接口及运行 Selenium 时启用。
+	# 代理开关。代理将会在调用需要鉴权的接口时启用。
 	enable = false
 	# 代理类型。目前仅支持 HTTP CONNECT 代理，因此不应更改。
 	type = "http"
@@ -121,8 +103,6 @@ python3 ./init_sqlite3.py
 
 # 以下为调试选项，您可以忽略。
 [debug]
-	# 启动时运行 Selenium 自检，用于检查 Selenium、ChromeDriver 与浏览器环境是否配置无误，结果在日志中显示。
-	seleniumTest = false
 	# 启动时运行 API 自检，用于检查能否正常访问B站 API 且不被反爬虫屏蔽，结果在日志中显示。
 	biliApiTest = true
 
@@ -132,11 +112,13 @@ python3 ./init_sqlite3.py
 
 帐户凭据用于在访问哔哩哔哩 API 时验证身份。您可以使用以下任意一种方式配置凭据。
 
-### 使用脚本
+### ~~使用脚本~~
 
-项目根目录中的 `create_credential.py` 用于快速生成凭据。此脚本会通过 Selenium 打开浏览器窗口并且跳转到 `bilibili.com`。您需要根据指示登录账号，然后凭据就会被自动保存到 `credential.toml`。
+> 由于 Selenium 依赖暂时从项目中被移除，该方法目前暂不适用。
 
-由于需要您手动操作，此脚本需要在有图形界面，并且配置好 Selenium 的环境运行。如果运行 Web 应用的环境没有图形界面，您也可以在其他符合要求的机器上克隆此项目，配置 Selenium 路径及代理（可选）之后运行脚本，然后将生成的凭据导入 Web 应用的目录。
+~~项目根目录中的 `create_credential.py` 用于快速生成凭据。此脚本会通过 Selenium 打开浏览器窗口并且跳转到 `bilibili.com`。您需要根据指示登录账号，然后凭据就会被自动保存到 `credential.toml`。~~
+
+~~由于需要您手动操作，此脚本需要在有图形界面，并且配置好 Selenium 的环境运行。如果运行 Web 应用的环境没有图形界面，您也可以在其他符合要求的机器上克隆此项目，配置 Selenium 路径及代理（可选）之后运行脚本，然后将生成的凭据导入 Web 应用的目录。~~
 
 ### 手动配置
 
@@ -148,4 +130,4 @@ python3 ./init_sqlite3.py
 
 ## 运行
 
-运行项目根目录的 `run.py` 即可启动服务。
+切换到 `server` 目录，运行 `run.py` 即可启动服务。
