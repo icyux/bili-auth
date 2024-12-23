@@ -4,7 +4,8 @@ CREATE TABLE "app" (
 	"name"		TEXT,
 	"createTs"	BIGINT UNSIGNED,
 	"ownerUid"	BIGINT UNSIGNED,
-	"url"		TEXT,
+	"link"		TEXT,
+	"prefix"	TEXT,
 	"desc"		TEXT,
 	"icon"		TEXT,
 	PRIMARY KEY("cid")
