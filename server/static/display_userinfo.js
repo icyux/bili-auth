@@ -1,12 +1,16 @@
 'use strict'
 
-async function fetchUserInfo(uid) {
+async function fetchUserInfo() {
 	const vt = localStorage['verifyToken']
 	let resp = await fetch(`/api/user`,{
 		headers: {
 			'Authorization': `BUTKN ${vt}`,
 		},
 	})
+	if (resp.status === 403) {
+		return null
+	}
+
 	let userInfo = await resp.json()
 
 	let origAvatarURL = userInfo['avatar']
@@ -16,8 +20,8 @@ async function fetchUserInfo(uid) {
 	return userInfo
 }
 
-async function setUserInfo(uid) {
-	const user = await fetchUserInfo(uid);
+async function setUserInfo() {
+	const user = await fetchUserInfo();
 	const bio = user.bio === '' ? '（未设置个性签名）' : user.bio;
 	try {
 		document.getElementById('avatar').src = user.avatar;
@@ -37,23 +41,21 @@ async function headerUserDisplay() {
 		return
 	}
 
-	const [uid, vid, expire, sign] = vt.split('.')
-	const curTs = Math.floor(Date.now() / 1000)
-	if (curTs > Number(expire)) {
-		showDisplay()
-		return
+	const userInfo = await fetchUserInfo()
+	if (userInfo === null) {
+		localStorage.removeItem('verifyToken')
 	}
-
-	let userInfo = await fetchUserInfo(uid)
-	document.getElementById('header-avatar').src = userInfo['avatar']
-	document.getElementById('header-username').innerText = userInfo['name']
+	else {
+		document.getElementById('header-avatar').src = userInfo['avatar']
+		document.getElementById('header-username').innerText = userInfo['name']
+		document.getElementById('user-display').onclick = () => location.href = '/user'
+	}
 	showDisplay()
-	document.getElementById('user-display').onclick = () => location.href = '/user'
 }
 
-async function loginRedirect() {
+function loginRedirect() {
 	window.location.href = '/verify'
 }
 
-if (!/\/verify$/.test(window.location.pathname))
+if (!/\/(verify|user)$/.test(window.location.pathname))
 	headerUserDisplay()
