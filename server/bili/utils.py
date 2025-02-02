@@ -183,7 +183,7 @@ def getUserInfo(uid: int):
             'uid': data['mid'],
             'name': data['name'],
             'avatar': data['face'].replace('http://', 'https://'),
-            'bio': data['sign'],
+            'raw_data': data,
         }
 
     except api.BiliApiError as e:
@@ -193,7 +193,7 @@ def getUserInfo(uid: int):
                 'uid': uid,
                 'name': None,
                 'avatar': None,
-                'bio': None,
+                'raw_data': None,
             }
         else:
             raise e

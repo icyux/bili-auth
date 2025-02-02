@@ -26,6 +26,8 @@
 	# respond after accepting verify request
 	verifyResultResp = true
 
+	saveRawUserInfo = false
+
 [proxy]
 	# proxy for requests
 	enable = false

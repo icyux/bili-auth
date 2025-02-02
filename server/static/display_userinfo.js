@@ -22,11 +22,26 @@ async function fetchUserInfo() {
 
 async function setUserInfo() {
 	const user = await fetchUserInfo();
-	const bio = user.bio === '' ? '（未设置个性签名）' : user.bio;
 	try {
-		document.getElementById('avatar').src = user.avatar;
 		document.getElementById('user-name').innerText = user.name;
-		document.getElementById('bio').innerText = bio;
+		document.getElementById('user-avatar').src = user.avatar;
+
+		const rawData = user.raw_data
+		if (rawData !== null) {
+			const bio = rawData.sign === '' ? '（未设置个性签名）' : user.sign;
+			document.getElementById('user-bio').innerText = bio;
+
+			const lv = rawData.level
+			const lvImg = document.getElementById('user-level')
+			lvImg.title = `Lv.${lv}`
+			lvImg.src = `/static/icons/levels/lv${lv}.png`
+			lvImg.hidden = false
+		}
+		else {
+			document.getElementById('user-bio').innerText = '（无法展示个性签名，实例未提供完整用户信息）';
+		}
+
+		document.getElementById('user-uid').innerText = user.uid
 	}
 	catch (TypeError) {
 		// pass

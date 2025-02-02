@@ -8,6 +8,7 @@ from misc.hmac_token import checkToken
 from model import application, session, user
 from service import app
 from service.auth_middleware import authRequired
+import misc
 
 
 @app.route('/api/user')
@@ -60,6 +61,8 @@ def getCurUserInfo():
 	# return user info
 	try:
 		userInfo = user.mustQueryUserInfo(uid)
+		if not (misc.config['bili']['saveRawUserInfo'] == True):
+			userInfo.pop('raw_data')
 		return userInfo
 
 	except api.BiliApiError:

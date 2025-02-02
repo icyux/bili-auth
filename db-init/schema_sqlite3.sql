@@ -34,8 +34,8 @@ CREATE TABLE "session" (
 CREATE TABLE "users" (
 	"uid"		INTEGER NOT NULL UNIQUE,
 	"name"		TEXT,
-	"bio"		TEXT,
 	"avatar"	TEXT,
+	"raw_data"	TEXT,
 	"updateTs"	INTEGER NOT NULL,
 	PRIMARY KEY("uid")
 );

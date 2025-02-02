@@ -76,11 +76,11 @@ img.guide {
 	margin: 0 0 1em;
 }
 
-#avatar {
+#user-avatar {
 	width: 4em;
 	height: 4em;
-	margin: 0 1em;
-	border-radius: 10px;
+	margin-right: 1em;
+	border-radius: 2em;
 }
 
 .user-info {
@@ -88,14 +88,29 @@ img.guide {
 	padding: 1em;
 	border-radius: 0.5em;
 	border: solid 1px #999;
+	display: flex;
+	align-items: center;
 }
 
-.name-bio-container {
-	display: inline-block;
+.user-header, #user-bio {
+	line-height: 2rem;
 }
 
 #user-name {
+	font-size: 1.4rem;
 	font-weight: bold;
+}
+
+#user-level {
+	height: 0.8rem;
+}
+
+.user-header > span {
+	margin-right: 0.5rem;
+}
+
+.user-uid-container {
+	font-size: 0.8rem;
 }
 
 #bio {
@@ -117,6 +132,11 @@ img.guide {
 		margin-right: 0.6em;
 		padding: 1.5em;
 		width: auto;
+	}
+
+	.user-uid-container {
+		display: block;
+		line-height: initial;
 	}
 }
 

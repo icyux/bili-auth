@@ -1,3 +1,4 @@
+import json
 import logging
 import time
 
@@ -14,7 +15,7 @@ def initDB():
 def queryUserInfo(uid, *, maxAge=86400*7):
 	cur = db.cursor()
 	cur.execute(
-		'SELECT uid, name, bio, avatar, updateTs FROM users WHERE uid=?',
+		'SELECT uid, name, avatar, raw_data, updateTs FROM users WHERE uid=?',
 		(uid, ),
 	)
 	data = cur.fetchone()
@@ -30,8 +31,8 @@ def queryUserInfo(uid, *, maxAge=86400*7):
 	return {
 		'uid': data[0],
 		'name': data[1],
-		'bio': data[2],
-		'avatar': data[3],
+		'avatar': data[2],
+		'raw_data': json.loads(data[3]) if data[3] is not None else None,
 		# update time could be hidden
 		# 'updateTs': data[4],
 	}
@@ -41,8 +42,8 @@ def updateUserInfo(uid, data):
 	cur = db.cursor()
 	try:
 		cur.execute(
-			'REPLACE INTO users (uid, name, bio, avatar, updateTs) VALUES (?, ?, ?, ?, ?)',
-			(uid, data['name'], data['bio'], data['avatar'], int(time.time())),
+			'REPLACE INTO users (uid, name, avatar, raw_data, updateTs) VALUES (?, ?, ?, ?, ?)',
+			(uid, data['name'], data['avatar'], json.dumps(data['raw_data']) if data['raw_data'] is not None else None, int(time.time())),
 		)
 		return cur.rowcount >= 1
 
@@ -60,6 +61,7 @@ def mustQueryUserInfo(uid):
 	# refresh user info
 	try:
 		userInfo = bu.getUserInfo(uid)
+
 	except api.BiliApiError as e:
 		logging.warn(f'failed to fetch "{e.url}": {repr(e)}')
 		raise e

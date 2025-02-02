@@ -6,11 +6,11 @@
 	display: flex;
 }
 
-#avatar {
+#user-avatar {
 	width: 4em;
 	height: 4em;
 	margin: 0 1em;
-	border-radius: 10px;
+	border-radius: 2em;
 }
 
 .name-bio-container {

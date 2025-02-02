@@ -34,8 +34,8 @@ CREATE TABLE `session` (
 CREATE TABLE `users` (
 	`uid`		BIGINT UNSIGNED NOT NULL,
 	`name`		VARCHAR(30),
-	`bio`		VARCHAR(100),
 	`avatar`	VARCHAR(100),
+	`raw_data`	TEXT,
 	`updateTs`	BIGINT UNSIGNED NOT NULL,
 	PRIMARY KEY (`uid`)
 );
