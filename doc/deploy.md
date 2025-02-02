@@ -91,6 +91,9 @@ python3 ./init_sqlite3.py
 	# 为优化 API 响应速度，默认禁用。即使禁用此项，用户归属地也不会与真实 IP 关联。
 	globalProxy = false
 
+	# 保留原始响应体。启用后用户信息 API 将返回来自B站 API 的原始响应体，包含用户等级、个性签名等额外信息。
+	saveRawUserInfo = false
+
 [oauth_service]
 	# HMAC 密钥，base64 编码。用于保存用户鉴权信息。默认留空，每次运行时随机生成。
 	# 如果需要手动指定，可以在终端运行此命令生成：

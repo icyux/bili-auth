@@ -31,8 +31,8 @@ Content-Type: application/json
 	"user": {
 		"uid": <用户 UID>,
 		"name": <用户昵称>,
-		"bio": <用户个性签名>,
-		"avatar": <用户头像 URL>
+		"avatar": <用户头像 URL>,
+		"raw_data": <B站 API 的原始响应体>
 	}
 }
 ```
@@ -62,7 +62,7 @@ Content-Type: application/json
 {
 	"uid": <用户 UID>,
 	"name": <用户昵称>,
-	"bio": <用户个性签名>,
-	"avatar": <用户头像 URL>
+	"avatar": <用户头像 URL>,
+	"raw_data": <B站 API 的原始响应体>"
 }
 ```
