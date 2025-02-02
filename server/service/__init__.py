@@ -11,6 +11,14 @@ app = Flask(__name__,
 app.debug = False
 
 
+# set app version
+@app.context_processor
+def inject_globals():
+    return {
+        'version': misc.version,
+    }
+
+
 import service.auth_middleware
 import service.oauth
 import service.user_info

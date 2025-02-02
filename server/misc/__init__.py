@@ -1,6 +1,13 @@
 import logging
 import toml
 
+from misc.get_version import get_version
+
+
+version = get_version()
+if version is not None:
+	print(f'bili-auth {version}')
+
 # read config
 config = toml.load('config.toml')
 

@@ -4,7 +4,6 @@ RUN pip3 install --no-cache-dir -r requirements.txt -i https://pypi.tuna.tsinghu
 
 FROM python:3.11.5-slim-bullseye
 COPY --from=env-build /usr/local/bin/ /usr/local/bin/
-COPY --from=env-build /usr/lib/x86_64-linux-gnu/ /usr/lib/x86_64-linux-gnu/
 COPY --from=env-build /usr/local/lib/python3.11/site-packages/ /usr/local/lib/python3.11/site-packages/
 WORKDIR /app/
 COPY ./db-init/ /tmp/db-init/
@@ -15,5 +14,7 @@ RUN find /app/ -name ".*" -maxdepth 1 -exec rm -rf {} \; && \
 	python3 /tmp/db-init/init_sqlite3.py && \
 	rm -r /tmp/db-init
 
+ARG VERSION
+ENV VERSION=$VERSION
 CMD /usr/local/bin/python3 -u ./run.py
 EXPOSE 80

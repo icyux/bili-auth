@@ -35,11 +35,14 @@
 		{% if homepage is not defined %}
 		<div>
 			<strong>bili-auth</strong>
-			：第三方哔哩哔哩 OAuth 2.0 API | Third-party Bilibili OAuth 2.0 API
+			{% if version is defined and version is not none %}
+			<span>{{ version }}</span>
+			{% endif %}
 		</div>
 		<div>
+			<span>第三方哔哩哔哩 OAuth 2.0 API</span> |
 			<a href='https://www.bilibili.com/video/BV1iS4y1S7QB' target='_blank'>Bilibili</a> |
-			<a href='https://github.com/icyux/bili-auth' target='_blank'>GitHub 项目</a>
+			<a href='https://github.com/icyux/bili-auth' target='_blank'>GitHub</a>
 		</div>
 		{% endif %}
 	</footer>
