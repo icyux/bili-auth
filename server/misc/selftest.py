@@ -3,6 +3,7 @@ import bili.utils
 
 def biliApiSelfTest():
     try:
+        bili.checkUserAgent()
         bili.utils.getUserInfo(uid=362062895)
         print('bili api self-test ok')
         return True
