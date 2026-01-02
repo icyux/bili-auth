@@ -80,7 +80,7 @@ def fetchNewCookie():
     return newCookieStr, newRefreshTkn
 
 
-def autoRefreshLoop():
+def autoRefresh():
     while True:
         try:
             isExpired = isRefreshPreferred()
@@ -97,4 +97,5 @@ def autoRefreshLoop():
 
         else:
             logging.info('cookie alive')
-            time.sleep(5 * 3600)  # 5 hours interval
+
+        break

@@ -95,10 +95,8 @@ def sendText(uid, content):
 
 
 def periodicWakeup():
-    while True:
-        expire = int(time.time()) + 1
-        tasks.put(expire)
-        time.sleep(5*60)
+    expire = int(time.time()) + 1
+    tasks.put(expire)
 
 
 def mainLoop():

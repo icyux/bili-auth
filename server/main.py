@@ -1,6 +1,8 @@
 #!/usr/bin/env -S python3 -u
 
+from apscheduler.schedulers.background import BackgroundScheduler
 import base64
+import datetime
 import logging
 import secrets
 import sqlite3
@@ -50,20 +52,29 @@ elif dbType == 'mysql':
 else:
 	raise ValueError('unsupported database type')
 
+# run task scheduler
+logging.getLogger('apscheduler').setLevel(logging.WARNING)
+scheduler = BackgroundScheduler()
+scheduler.add_job(
+	bili.msg_handler.periodicWakeup,
+	'interval',
+	minutes=5,
+	next_run_time=datetime.datetime.now(),
+	id='msg_periodic_poll'
+)
+scheduler.add_job(
+	bili.token_refresh.autoRefresh,
+	'interval',
+	hours=5,
+	next_run_time=datetime.datetime.now(),
+	id='token_refresh'
+)
+scheduler.start()
+
 # run message listener
 msgThread = threading.Thread(target=bili.msg_handler.mainLoop)
 msgThread.daemon = True
 msgThread.start()
-
-# enable periodic wakeup
-wakerThread = threading.Thread(target=bili.msg_handler.periodicWakeup)
-wakerThread.daemon = True
-wakerThread.start()
-
-# token auto refresh
-refreshThread = threading.Thread(target=bili.token_refresh.autoRefreshLoop)
-refreshThread.daemon = True
-refreshThread.start()
 
 if __name__ == '__main__':
 	host = misc.config['service']['host']

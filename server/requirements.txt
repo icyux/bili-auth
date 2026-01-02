@@ -6,3 +6,4 @@ qrcode >= 7.4.2
 pillow >= 8.1.0
 pymysql >= 1.0.2
 pycryptodome >= 3.21.0
+apscheduler >= 3.11.2
