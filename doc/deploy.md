@@ -75,8 +75,12 @@ python3 ./init_sqlite3.py
 	type = "..."
 
 [bili]
-	# 请求 API 使用的 User-Agent。通常不需要修改，使用项目默认的即可。
-	# 如果您要修改（例如遇到风控无法访问的情况），建议将其替换为主流浏览器最新版的 UA。
+	# 自动更新 User-Agent。建议开启。
+	# 启用后，请求B站 API 的 User-Agent 与最新版 Chrome (Windows) 的 User-Agent 保持一致。
+	# User-Agent 将通过一个第三方提供的 API 保持定期更新。
+	auto_user_agent = true
+	# 手动指定请求 API 使用的 User-Agent。
+	# 通常无需制定，留空即可。
 	user_agent = "..."
 
 [proxy]
