@@ -28,7 +28,7 @@ async function setUserInfo() {
 
 		const rawData = user.raw_data
 		if (rawData !== null) {
-			const bio = rawData.sign === '' ? '（未设置个性签名）' : user.sign;
+			const bio = rawData.sign === '' ? '（未设置个性签名）' : rawData.sign;
 			document.getElementById('user-bio').innerText = bio;
 
 			const lv = rawData.level
