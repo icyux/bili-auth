@@ -28,6 +28,7 @@ aboutText = '''【 bili-auth 】 是一个第三方实现的 Bili OAuth API，�
 def checkMsg():
     global ackMts
     msgList = bu.getNewMsg(ackMts)
+    ackMts = int(time.time() * 1000000)
     for m in msgList:
         uid = m['uid']
         content = m['content'].strip()

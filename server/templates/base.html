@@ -45,6 +45,11 @@
 			<a href='https://github.com/icyux/bili-auth' target='_blank'>GitHub</a>
 		</div>
 		{% endif %}
+		{% if serviceStatus.status != 'up' %}
+		<div class="status-display">
+			<span class='status-degraded'>当前状态异常，部分服务可能不可用</span>
+		</div>
+		{% endif %}
 	</footer>
 </body>
 </html>

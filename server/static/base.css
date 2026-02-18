@@ -71,6 +71,12 @@ footer div {
 	text-align: center;
 }
 
+.status-degraded::before {
+	content: '● ';
+	display: inline-block;
+	color: orange;
+}
+
 .url {
 	color: #88f;
 }
