@@ -3,25 +3,27 @@
 async function submitAppInfo() {
 	document.getElementById('submit-appinfo').disabled = true
 	const name = document.getElementById('name').value
-	const icon = document.getElementById('icon-url').value
+	const icon = document.getElementById('icon').files[0]
 	const desc = document.getElementById('description').value
 	const link = document.getElementById('link').value
 	const prefix = document.getElementById('callback-prefix').value
 
 	const vt = localStorage.verifyToken
 
+	const oauthAppForm = new FormData()
+	oauthAppForm.append('name', name)
+	oauthAppForm.append('desc', desc)
+	oauthAppForm.append('link', link)
+	oauthAppForm.append('prefix', prefix)
+	if (icon !== undefined)
+		oauthAppForm.append('icon', icon)
+
 	let resp = await fetch('/oauth/application',{
 		method: 'POST',
 		headers: {
 			'Authorization': `BUTKN ${vt}`,
 		},
-		body: new URLSearchParams({
-			'name': name,
-			'icon': icon,
-			'desc': desc,
-			'link': link,
-			'prefix': prefix,
-		}),
+		body: oauthAppForm,
 	})
 
 	if (resp.status === 200) {

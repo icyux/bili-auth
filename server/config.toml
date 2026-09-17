@@ -20,6 +20,10 @@
 	#user = "user"
 	#pswd = "password"
 
+[storage]
+	oauth_app_icons_path = "./data/icons/oauth_apps/"
+	oauth_app_icon_default = "default_icon.jpg"
+
 [bili]
 	auto_user_agent = true
 

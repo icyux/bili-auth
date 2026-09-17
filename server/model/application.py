@@ -30,7 +30,7 @@ def query(cid):
         cur.close()
 
 
-def updateApp(*, uid, name, icon, link, desc, prefix):
+def updateApp(*, uid, name, icon=None, link, desc, prefix):
     curTs = int(time.time())
 
     # retry at most 3 times
@@ -66,7 +66,7 @@ def updateApp(*, uid, name, icon, link, desc, prefix):
 def getAuthorizedApps(uid):
     cur = db.cursor()
     cur.execute(
-        'SELECT cid, name, link, `desc`, icon FROM app WHERE cid = ANY(SELECT cid FROM session WHERE uid = ?)',
+        'SELECT cid, name, link, `desc` FROM app WHERE cid = ANY(SELECT cid FROM session WHERE uid = ?)',
         (uid, ),
     )
     appsInfo = cur.fetchall()
@@ -78,7 +78,7 @@ def getAuthorizedApps(uid):
             'name': info[1],
             'link': info[2],
             'desc': info[3],
-            'icon': info[4],
+            'icon': f'/oauth/application/{info[0]}/icon'
         }
         for info in appsInfo
     ]
@@ -89,7 +89,7 @@ def getAuthorizedApps(uid):
 def getCreatedApps(uid):
     cur = db.cursor()
     cur.execute(
-        'SELECT cid, name, link, `desc`, icon FROM app WHERE ownerUid = ?',
+        'SELECT cid, name, link, `desc` FROM app WHERE ownerUid = ?',
         (uid, ),
     )
     appsInfo = cur.fetchall()
@@ -101,7 +101,7 @@ def getCreatedApps(uid):
             'name': info[1],
             'link': info[2],
             'desc': info[3],
-            'icon': info[4],
+            'icon': f'/oauth/application/{info[0]}/icon'
         }
         for info in appsInfo
     ]

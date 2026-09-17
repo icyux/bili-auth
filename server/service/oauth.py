@@ -1,7 +1,12 @@
-from flask import request, jsonify
+from flask import request, jsonify, Response
+import os
+import pathlib
 import secrets
+import uuid
 
 from bili import utils as bu
+from misc import config
+from misc.icon_process import process_icon
 from model import application, user
 from model import session
 from model.session import VerificationRevokedException
@@ -19,9 +24,11 @@ def getApp(cid):
         return '', 404
 
     rtn = {}
-    fieldList = ('cid', 'name', 'link', 'desc', 'icon', 'prefix')
+    fieldList = ('cid', 'name', 'link', 'desc', 'prefix')
     for field in fieldList:
         rtn[field] = info[field]
+
+    rtn['icon'] = f'/oauth/application/{info["cid"]}/icon'
 
     ownerInfo = user.mustQueryUserInfo(info['ownerUid'])
     rtn['owner'] = {
@@ -33,19 +40,53 @@ def getApp(cid):
     return rtn, 200
 
 
+@app.route('/oauth/application/<cid>/icon')
+def getAppIcon(cid):
+    info = application.query(cid)
+    if info is None:
+        return '', 404
+
+    icon_filename = info['icon']
+    if icon_filename is None or icon_filename == '':
+        icon_filename = config['storage']['oauth_app_icon_default']
+
+    icon_root_path = config['storage']['oauth_app_icons_path']
+    icon_path = str(pathlib.Path(icon_root_path, icon_filename))
+    with open(icon_path, 'rb') as f:
+        icon_data = f.read()
+
+    return Response(
+        icon_data,
+        mimetype='image/jpeg',
+    )
+
+
 @app.route('/oauth/application', methods=('POST', ))
 @authRequired()
 def createApp(*, uid, vid):
     appInfo = {}
     try:
         appInfo['name'] = request.form['name']
-        appInfo['icon'] = request.form['icon']
         appInfo['link'] = request.form['link']
         appInfo['desc'] = request.form['desc']
         appInfo['prefix'] = request.form['prefix']
-
     except KeyError:
         return '', 400
+
+    icon_file = request.files.get('icon')
+    if icon_file is not None:
+        processed_icon = process_icon(icon_file)
+
+        icon_uuid = str(uuid.uuid4())
+        icon_filename = f'{icon_uuid}.jpg'
+        icon_root_path = config['storage']['oauth_app_icons_path']
+        icon_path = str(pathlib.Path(icon_root_path, icon_filename))
+
+        os.makedirs(icon_root_path, exist_ok=True)
+        with open(icon_path, 'wb') as f:
+            f.write(processed_icon)
+
+        appInfo['icon'] = icon_filename
 
     result = application.updateApp(uid=uid, **appInfo)
     if result is None:

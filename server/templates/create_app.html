@@ -13,9 +13,9 @@
 	<input type='text' id='name' autocomplete='off' maxlength=30>
 	<div class='comment'>简短的应用名称。将展示在授权页面上。</div>
 
-	<label for='icon-url'>图标 URL</label>
-	<input type='url' id='icon-url' autocomplete='off' maxlength=100>
-	<div class='comment'>应用图标的 URL，图标将展示在授权页面上。本实例不提供图片上传服务，您可以在其他图床服务上传图标后填入图片链接。</div>
+	<label for='icon-url'>图标</label>
+	<input type='file' id='icon' accept='.jpg, .png, .webp, .ico'>
+	<div class='comment'>应用图标。将展示在授权页面上。可选，若不上传将使用默认图标。</div>
 
 	<label for='description'>简介</label>
 	<input type='text' id='description' autocomplete='off' maxlength=100>
