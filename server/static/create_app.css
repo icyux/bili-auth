@@ -4,6 +4,10 @@ label {
 	display: block;
 }
 
+hr {
+	margin: 3em 0;
+}
+
 input {
 	display: block;
 	width: 30em;
@@ -33,6 +37,10 @@ input:focus {
 	.comment {
 		color: #ccc;
 	}
+}
+
+.app-icon {
+	height: 8em;
 }
 
 /* button */

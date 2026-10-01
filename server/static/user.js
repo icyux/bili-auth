@@ -15,13 +15,12 @@ async function fetchAuthorizedApps() {
 		},
 	})
 	let authorizedApps = await resp.json()
-	let tpl = document.getElementById('app-tpl')
+	let tpl = document.getElementById('authorized-app-tpl')
 	for (let app of authorizedApps) {
 		let row = document.importNode(tpl.content, true)
 		row.querySelector('.app-icon').src = app['icon']
 		row.querySelector('.app-name').innerText = app['name']
-		row.querySelector('button').innerText = '撤销授权'
-		row.querySelector('button').onclick = () => revokeAuthorization(app['cid'])
+		row.querySelector('.revoke-auth').onclick = () => revokeAuthorization(app['cid'], app['name'])
 		document.getElementById('authorized-apps').appendChild(row)
 	}
 }
@@ -34,19 +33,19 @@ async function fetchCreatedApps() {
 		},
 	})
 	let createdApps = await resp.json()
-	let tpl = document.getElementById('app-tpl')
+	let tpl = document.getElementById('created-app-tpl')
 	for (let app of createdApps) {
 		let row = document.importNode(tpl.content, true)
 		row.querySelector('.app-icon').src = app['icon']
 		row.querySelector('.app-name').innerText = app['name']
-		row.querySelector('button').innerText = '删除应用'
-		row.querySelector('button').onclick = () => deleteApplication(app['cid'])
+		row.querySelector('.edit-app').onclick = () => window.open(`/oauth/application/${app['cid']}/edit`)
+		row.querySelector('.delete-app').onclick = () => deleteApplication(app['cid'], app['name'])
 		document.getElementById('created-apps').appendChild(row)
 	}
 }
 
-async function revokeAuthorization(cid) {
-	if (confirm('确认撤销对该应用的授权？')) {
+async function revokeAuthorization(cid, name) {
+	if (confirm(`确认撤销对应用“${name}”的授权？`)) {
 		const vt = localStorage.verifyToken
 		let resp = await fetch(`/api/user/apps/authorized?cid=${cid}`, {
 			method: 'DELETE',
@@ -61,8 +60,8 @@ async function revokeAuthorization(cid) {
 	}
 }
 
-async function deleteApplication(cid) {
-	if (confirm('确认删除该应用？')) {
+async function deleteApplication(cid, name) {
+	if (confirm(`确认删除应用“${name}”？`)) {
 		const vt = localStorage.verifyToken
 		let resp = await fetch(`/oauth/application/${cid}`, {
 			method: 'DELETE',

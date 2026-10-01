@@ -30,22 +30,14 @@ def query(cid):
         cur.close()
 
 
-def updateApp(*, uid, name, icon=None, link, desc, prefix):
+def createApp(*, uid, name, icon=None, link, desc, prefix):
     curTs = int(time.time())
-
-    # retry at most 3 times
-    for _ in range(3):
-        cid = secrets.token_hex(4)
-        if query(cid) is None:
-            break
-    else:
-        return None
-
+    cid = secrets.token_hex(4)
     csec = secrets.token_urlsafe(18)
 
     cur = db.cursor()
     cur.execute(
-        'REPLACE INTO app \
+        'INSERT INTO app \
         (cid, sec, name, ownerUid, createTs, link, prefix, `desc`, icon) \
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
         (cid, csec, name, uid, curTs, link, prefix, desc, icon),
@@ -61,6 +53,59 @@ def updateApp(*, uid, name, icon=None, link, desc, prefix):
         }
     else:
         return None
+
+
+def updateApp(cid, *, name, link, desc, prefix, icon=None):
+    cur = db.cursor()
+    if icon is None:
+        cur.execute(
+            'UPDATE app \
+            SET name = ?, link = ?, prefix = ?, `desc` = ? \
+            WHERE cid = ?',
+            (name, link, prefix, desc, cid),
+        )
+    else:
+        cur.execute(
+           'UPDATE app \
+           SET name = ?, link = ?, prefix = ?, `desc` = ?, icon = ? \
+           WHERE cid = ?',
+           (name, link, prefix, desc, icon, cid),
+        )
+    affected = cur.rowcount
+    cur.close()
+    db.commit()
+    
+    return affected == 1
+
+
+def updateAppIcon(cid, icon):
+    cur = db.cursor()
+    cur.execute(
+        'UPDATE app \
+        SET icon = ? \
+        WHERE cid = ?',
+        (icon, cid),
+    )
+    affected = cur.rowcount
+    cur.close()
+    db.commit()
+
+    return affected == 1
+
+
+def removeAppIcon(cid):
+    cur = db.cursor()
+    cur.execute(
+        'UPDATE app \
+        SET icon = NULL \
+        WHERE cid = ?',
+        (cid, ),
+    )
+    affected = cur.rowcount
+    cur.close()
+    db.commit()
+
+    return affected == 1
 
 
 def getAuthorizedApps(uid):

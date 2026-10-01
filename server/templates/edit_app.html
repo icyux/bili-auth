@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block title %}编辑应用信息 | bili-auth{% endblock %}
+{% block main %}
+<link rel='stylesheet' href='/static/create_app.css'>
+<script src='/static/edit_app.js' defer></script>
+
+<div id='loading'>
+	<h2>正在加载...</h2>
+</div>
+
+<div id='edit-app' hidden>
+	<h2>编辑应用信息</h2>
+
+	<label>当前图标</label>
+	<img class='app-icon' id='icon-display'>
+
+	<input type='file' id='icon' accept='.jpg, .png, .webp, .ico' onchange='updateAppIcon()' hidden>
+
+	<div>
+		<button class='next-step' onclick='document.getElementById("icon").click()'>上传新图标</button>
+		<button class='next-step' onclick='clearAppIcon()'>清除图标</button>
+	</div>
+
+	<hr>
+
+	<label for='name'>名称</label>
+	<input type='text' id='name' autocomplete='off' maxlength=30>
+	<div class='comment'>简短的应用名称。将展示在授权页面上。</div>
+
+
+	<label for='description'>简介</label>
+	<input type='text' id='description' autocomplete='off' maxlength=100>
+	<div class='comment'>关于应用的简短介绍。将展示给用户。</div>
+
+	<label for='link'>链接</label>
+	<input type='url' id='link' autocomplete='off' maxlength=100>
+	<div class='comment'>链接到应用相关页面的 URL。您可以填写应用的主页、项目链接或开发者的个人主页等链接。</div>
+
+	<label for='callback-prefix'>回调 URL 匹配前缀</label>
+	<input type='text' id='callback-prefix' autocomplete='off' maxlength=100>
+	<div class='comment'>
+		<div>授权时的回调地址（redirect_uri）必须与您预设的前缀完全匹配。</div>
+		<div>例如，若您提供的前缀是“https://example.com/oauth”，则这些是合法的回调地址：</div>
+		<div>“https://example.com/oauth” “https://example.com/oauth/callback”</div>
+		<div>而这些都是不合法的回调地址：</div>
+		<div>“https://example.com/callback”（路径不符）、“https://oauth.example.com/oauth”（域名不符）、“http://example.com/oauth”（协议不符）</div>
+		<div>实例会拒绝跳转至不合法的回调地址。</div>
+	</div>
+
+	<button class='next-step' id='submit-appinfo' onclick='updateAppInfo()'>更新应用信息</button>
+
+</div>
+
+{% endblock %}

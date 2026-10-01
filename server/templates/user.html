@@ -17,21 +17,34 @@
 	<div class='option' id='opt-1'>创建的应用</div>
 </div>
 
-<template id='app-tpl'>
+<template id='authorized-app-tpl'>
 	<li class='app-info'>
 		<img class='app-icon'>
 		<div class='app-name'></div>
-		<button></button>
+		<div class='actions'>
+			<button class='revoke-auth warning-btn'>撤销授权</button>
+		</div>
+	</li>
+</template>
+
+<template id='created-app-tpl'>
+	<li class='app-info'>
+		<img class='app-icon'>
+		<div class='app-name'></div>
+		<div class='actions'>
+			<button class='edit-app'>编辑</button>
+			<button class='delete-app warning-btn'>删除</button>
+		</div>
 	</li>
 </template>
 
 
 <div id='area-0'>
-	<ul id='authorized-apps'></ul>
+	<ul class='app-list' id='authorized-apps'></ul>
 </div>
 
 <div id='area-1' hidden>
-	<ul id='created-apps'></ul>
+	<ul class='app-list' id='created-apps'></ul>
 	<button id='create-new-app' onclick='openAppCreatePage()'>创建新应用</button>
 </div>
 

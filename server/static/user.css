@@ -57,9 +57,14 @@
 
 /* app list */
 
+.app-list {
+	padding-left: 0;
+}
+
 .app-info {
 	display: flex;
 	align-items: center;
+	margin-bottom: 1em;
 }
 
 .app-icon {
@@ -69,21 +74,33 @@
 }
 
 .app-name {
-	margin: 0 2em;
+	margin: 0 1em;
+}
+
+.actions {
+	margin-left: auto;
 }
 
 .app-info button {
-	margin-left: auto;
 	padding: 0.3em 1em;
 	background-color: #0000;
-	color: #e67;
-	border: solid #e67 1px;
+	color: #9cf;
+	border: solid #9cf 1px;
 	border-radius: 3px;
 	transition: background-color 0.3s, color 0.3s;
 }
 
 .app-info button:hover {
 	color: #fff;
+	background-color: #9cf;
+}
+
+.app-info .warning-btn {
+	color: #e67;
+	border: solid #e67 1px;
+}
+
+.app-info .warning-btn:hover {
 	background-color: #e67;
 }
 

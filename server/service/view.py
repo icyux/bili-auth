@@ -30,3 +30,8 @@ def userPage():
 @app.route('/oauth/application/new')
 def appCreatePage():
 	return render_template('create_app.html')
+
+
+@app.route('/oauth/application/<cid>/edit')
+def appEditPage(cid):
+    return render_template('edit_app.html')

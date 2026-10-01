@@ -61,6 +61,48 @@ def getAppIcon(cid):
     )
 
 
+@app.route('/oauth/application/<cid>/icon', methods=['PUT'])
+@authRequired()
+def updateAppIcon(cid, *, uid, vid):
+    info = application.query(cid)
+    if info is None:
+        return 'app not found', 404
+
+    if info['ownerUid'] != uid:
+        return 'not app owner', 403
+
+    icon_file = request.files.get('icon')
+    if icon_file is not None:
+        icon_filename = save_icon(icon_file)
+    else:
+        return '', 400
+
+    result = application.updateAppIcon(cid, icon_filename)
+
+    if result is True:
+        return '', 200
+    else:
+        return '', 500
+
+
+@app.route('/oauth/application/<cid>/icon', methods=['DELETE'])
+@authRequired()
+def removeAppIcon(cid, *, uid, vid):
+    info = application.query(cid)
+    if info is None:
+        return 'app not found', 404
+
+    if info['ownerUid'] != uid:
+        return 'not app owner', 403
+
+    result = application.removeAppIcon(cid)
+
+    if result is True:
+        return '', 200
+    else:
+        return '', 500
+
+
 @app.route('/oauth/application', methods=('POST', ))
 @authRequired()
 def createApp(*, uid, vid):
@@ -75,24 +117,38 @@ def createApp(*, uid, vid):
 
     icon_file = request.files.get('icon')
     if icon_file is not None:
-        processed_icon = process_icon(icon_file)
+        appInfo['icon'] = save_icon(icon_file)
 
-        icon_uuid = str(uuid.uuid4())
-        icon_filename = f'{icon_uuid}.jpg'
-        icon_root_path = config['storage']['oauth_app_icons_path']
-        icon_path = str(pathlib.Path(icon_root_path, icon_filename))
-
-        os.makedirs(icon_root_path, exist_ok=True)
-        with open(icon_path, 'wb') as f:
-            f.write(processed_icon)
-
-        appInfo['icon'] = icon_filename
-
-    result = application.updateApp(uid=uid, **appInfo)
+    result = application.createApp(uid=uid, **appInfo)
     if result is None:
         return '', 500
     else:
         return result
+
+
+@app.route('/oauth/application/<cid>', methods=('PUT', ))
+@authRequired()
+def updateApp(cid, *, uid, vid):
+    info = application.query(cid)
+    if info is None:
+        return 'app not found', 404
+
+    if info['ownerUid'] != uid:
+        return 'not app owner', 403
+
+    new_info = {
+        'name': request.form['name'],
+        'link': request.form['link'],
+        'desc': request.form['desc'],
+        'prefix': request.form['prefix'],
+    }
+
+    result = application.updateApp(cid, **new_info)
+
+    if result is True:
+        return '', 200
+    else:
+        return '', 500
 
 
 @app.route('/api/session')
@@ -186,3 +242,18 @@ def deleteApplication(cid, *, uid, vid):
         return '', 200
     else:
         return '', 500
+
+
+def save_icon(icon_file):
+    processed_icon = process_icon(icon_file)
+
+    icon_uuid = str(uuid.uuid4())
+    icon_filename = f'{icon_uuid}.jpg'
+    icon_root_path = config['storage']['oauth_app_icons_path']
+    icon_path = str(pathlib.Path(icon_root_path, icon_filename))
+
+    os.makedirs(icon_root_path, exist_ok=True)
+    with open(icon_path, 'wb') as f:
+        f.write(processed_icon)
+
+    return icon_filename
